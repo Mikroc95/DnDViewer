@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">DnDViewer</string>
+    <string name="tab_1">Personatge</string>
+    <string name="tab_2">HomeBrew</string>
+    <string name="tab_3">Inventari</string>
+    <string name="create_character">Crear Nou Personatge</string>
+    <string name="choose_your_character">Escull el personatge</string>
+
+    <string name="new_character_name">nom</string>
+    <string name="new_character_health_points">vida</string>
+    <string name="new_character_mana">mana</string>
+    <string name="new_character_maxSpell">Nº Conjurs equipats</string>
+    <string name="new_character_file">fitxa.PNG</string>
+    <string name="new_character_homebrew">homebrew.PDF</string>
+
+    <string name="new_item_description">Descripció</string>
+    <string name="new_item_charges">Càrregues</string>
+    <string name="new_item_quantity">Quantitat</string>
+    <string name="new_item_consumable">Consumible</string>
+
+    <string name="item_charges">Carregues</string>
+    <string name="item_max_items_equiped">Ja tens 3 objectes equipats, desequipat algun</string>
+
+    <string name="dialog_save">Guardar</string>
+    <string name="dialog_error_empty_fields">Omple tots els camps abans de guardar</string>
+
+    <string name="counter_hp">HP</string>
+    <string name="counter_mana">MANA</string>
+
+    <string name="row_spell_name">Encanteri</string>
+    <string name="row_spell_level">Nivell</string>
+
+    <string name="inventory_bag">Mochila</string>
+    <string name="inventory_consumables">Consumibles</string>
+    <string name="iventory_observations">Observacions</string>
+    <string name="inventory_spells">Encanteris</string>
+
+</resources>
