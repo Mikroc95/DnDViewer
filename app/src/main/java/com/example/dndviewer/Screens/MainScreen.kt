@@ -3,19 +3,13 @@ package com.example.dndviewer.Screens
 import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TabRow
@@ -24,13 +18,10 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.dndviewer.Components.FiveEView
 import com.example.dndviewer.Models.CharacterModel
@@ -50,33 +41,34 @@ import java.io.File
 
 
 var tabSelected: MutableState<Int> = mutableIntStateOf(0)
-lateinit var context: Context
-var characterModel = CharacterModel(image_character = byteArrayOf())
 
-var pdfVerticallReaderState = VerticalPdfReaderState(
+//lateinit var context: Context
+var characterModel = CharacterModel(imageCharacter = byteArrayOf())
+
+var pdfVerticalReaderState = VerticalPdfReaderState(
     resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
     isZoomEnable = true,
 )
 lateinit var viewModel: MainViewModel
 
 @Composable
-fun MainScreen(cntxt: Context, characterSelected: CharacterModel, mainViewModel: MainViewModel) {
+fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewModel: MainViewModel) {
     characterModel = characterSelected
-    context = cntxt
+    //context = cont
     viewModel = mainViewModel
-    pdfVerticallReaderState = VerticalPdfReaderState(
+    pdfVerticalReaderState = VerticalPdfReaderState(
         resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
         isZoomEnable = true,
     )
     if (characterSelected.name.isEmpty()) {
         EmptySelection()
     } else {
-        TabRowCharacter()
+        TabRowCharacter(context = context)
     }
 }
 
 @Composable
-private fun TabRowCharacter() {
+private fun TabRowCharacter(context: Context) {
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,21 +130,23 @@ private fun TabRowCharacter() {
             .background(backgroundColor())
             .fillMaxSize(),
 
-    ) {
+        ) {
         when (tabSelected.value) {
             0 -> {
-               CharacterScreen()
+                CharacterScreen(context = context)
             }
+
             1 -> {
-                if(characterModel.homebrewRoute.isNotEmpty()){
+                if (characterModel.homebrewRoute.isNotEmpty()) {
                     VerticalPDFReader(
-                        state = pdfVerticallReaderState,
+                        state = pdfVerticalReaderState,
                         modifier = Modifier
                             .background(color = Color.White)
                             .clipToBounds(),
                     )
                 }
             }
+
             2 -> {
                 Column(
                     modifier = Modifier
@@ -160,7 +154,7 @@ private fun TabRowCharacter() {
                         .verticalScroll(rememberScrollState())
                         .background(backgroundColor())
                 ) {
-                    InventoryScreen()
+                    InventoryScreen(context = context)
                 }
             }
         }

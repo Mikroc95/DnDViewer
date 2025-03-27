@@ -1,6 +1,6 @@
 package com.example.dndviewer.Components
 
-import android.view.ViewGroup
+import android.annotation.SuppressLint
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
@@ -14,12 +14,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.dndviewer.Screens.context
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun FiveEView(){
+fun FiveEView() {
     var webView: WebView? by remember { mutableStateOf(null) }
-    var url = "https://5e.tools/"
+    val url = "https://5e.tools/"
     BackHandler(enabled = true) {
         webView?.goBack()
     }
@@ -37,7 +37,7 @@ fun FiveEView(){
     )
     LaunchedEffect(Unit) {
         snapshotFlow { webView?.canGoBack() }
-            .collect { canGoBack ->
+            .collect { _ ->
                 webView?.loadUrl(url)
             }
     }

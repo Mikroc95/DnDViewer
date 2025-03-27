@@ -1,5 +1,6 @@
 package com.example.dndviewer.Screens.Inventory.Items
 
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,18 +30,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dndviewer.Components.InputCounter
 import com.example.dndviewer.Models.ItemsModel
-import com.example.dndviewer.Screens.context
 import com.example.dndviewer.Theme.blueMana
 import com.example.dndviewer.Theme.discordBlue
 import com.example.dndviewer.Theme.discordLigthBlack
 import com.example.dndviewer.Theme.discordOrangeAccent
 import com.example.dndviewer.Theme.textColor
-import com.example.dndviewer.ViewModels.MainViewModel
 import com.example.dndviewer.R
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel) -> Boolean,onDeleteClicked:()->Unit) {
+fun RowItem(
+    item: ItemsModel,
+    saveObjectes: (ItemsModel) -> Unit,
+    onEquipItem: (ItemsModel) -> Boolean,
+    onDeleteClicked: () -> Unit,
+    context: Context
+) {
     val isEquiped = remember {
         mutableStateOf(item.isEquiped)
     }
@@ -56,7 +62,7 @@ fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel
 
     }
     val charges = remember {
-        mutableStateOf(item.actualCharges.toInt().or(0))
+        mutableIntStateOf(item.actualCharges.toInt().or(0))
     }
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -73,10 +79,12 @@ fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel
 
     ) {
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top,
-                modifier = Modifier.fillMaxWidth()) {
-                Row(horizontalArrangement = Arrangement.Start){
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(horizontalArrangement = Arrangement.Start) {
                     Text(
                         text = item.name,
                         color = textColor(),
@@ -84,19 +92,20 @@ fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel
                         fontSize = 16.sp
                     )
                 }
-               Row(horizontalArrangement = Arrangement.End) {
-                   Image(
-                       imageVector = Icons.Outlined.Delete,
-                       colorFilter = ColorFilter.tint(textColor()),
-                       contentDescription = "",
-                       modifier = Modifier.clickable {onDeleteClicked()
-                       }
-                   )
-               }
+                Row(horizontalArrangement = Arrangement.End) {
+                    Image(
+                        imageVector = Icons.Outlined.Delete,
+                        colorFilter = ColorFilter.tint(textColor()),
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            onDeleteClicked()
+                        }
+                    )
+                }
             }
 
             val counterText =
-                "${charges.value} / ${item.charges} ${context.getString(R.string.item_charges)}"
+                "${charges.intValue} / ${item.charges} ${context.getString(R.string.item_charges)}"
             val valueTextField = remember {
                 mutableStateOf("")
             }
@@ -107,31 +116,31 @@ fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel
                 onKeyBoardDone = {
                     if (valueTextField.value.toInt().or(-10000) != -10000) {
                         val value = valueTextField.value.toInt()
-                        charges.value =  if (item.actualCharges.toInt() + value > 0) {
-                             if(item.actualCharges.toInt() + value <= item.charges.toInt()){
-                               item.actualCharges.toInt() + value
-                            }else{
-                               item.charges.toInt()
+                        charges.intValue = if (item.actualCharges.toInt() + value > 0) {
+                            if (item.actualCharges.toInt() + value <= item.charges.toInt()) {
+                                item.actualCharges.toInt() + value
+                            } else {
+                                item.charges.toInt()
                             }
-                        }else{
-                           0
+                        } else {
+                            0
                         }
-                        item.actualCharges =  charges.value.toString()
-                        viewModel.setObjectes(item)
+                        item.actualCharges = charges.intValue.toString()
+                        saveObjectes(item)
                     }
                 },
                 onLessClicked = {
-                    if (charges.value - 1 >= 0) {
-                        charges.value--
-                        item.actualCharges = charges.value.toString()
-                        viewModel.updateObjectes(item)
+                    if (charges.intValue - 1 >= 0) {
+                        charges.intValue--
+                        item.actualCharges = charges.intValue.toString()
+                        saveObjectes(item)
                     }
                 },
                 onPlusClicked = {
-                    if (charges.value + 1 <= item.charges.toInt()) {
-                        charges.value++
-                        item.actualCharges = charges.value.toString()
-                        viewModel.updateObjectes(item)
+                    if (charges.intValue + 1 <= item.charges.toInt()) {
+                        charges.intValue++
+                        item.actualCharges = charges.intValue.toString()
+                        saveObjectes(item)
                     }
                 })
             Text(
@@ -149,9 +158,13 @@ fun RowItem(item: ItemsModel, viewModel: MainViewModel, onEquipItem: (ItemsModel
 }
 
 @Composable
-fun RowConsumible(item: ItemsModel,onDeleteClicked:()->Unit, viewModel: MainViewModel) {
+fun RowConsumible(
+    item: ItemsModel,
+    onDeleteClicked: () -> Unit,
+    saveObjectes: (ItemsModel) -> Unit
+) {
     val totalConsumibles = remember {
-        mutableStateOf(item.charges.toInt())
+        mutableIntStateOf(item.charges.toInt())
     }
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -162,12 +175,13 @@ fun RowConsumible(item: ItemsModel,onDeleteClicked:()->Unit, viewModel: MainView
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        val titleText = "${item.name} X ${totalConsumibles.value}"
         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top,
-                modifier = Modifier.fillMaxWidth()) {
-                Row(horizontalArrangement = Arrangement.Start){
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(horizontalArrangement = Arrangement.Start) {
                     Text(
                         text = item.name,
                         color = textColor(),
@@ -190,39 +204,39 @@ fun RowConsumible(item: ItemsModel,onDeleteClicked:()->Unit, viewModel: MainView
                 mutableStateOf("")
             }
             InputCounter(
-                totalResult = totalConsumibles.value.toString(),
+                totalResult = totalConsumibles.intValue.toString(),
                 valueTextField = valueTextField,
                 borderColor = discordOrangeAccent,
                 onKeyBoardDone = {
                     if (valueTextField.value.toInt().or(-10000) != -10000) {
                         val value = valueTextField.value.toInt()
-                        if (totalConsumibles.value + value > 0) {
-                            totalConsumibles.value += value
-                        }else{
-                            totalConsumibles.value = 0
+                        if (totalConsumibles.intValue + value > 0) {
+                            totalConsumibles.intValue += value
+                        } else {
+                            totalConsumibles.intValue = 0
                         }
-                        item.charges = totalConsumibles.value.toString()
+                        item.charges = totalConsumibles.intValue.toString()
                         item.actualCharges = item.charges
-                        viewModel.setObjectes(item)
+                        saveObjectes(item)
                     }
                 },
                 onPlusClicked = {
-                    totalConsumibles.value++
-                    item.charges = totalConsumibles.value.toString()
+                    totalConsumibles.intValue++
+                    item.charges = totalConsumibles.intValue.toString()
                     item.actualCharges = item.charges
-                    viewModel.setObjectes(item)
+                    saveObjectes(item)
                 },
                 onLessClicked = {
-                    if (totalConsumibles.value - 1 >= 0) {
-                        totalConsumibles.value--
-                        item.charges = totalConsumibles.value.toString()
+                    if (totalConsumibles.intValue - 1 >= 0) {
+                        totalConsumibles.intValue--
+                        item.charges = totalConsumibles.intValue.toString()
                         item.actualCharges = item.charges
-                        viewModel.setObjectes(item)
-                    }else{
-                        totalConsumibles.value = 0
-                        item.charges = totalConsumibles.value.toString()
+                        saveObjectes(item)
+                    } else {
+                        totalConsumibles.intValue = 0
+                        item.charges = totalConsumibles.intValue.toString()
                         item.actualCharges = item.charges
-                        viewModel.setObjectes(item)
+                        saveObjectes(item)
                     }
                 })
             Text(

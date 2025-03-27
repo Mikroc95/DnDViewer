@@ -1,5 +1,6 @@
 package com.example.dndviewer.Screens.Inventory
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -21,23 +23,22 @@ import com.example.dndviewer.Screens.Inventory.Items.RowConsumible
 import com.example.dndviewer.Screens.Inventory.Items.RowItem
 import com.example.dndviewer.Screens.Inventory.Spells.RowSpell
 import com.example.dndviewer.Screens.characterModel
-import com.example.dndviewer.Screens.context
 import com.example.dndviewer.Screens.viewModel
 import com.example.dndviewer.R
 
 @Composable
-fun InventoryScreen() {
+fun InventoryScreen(context: Context) {
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
         //2 = newConsumibleItem
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val list = viewModel.getObjectes(characterModel.name)
     val listItems = remember {
-        mutableStateOf(list.filter { it.isConsumible == false })
+        mutableStateOf(list.filter { !it.isConsumible })
     }
-    val listConsumables = remember { mutableStateOf(list.filter { it.isConsumible == true }) }
+    val listConsumables = remember { mutableStateOf(list.filter { it.isConsumible }) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     val expandableHeight = if (characterModel.maxSpell > 0) {
@@ -50,7 +51,7 @@ fun InventoryScreen() {
         title = context.getString(R.string.inventory_bag),
         icon = painterResource(R.drawable.add),
         onIconClicked = {
-            dialogNewItem.value = 1
+            dialogNewItem.intValue = 1
         }
     ) {
         Column(
@@ -58,19 +59,20 @@ fun InventoryScreen() {
                 .height(expandableHeight)
                 .verticalScroll(rememberScrollState())
         ) {
-            listItems.value.forEach {
+            listItems.value.forEach { item ->
                 RowItem(
-                    item = it,
-                    viewModel = viewModel,
+                    item = item,
+                    saveObjectes = { viewModel.setObjectes(it) },
+                    context = context,
                     onDeleteClicked = {
                         viewModel.deleteObjecte(
-                            itemName = it.name,
+                            itemName = item.name,
                             characterName = characterModel.name
                         )
                         listItems.value = viewModel.getObjectes(characterModel.name)
                             .filter { !it.isConsumible }
                     },
-                    onEquipItem = {
+                    onEquipItem = { it ->
                         if (it.isEquiped) {
                             it.isEquiped = false
                             viewModel.updateObjectes(it)
@@ -97,7 +99,7 @@ fun InventoryScreen() {
         title = context.getString(R.string.inventory_consumables),
         icon = painterResource(R.drawable.add),
         onIconClicked = {
-            dialogNewItem.value = 2
+            dialogNewItem.intValue = 2
         }
     ) {
         Column(
@@ -106,16 +108,17 @@ fun InventoryScreen() {
                 .verticalScroll(rememberScrollState())
         ) {
             Column {
-                listConsumables.value.forEach {
+                listConsumables.value.forEach { item ->
                     RowConsumible(
-                        item = it,
-                        viewModel = viewModel,
+                        item = item,
+                        saveObjectes = { viewModel.setObjectes(it) },
                         onDeleteClicked = {
                             viewModel.deleteObjecte(
-                                itemName = it.name,
+                                itemName = item.name,
                                 characterName = characterModel.name
                             )
-                            listConsumables.value = viewModel.getObjectes(characterModel.name).filter { it.isConsumible }
+                            listConsumables.value = viewModel.getObjectes(characterModel.name)
+                                .filter { it.isConsumible }
                         }
                     )
                 }
@@ -124,23 +127,24 @@ fun InventoryScreen() {
     }
     //ENCANTERIS
     if (characterModel.maxSpell > 0) {
+
         ExpandableBox(title = context.getString(R.string.inventory_spells)) {
-            val listSpells = viewModel.getSpells(characterModel.name)
             Column(
                 modifier = Modifier
                     .height(expandableHeight)
                     .padding(16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
+                val listSpells = viewModel.getSpells(characterModel.name)
                 listSpells.forEach {
-                    RowSpell(spell = it)
+                    RowSpell(spell = it, context = context)
                 }
 
             }
         }
     }
 
-    //OBSERVACIONS
+    //OBSERVATIONS
     val observations = remember {
         mutableStateOf(characterModel.observations)
     }
@@ -164,29 +168,29 @@ fun InventoryScreen() {
 
 
     //DIALOG NEW ITEM
-    if (dialogNewItem.value == 1) {
+    if (dialogNewItem.intValue == 1) {
         DialogNewItem(
             characterName = characterModel.name,
-            onDismissRequest = {
-                viewModel.setObjectes(it)
-                dialogNewItem.value = 0
+            onDismissRequest = { item ->
+                viewModel.setObjectes(item)
+                dialogNewItem.intValue = 0
                 listItems.value = viewModel.getObjectes(characterModel.name)
-                    .filter { it.isConsumible == false }
+                    .filter { !it.isConsumible }
             },
-            onClose = { dialogNewItem.value = 0 },
+            onClose = { dialogNewItem.intValue = 0 },
             isConsumable = false,
             context = context
         )
-    } else if (dialogNewItem.value == 2) {
+    } else if (dialogNewItem.intValue == 2) {
         DialogNewItem(
             characterName = characterModel.name,
-            onDismissRequest = {
-                viewModel.setObjectes(it)
-                dialogNewItem.value = 0
+            onDismissRequest = { item ->
+                viewModel.setObjectes(item)
+                dialogNewItem.intValue = 0
                 listConsumables.value = viewModel.getObjectes(characterModel.name)
-                    .filter { it.isConsumible == true }
+                    .filter { it.isConsumible }
             },
-            onClose = { dialogNewItem.value = 0 },
+            onClose = { dialogNewItem.intValue = 0 },
             isConsumable = true,
             context = context
         )

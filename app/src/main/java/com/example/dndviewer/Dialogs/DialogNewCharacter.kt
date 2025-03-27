@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -38,6 +37,7 @@ import com.example.dndviewer.Theme.textColor
 import com.example.dndviewer.Theme.textColorAccent
 import com.example.dndviewer.utils.GetCustomContents
 import com.example.dndviewer.R
+import com.example.dndviewer.Screens.viewModel
 import java.io.File
 
 
@@ -45,38 +45,44 @@ import java.io.File
 fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
     onDismissRequest: (CharacterModel) -> Unit,
-    onClose:()->Unit,
-    context: Context){
+    onClose: () -> Unit,
+    context: Context
+) {
+    val character = if(characterModel.name.isEmpty()){
+        CharacterModel()
+    }else{
+        characterModel
+    }
 
     val newCharacter = remember {
-        mutableStateOf(characterModel)
+        mutableStateOf(character)
     }
     val name = remember {
-        mutableStateOf(characterModel.name)
+        mutableStateOf(character.name)
     }
     val hp = remember {
         mutableStateOf(
-            if(characterModel.vidaMax>0){
-                characterModel.vidaMax.toString()
-            }else {
+            if (character.vidaMax > 0) {
+                character.vidaMax.toString()
+            } else {
                 ""
             }
         )
     }
     val mana = remember {
         mutableStateOf(
-            if(characterModel.manaMax>0){
-                characterModel.manaMax.toString()
-            }else {
+            if (character.manaMax > 0) {
+                character.manaMax.toString()
+            } else {
                 ""
             }
         )
     }
     val maxSpell = remember {
         mutableStateOf(
-            if(characterModel.maxSpell>0){
-                characterModel.maxSpell.toString()
-            }else {
+            if (character.maxSpell > 0) {
+                character.maxSpell.toString()
+            } else {
                 ""
             }
         )
@@ -87,7 +93,7 @@ fun DialogNewCharacter(
             val item = context.contentResolver.openInputStream(uris.first())
             val imgbyte = item?.readBytes()
             item?.close()
-            newCharacter.value.image_character = imgbyte!!
+            newCharacter.value.imageCharacter = imgbyte!!
         }
     )
     val homebrewPicker = rememberLauncherForActivityResult(
@@ -102,16 +108,30 @@ fun DialogNewCharacter(
     )
 
 
-    Dialog(onDismissRequest = onClose) {
-        Column(modifier = Modifier
-            .wrapContentHeight()
-            .wrapContentWidth()
-            .background(backgroundColor())
-            .padding(16.dp)
+    Dialog(onDismissRequest = {
+        if(characterModel.name.isEmpty()){
+            File(newCharacter.value.homebrewRoute).apply {
+                if(exists()){
+                    viewModel.deleteHomeBrew(
+                        character = newCharacter.value,
+                        context = context
+                    )
+                }
+            }
+        }
+        onClose()
+    }) {
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .wrapContentWidth()
+                .background(backgroundColor())
+                .padding(16.dp)
         ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
 
@@ -119,7 +139,7 @@ fun DialogNewCharacter(
                     value = name.value,
                     onValueChange = {
                         name.value = it
-
+                        newCharacter.value.name = it
                     },
                     enabled = characterModel.name.isEmpty(),
                     modifier = Modifier
@@ -141,22 +161,24 @@ fun DialogNewCharacter(
                     )
                 )
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp), horizontalArrangement = Arrangement.Center
+            ) {
                 CustomTextField(
-                    value =  hp.value,
+                    value = hp.value,
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
                         .border(2.dp, discordBlue),
-                    onValueChange =  {
+                    onValueChange = {
                         hp.value = it
-                        try{
+                        try {
                             newCharacter.value.vida = hp.value.toInt()
                             newCharacter.value.vidaMax = hp.value.toInt()
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             newCharacter.value.vida = 0
                             newCharacter.value.vidaMax = 0
                         }
@@ -164,7 +186,12 @@ fun DialogNewCharacter(
 
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    placeHolder = { Text(text = context.getString(R.string.new_character_health_points), color = textColor()) },
+                    placeHolder = {
+                        Text(
+                            text = context.getString(R.string.new_character_health_points),
+                            color = textColor()
+                        )
+                    },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = backgroundColor(),
                         unfocusedContainerColor = backgroundColor(),
@@ -173,9 +200,10 @@ fun DialogNewCharacter(
                     )
                 )
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomTextField(
@@ -185,13 +213,13 @@ fun DialogNewCharacter(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
                         .border(2.dp, discordBlue),
-                    onValueChange =  {
+                    onValueChange = {
                         mana.value = it
-                        try{
+                        try {
                             newCharacter.value.mana = mana.value.toInt()
                             newCharacter.value.manaMax = mana.value.toInt()
 
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             newCharacter.value.mana = 0
                             newCharacter.value.manaMax = 0
                         }
@@ -213,9 +241,10 @@ fun DialogNewCharacter(
                 )
             }
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomTextField(
@@ -225,11 +254,11 @@ fun DialogNewCharacter(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
                         .border(2.dp, discordBlue),
-                    onValueChange =  {
+                    onValueChange = {
                         maxSpell.value = it
-                        try{
+                        try {
                             newCharacter.value.maxSpell = maxSpell.value.toInt()
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             newCharacter.value.maxSpell = 0
                         }
 
@@ -250,15 +279,21 @@ fun DialogNewCharacter(
                 )
             }
 
-            Row(modifier = Modifier
-                .fillMaxWidth(),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 //.padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 val buttonsEnabled = name.value.isNotEmpty()
-                Button(onClick = { characterPicker.launch("image/*") }, modifier = Modifier.weight(0.5f).padding(horizontal = 8.dp),
-                    enabled =buttonsEnabled,
-                    colors = ButtonDefaults.buttonColors(containerColor= discordBlue)) {
+                Button(
+                    onClick = { characterPicker.launch("image/*") },
+                    modifier = Modifier
+                        .weight(0.5f)
+                        .padding(horizontal = 8.dp),
+                    enabled = buttonsEnabled,
+                    colors = ButtonDefaults.buttonColors(containerColor = discordBlue)
+                ) {
                     Text(
                         text = context.getString(R.string.new_character_file).uppercase(),
                         color = textColor(),
@@ -266,9 +301,12 @@ fun DialogNewCharacter(
                     )
                 }
 
-                Button(onClick = { homebrewPicker.launch("application/pdf") },modifier = Modifier.weight(0.5f),
+                Button(
+                    onClick = { homebrewPicker.launch("application/pdf") },
+                    modifier = Modifier.weight(0.5f),
                     enabled = buttonsEnabled,
-                    colors = ButtonDefaults.buttonColors(containerColor= discordBlue)) {
+                    colors = ButtonDefaults.buttonColors(containerColor = discordBlue)
+                ) {
                     Text(
                         text = context.getString(R.string.new_character_homebrew).uppercase(),
                         color = textColor(),
@@ -276,16 +314,17 @@ fun DialogNewCharacter(
                     )
                 }
             }
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
-            ){
+            ) {
                 Button(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        newCharacter.value.apply{
+                        newCharacter.value.apply {
                             this.name = name.value
                             onDismissRequest(this)
                         }
@@ -302,7 +341,7 @@ fun DialogNewCharacter(
 }
 
 
-private fun saveHomeBrew(context: Context, name:String, uri:Uri): String {
+private fun saveHomeBrew(context: Context, name: String, uri: Uri): String {
     val folder = File(context.filesDir.absolutePath + "/$name")
     folder.mkdirs()
     val file = File(folder.absolutePath + "/homebrew.pdf")
