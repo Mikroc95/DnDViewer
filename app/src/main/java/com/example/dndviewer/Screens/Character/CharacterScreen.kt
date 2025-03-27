@@ -71,20 +71,24 @@ fun CharacterScreen(context: Context, characterModel: CharacterModel) {
                         labelColor = discordRed,
                         valueTextField = valueHP,
                         onKeyBoardDone = {
-                            if (valueHP.value.toInt().or(-10000) != -10000) {
-                                val value = valueHP.value.toInt()
-                                currentHP.intValue = if (currentHP.intValue + value > 0) {
-                                    if (currentHP.intValue + value <= characterModel.vidaMax) {
-                                        currentHP.intValue + value
+                            try{
+                                if (valueHP.value.isNotEmpty()) {
+                                    val value = valueHP.value.toInt()
+                                    currentHP.intValue = if (currentHP.intValue + value > 0) {
+                                        if (currentHP.intValue + value <= characterModel.vidaMax) {
+                                            currentHP.intValue + value
+                                        } else {
+                                            characterModel.vidaMax
+                                        }
                                     } else {
-                                        characterModel.vidaMax
+                                        0
                                     }
-                                } else {
-                                    0
+                                    characterModel.vida = currentHP.intValue
                                 }
-                                characterModel.vida = currentHP.intValue
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                                valueHP.value = ""
                             }
-
                         },
                         onLessClicked = {
                             val hp = currentHP.intValue
@@ -129,18 +133,23 @@ fun CharacterScreen(context: Context, characterModel: CharacterModel) {
                         labelColor = blueMana,
                         valueTextField = valueMana,
                         onKeyBoardDone = {
-                            if (valueMana.value.toInt().or(-10000) != -10000) {
-                                val value = valueMana.value.toInt()
-                                currentMana.intValue = if (currentMana.intValue + value > 0) {
-                                    if (currentMana.intValue + value <= characterModel.manaMax) {
-                                        currentMana.intValue + value
+                            try{
+                                if (valueMana.value.isNotEmpty()) {
+                                    val value = valueMana.value.toInt()
+                                    currentMana.intValue = if (currentMana.intValue + value > 0) {
+                                        if (currentMana.intValue + value <= characterModel.manaMax) {
+                                            currentMana.intValue + value
+                                        } else {
+                                            characterModel.manaMax
+                                        }
                                     } else {
-                                        characterModel.manaMax
+                                        0
                                     }
-                                } else {
-                                    0
+                                    characterModel.mana = currentMana.intValue
                                 }
-                                characterModel.mana = currentMana.intValue
+                            }catch (e:Exception){
+                                e.printStackTrace()
+                                valueMana.value = ""
                             }
                         },
                         onLessClicked = {

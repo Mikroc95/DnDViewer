@@ -114,19 +114,24 @@ fun RowItem(
                 borderColor = discordOrangeAccent,
                 valueTextField = valueTextField,
                 onKeyBoardDone = {
-                    if (valueTextField.value.toInt().or(-10000) != -10000) {
-                        val value = valueTextField.value.toInt()
-                        charges.intValue = if (item.actualCharges.toInt() + value > 0) {
-                            if (item.actualCharges.toInt() + value <= item.charges.toInt()) {
-                                item.actualCharges.toInt() + value
+                    try{
+                        if (valueTextField.value.isNotEmpty()) {
+                            val value = valueTextField.value.toInt()
+                            charges.intValue = if (item.actualCharges.toInt() + value > 0) {
+                                if (item.actualCharges.toInt() + value <= item.charges.toInt()) {
+                                    item.actualCharges.toInt() + value
+                                } else {
+                                    item.charges.toInt()
+                                }
                             } else {
-                                item.charges.toInt()
+                                0
                             }
-                        } else {
-                            0
+                            item.actualCharges = charges.intValue.toString()
+                            saveObjectes(item)
                         }
-                        item.actualCharges = charges.intValue.toString()
-                        saveObjectes(item)
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                        valueTextField.value = ""
                     }
                 },
                 onLessClicked = {
@@ -210,16 +215,21 @@ fun RowConsumible(
                 valueTextField = valueTextField,
                 borderColor = discordOrangeAccent,
                 onKeyBoardDone = {
-                    if (valueTextField.value.toInt().or(-10000) != -10000) {
-                        val value = valueTextField.value.toInt()
-                        if (totalConsumibles.intValue + value > 0) {
-                            totalConsumibles.intValue += value
-                        } else {
-                            totalConsumibles.intValue = 0
+                    try{
+                        if (valueTextField.value.isNotEmpty()) {
+                            val value = valueTextField.value.toInt()
+                            if (totalConsumibles.intValue + value > 0) {
+                                totalConsumibles.intValue += value
+                            } else {
+                                totalConsumibles.intValue = 0
+                            }
+                            item.charges = totalConsumibles.intValue.toString()
+                            item.actualCharges = item.charges
+                            saveObjectes(item)
                         }
-                        item.charges = totalConsumibles.intValue.toString()
-                        item.actualCharges = item.charges
-                        saveObjectes(item)
+                    }catch (e:Exception){
+                        e.printStackTrace()
+                        valueTextField.value = ""
                     }
                 },
                 onPlusClicked = {
