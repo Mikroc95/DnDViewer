@@ -2,6 +2,7 @@ package com.example.dndviewer.Screens
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,8 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.dndviewer.Components.FiveEView
 import com.example.dndviewer.Models.CharacterModel
 import com.example.dndviewer.Screens.Character.CharacterScreen
 import com.example.dndviewer.Screens.Inventory.InventoryScreen
@@ -160,14 +161,11 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
     }
 }
 
-
 @Composable
 private fun EmptySelection() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-    ) {
-        FiveEView()
-    }
+    Image(
+        painter = painterResource(R.drawable.empty),
+        contentDescription = "",
+        modifier = Modifier.fillMaxSize()
+    )
 }
