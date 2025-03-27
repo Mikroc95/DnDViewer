@@ -42,12 +42,11 @@ import java.io.File
 
 var tabSelected: MutableState<Int> = mutableIntStateOf(0)
 
-//lateinit var context: Context
 var characterModel = CharacterModel(imageCharacter = byteArrayOf())
 
 var pdfVerticalReaderState = VerticalPdfReaderState(
     resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
-    isZoomEnable = true,
+    isZoomEnable = true
 )
 lateinit var viewModel: MainViewModel
 

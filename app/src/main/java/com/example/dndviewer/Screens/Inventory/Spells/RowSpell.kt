@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +25,7 @@ import com.example.dndviewer.R
 import com.example.dndviewer.Screens.characterModel
 
 @Composable
-fun RowSpell(spell: SpellModel, context: Context) {
+fun RowSpell(spell: SpellModel, count: Int, context: Context) {
     val valueName = remember {
         mutableStateOf(spell.name)
     }
@@ -33,13 +34,26 @@ fun RowSpell(spell: SpellModel, context: Context) {
     }
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(vertical = 8.dp)
     ) {
         Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .wrapContentWidth()
+                .weight(0.1f)
+        ) {
+            Text(text = "$count. ",
+                color = textColor(),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Start,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.6f)
+                .weight(0.7f)
                 .padding(end = 8.dp)
         ) {
             CustomTextField(
@@ -99,6 +113,5 @@ fun RowSpell(spell: SpellModel, context: Context) {
                 }
             )
         }
-
     }
 }

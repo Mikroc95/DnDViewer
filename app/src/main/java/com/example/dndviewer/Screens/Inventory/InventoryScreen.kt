@@ -127,7 +127,6 @@ fun InventoryScreen(context: Context) {
     }
     //ENCANTERIS
     if (characterModel.maxSpell > 0) {
-
         ExpandableBox(title = context.getString(R.string.inventory_spells)) {
             Column(
                 modifier = Modifier
@@ -137,13 +136,11 @@ fun InventoryScreen(context: Context) {
             ) {
                 val listSpells = viewModel.getSpells(characterModel.name)
                 listSpells.forEach {
-                    RowSpell(spell = it, context = context)
+                    RowSpell(spell = it, count = listSpells.indexOf(it) + 1, context = context)
                 }
-
             }
         }
     }
-
     //OBSERVATIONS
     val observations = remember {
         mutableStateOf(characterModel.observations)
@@ -165,8 +162,6 @@ fun InventoryScreen(context: Context) {
             singleLine = false
         )
     }
-
-
     //DIALOG NEW ITEM
     if (dialogNewItem.intValue == 1) {
         DialogNewItem(
@@ -195,5 +190,4 @@ fun InventoryScreen(context: Context) {
             context = context
         )
     }
-
 }
