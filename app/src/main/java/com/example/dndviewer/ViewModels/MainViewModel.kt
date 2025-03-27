@@ -158,7 +158,7 @@ class MainViewModel : ViewModel() {
             }
         } else {
             while (counter > numerSpells) {
-                var index = list.last().id
+                val index = list.last().id
                 helper.deleteSpells(index)
                 counter--
                 list.remove(list.last())

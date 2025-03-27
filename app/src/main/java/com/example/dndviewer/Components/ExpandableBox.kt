@@ -30,8 +30,8 @@ import com.example.dndviewer.Theme.discordLigthGray
 import com.example.dndviewer.Theme.textColor
 
 @Composable
-fun ExpandableBox(title:String,icon: Painter? = null,onHeaderClicked:()->Unit = {},onIconClicked:()->Unit = {},content: @Composable () -> Unit){
-    var isRowExpanded = remember {
+fun ExpandableBox(title:String,icon: Painter? = null,onIconClicked:()->Unit = {},content: @Composable () -> Unit){
+    val isRowExpanded = remember {
         mutableStateOf(false)
     }
     Column(modifier = Modifier
@@ -55,7 +55,7 @@ fun ExpandableBox(title:String,icon: Painter? = null,onHeaderClicked:()->Unit = 
             }
 
             Row(horizontalArrangement = Arrangement.End,modifier = Modifier.weight(0.2f)){
-                var iconExpanded = if(isRowExpanded.value){
+                val iconExpanded = if(isRowExpanded.value){
                     Icons.Filled.KeyboardArrowUp
                 }else{
                     Icons.Filled.KeyboardArrowDown
