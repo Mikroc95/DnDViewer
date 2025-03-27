@@ -9,10 +9,10 @@
     <string name="new_character_name">nom</string>
     <string name="new_character_health_points">vida</string>
     <string name="new_character_mana">mana</string>
-    <string name="new_character_maxSpell">Nº Conjurs equipats</string>
+    <string name="new_character_maxSpell">Núm. Conjurs equipats</string>
     <string name="new_character_file">fitxa.PNG</string>
     <string name="new_character_homebrew">homebrew.PDF</string>
-    <string name="new_character_alert_name_empty">Escull un nom per el personatge</string>
+    <string name="new_character_alert_name_empty">Escull un nom pel personatge</string>
 
     <string name="new_item_description">Descripció</string>
     <string name="new_item_charges">Càrregues</string>
