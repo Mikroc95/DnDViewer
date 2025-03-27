@@ -29,128 +29,141 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.example.dndviewer.Components.InputCounter
-import com.example.dndviewer.Screens.characterModel
+import com.example.dndviewer.Models.CharacterModel
 import com.example.dndviewer.Screens.viewModel
 import com.example.dndviewer.Theme.blueMana
 import com.example.dndviewer.Theme.discordRed
 import com.example.dndviewer.R
 
 @Composable
-fun CharacterScreen(context: Context) {
+fun CharacterScreen(context: Context, characterModel: CharacterModel) {
     var scaleCharacters by remember { mutableFloatStateOf(1f) }
     var offsetCharacters by remember { mutableStateOf(Offset(0f, 0f)) }
-    Row(
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
-    ) {
+    if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
         Row(
-            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
+                .padding(top = 8.dp)
                 .fillMaxWidth()
-                .weight(1f)
         ) {
-            val valueHP = remember {
-                mutableStateOf("")
-            }
-            val currentHP = remember {
-                mutableIntStateOf(characterModel.vida)
-            }
-
-            InputCounter(
-                totalResult = "${currentHP.intValue} / ${characterModel.vidaMax} ${
-                    context.getString(
-                        R.string.counter_hp
-                    )
-                }",
-                borderColor = discordRed,
-                labelColor = discordRed,
-                valueTextField = valueHP,
-                onKeyBoardDone = {
-                    if (valueHP.value.toInt().or(-10000) != -10000) {
-                        val value = valueHP.value.toInt()
-                        currentHP.intValue = if (currentHP.intValue + value > 0) {
-                            if (currentHP.intValue + value <= characterModel.vidaMax) {
-                                currentHP.intValue + value
-                            } else {
-                                characterModel.vidaMax
-                            }
-                        } else {
-                            0
-                        }
-                        characterModel.vida = currentHP.intValue
+            if (characterModel.vidaMax > 0) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    val valueHP = remember {
+                        mutableStateOf("")
+                    }
+                    val currentHP = remember {
+                        mutableIntStateOf(characterModel.vida)
                     }
 
-                },
-                onLessClicked = {
-                    if (currentHP.intValue - 1 >= 0) {
-                        currentHP.intValue--
-                        characterModel.vida = currentHP.intValue
-                        viewModel.updateCharacters(character = characterModel)
-                    }
-                },
-                onPlusClicked = {
-                    if (currentHP.intValue + 1 <= characterModel.vidaMax) {
-                        currentHP.intValue++
-                        characterModel.vida = currentHP.intValue
-                        viewModel.updateCharacters(character = characterModel)
-                    }
-                })
-        }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        ) {
-            val valueMana = remember {
-                mutableStateOf("")
-            }
-            val currentMana = remember {
-                mutableIntStateOf(characterModel.mana)
-            }
-            InputCounter(
-                totalResult = "${currentMana.intValue} / ${characterModel.manaMax} ${
-                    context.getString(
-                        R.string.counter_mana
-                    )
-                }",
-                borderColor = blueMana,
-                labelColor = blueMana,
-                valueTextField = valueMana,
-                onKeyBoardDone = {
-                    if (valueMana.value.toInt().or(-10000) != -10000) {
-                        val value = valueMana.value.toInt()
-                        currentMana.intValue = if (currentMana.intValue + value > 0) {
-                            if (currentMana.intValue + value <= characterModel.manaMax) {
-                                currentMana.intValue + value
-                            } else {
-                                characterModel.manaMax
+                    InputCounter(
+                        totalResult = "${currentHP.intValue} / ${characterModel.vidaMax} ${
+                            context.getString(
+                                R.string.counter_hp
+                            )
+                        }",
+                        borderColor = discordRed,
+                        labelColor = discordRed,
+                        valueTextField = valueHP,
+                        onKeyBoardDone = {
+                            if (valueHP.value.toInt().or(-10000) != -10000) {
+                                val value = valueHP.value.toInt()
+                                currentHP.intValue = if (currentHP.intValue + value > 0) {
+                                    if (currentHP.intValue + value <= characterModel.vidaMax) {
+                                        currentHP.intValue + value
+                                    } else {
+                                        characterModel.vidaMax
+                                    }
+                                } else {
+                                    0
+                                }
+                                characterModel.vida = currentHP.intValue
                             }
-                        } else {
-                            0
+
+                        },
+                        onLessClicked = {
+                            val hp = currentHP.intValue
+                            if (hp - 1 >= 0) {
+                                currentHP.intValue = hp - 1
+                                characterModel.vida = currentHP.intValue
+                                viewModel.updateCharacters(character = characterModel)
+                            }
+                        },
+                        onPlusClicked = {
+                            val hp = currentHP.intValue
+                            if (hp + 1 <= characterModel.vidaMax) {
+                                currentHP.intValue = hp + 1
+                                characterModel.vida = currentHP.intValue
+                                viewModel.updateCharacters(character = characterModel)
+                            }
                         }
-                        characterModel.mana = currentMana.intValue
+                    )
+                }
+            }
+            if (characterModel.manaMax > 0) {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    val valueMana = remember {
+                        mutableStateOf("")
                     }
-                },
-                onLessClicked = {
-                    if (currentMana.intValue - 1 >= 0) {
-                        currentMana.intValue--
-                        characterModel.vida = currentMana.intValue
-                        viewModel.updateCharacters(character = characterModel)
+                    val currentMana = remember {
+                        mutableIntStateOf(0)
                     }
-                },
-                onPlusClicked = {
-                    if (currentMana.intValue + 1 <= characterModel.vidaMax) {
-                        currentMana.intValue++
-                        characterModel.vida = currentMana.intValue
-                        viewModel.updateCharacters(character = characterModel)
-                    }
-                })
+                    currentMana.intValue = characterModel.mana
+                    InputCounter(
+                        totalResult = "${currentMana.intValue} / ${characterModel.manaMax} ${
+                            context.getString(
+                                R.string.counter_mana
+                            )
+                        }",
+                        borderColor = blueMana,
+                        labelColor = blueMana,
+                        valueTextField = valueMana,
+                        onKeyBoardDone = {
+                            if (valueMana.value.toInt().or(-10000) != -10000) {
+                                val value = valueMana.value.toInt()
+                                currentMana.intValue = if (currentMana.intValue + value > 0) {
+                                    if (currentMana.intValue + value <= characterModel.manaMax) {
+                                        currentMana.intValue + value
+                                    } else {
+                                        characterModel.manaMax
+                                    }
+                                } else {
+                                    0
+                                }
+                                characterModel.mana = currentMana.intValue
+                            }
+                        },
+                        onLessClicked = {
+                            val mana = currentMana.intValue
+                            if (mana - 1 >= 0) {
+                                currentMana.intValue = mana - 1
+                                characterModel.mana = currentMana.intValue
+                                viewModel.updateCharacters(character = characterModel)
+                            }
+                        },
+                        onPlusClicked = {
+                            val mana = currentMana.intValue
+                            if (mana + 1 <= characterModel.manaMax) {
+                                currentMana.intValue = mana + 1
+                                characterModel.mana = currentMana.intValue
+                                viewModel.updateCharacters(character = characterModel)
+                            }
+                        })
+                }
+            }
         }
     }
+
     if (!characterModel.imageCharacter.contentEquals(byteArrayOf())) {
         // Create an Image composable with zooming and panning.
         val bitmap = characterModel.imageCharacter.toBitmap()

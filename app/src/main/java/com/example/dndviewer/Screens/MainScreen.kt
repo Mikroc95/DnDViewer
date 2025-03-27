@@ -62,12 +62,12 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewMode
     if (characterSelected.name.isEmpty()) {
         EmptySelection()
     } else {
-        TabRowCharacter(context = context)
+        TabRowCharacter(context = context, characterSelected)
     }
 }
 
 @Composable
-private fun TabRowCharacter(context: Context) {
+private fun TabRowCharacter(context: Context, characterSelected: CharacterModel) {
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -100,7 +100,6 @@ private fun TabRowCharacter(context: Context) {
 
         Tab(modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 1,
-            enabled = characterModel.homebrewRoute.isNotEmpty(),
             onClick = { tabSelected.value = 1 }
         ) {
             val color = if (tabSelected.value == 1) {
@@ -132,11 +131,11 @@ private fun TabRowCharacter(context: Context) {
         ) {
         when (tabSelected.value) {
             0 -> {
-                CharacterScreen(context = context)
+                CharacterScreen(context = context, characterModel = characterSelected)
             }
 
             1 -> {
-                if (characterModel.homebrewRoute.isNotEmpty()) {
+                if (characterSelected.homebrewRoute.isNotEmpty()) {
                     VerticalPDFReader(
                         state = pdfVerticalReaderState,
                         modifier = Modifier
@@ -153,7 +152,7 @@ private fun TabRowCharacter(context: Context) {
                         .verticalScroll(rememberScrollState())
                         .background(backgroundColor())
                 ) {
-                    InventoryScreen(context = context)
+                    InventoryScreen(context = context, characterModel = characterSelected)
                 }
             }
         }

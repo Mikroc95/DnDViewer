@@ -3,6 +3,7 @@ package com.example.dndviewer.Dialogs
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,9 +49,9 @@ fun DialogNewCharacter(
     onClose: () -> Unit,
     context: Context
 ) {
-    val character = if(characterModel.name.isEmpty()){
+    val character = if (characterModel.name.isEmpty()) {
         CharacterModel()
-    }else{
+    } else {
         characterModel
     }
 
@@ -91,9 +92,9 @@ fun DialogNewCharacter(
         contract = GetCustomContents(isMultiple = false),
         onResult = { uris ->
             val item = context.contentResolver.openInputStream(uris.first())
-            val imgbyte = item?.readBytes()
+            val imgByte = item?.readBytes()
             item?.close()
-            newCharacter.value.imageCharacter = imgbyte!!
+            newCharacter.value.imageCharacter = imgByte!!
         }
     )
     val homebrewPicker = rememberLauncherForActivityResult(
@@ -109,9 +110,9 @@ fun DialogNewCharacter(
 
 
     Dialog(onDismissRequest = {
-        if(characterModel.name.isEmpty()){
+        if (characterModel.name.isEmpty()) {
             File(newCharacter.value.homebrewRoute).apply {
-                if(exists()){
+                if (exists()) {
                     viewModel.deleteHomeBrew(
                         character = newCharacter.value,
                         context = context
@@ -324,9 +325,17 @@ fun DialogNewCharacter(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        newCharacter.value.apply {
-                            this.name = name.value
-                            onDismissRequest(this)
+                        if (name.value.isNotEmpty()) {
+                            newCharacter.value.apply {
+                                this.name = name.value
+                                onDismissRequest(this)
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.new_character_alert_name_empty),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
                 ) {

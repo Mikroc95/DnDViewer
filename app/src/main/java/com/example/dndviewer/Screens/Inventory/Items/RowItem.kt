@@ -130,15 +130,17 @@ fun RowItem(
                     }
                 },
                 onLessClicked = {
-                    if (charges.intValue - 1 >= 0) {
-                        charges.intValue--
+                    val charge = charges.intValue
+                    if (charge - 1 >= 0) {
+                        charges.intValue = charge - 1
                         item.actualCharges = charges.intValue.toString()
                         saveObjectes(item)
                     }
                 },
                 onPlusClicked = {
-                    if (charges.intValue + 1 <= item.charges.toInt()) {
-                        charges.intValue++
+                    val charge = charges.intValue
+                    if (charge + 1 <= item.charges.toInt()) {
+                        charges.intValue = charge + 1
                         item.actualCharges = charges.intValue.toString()
                         saveObjectes(item)
                     }
@@ -221,14 +223,17 @@ fun RowConsumible(
                     }
                 },
                 onPlusClicked = {
-                    totalConsumibles.intValue++
+                    val total = totalConsumibles.intValue
+                    totalConsumibles.intValue = total + 1
                     item.charges = totalConsumibles.intValue.toString()
                     item.actualCharges = item.charges
                     saveObjectes(item)
                 },
                 onLessClicked = {
-                    if (totalConsumibles.intValue - 1 >= 0) {
-                        totalConsumibles.intValue--
+                    val total = totalConsumibles.intValue
+                    if (total - 1 >= 0) {
+
+                        totalConsumibles.intValue = total - 1
                         item.charges = totalConsumibles.intValue.toString()
                         item.actualCharges = item.charges
                         saveObjectes(item)

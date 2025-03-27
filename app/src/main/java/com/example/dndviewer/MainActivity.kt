@@ -4,8 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-
-
 import androidx.activity.compose.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -22,6 +20,7 @@ import com.example.dndviewer.Components.CustomNavigationDrawer
 import com.example.dndviewer.Dialogs.DialogNewCharacter
 import com.example.dndviewer.Models.CharacterModel
 import com.example.dndviewer.Screens.MainScreen
+import com.example.dndviewer.Screens.tabSelected
 import com.example.dndviewer.ViewModels.MainViewModel
 
 class MainActivity : FragmentActivity() {
@@ -68,7 +67,7 @@ private fun Main(
 ) {
     var updateCharacter = CharacterModel()
     val characterSelected: MutableState<CharacterModel> =
-        remember { mutableStateOf(CharacterModel(imageCharacter = byteArrayOf())) }
+        remember { mutableStateOf(CharacterModel()) }
     val topBarTitle = remember { mutableStateOf(context.getString(R.string.app_name)) }
     val dialogNewCharacter = remember {
         //0 tancat
@@ -84,7 +83,29 @@ private fun Main(
         topBarTitle = topBarTitle,
         topBarIcon = painterResource(id = R.drawable.hamburger),
         characters = listCharacters,
-        onCharacterSelected = { characterSelected.value = it },
+        onCharacterSelected = {
+            characterSelected.value = CharacterModel(
+                name = it.name,
+                imageCharacter = it.imageCharacter,
+                homebrewRoute = it.homebrewRoute,
+                vida = it.vida,
+                vidaMax = it.vidaMax,
+                mana = it.mana,
+                manaMax = it.manaMax,
+                maxSpell = it.maxSpell,
+                observations = it.observations
+            )
+            if (characterSelected.value.vidaMax > 0 ||
+                characterSelected.value.manaMax > 0 ||
+                !characterSelected.value.imageCharacter.contentEquals(
+                    byteArrayOf()
+                )
+            ) {
+                tabSelected.value = 0
+            } else {
+                tabSelected.value = 2
+            }
+        },
         onNewCharacterClicked = {
             dialogNewCharacter.intValue = 1
         },

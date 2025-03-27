@@ -19,15 +19,15 @@ import androidx.compose.ui.unit.dp
 import com.example.dndviewer.Components.CustomTextField
 import com.example.dndviewer.Components.ExpandableBox
 import com.example.dndviewer.Dialogs.DialogNewItem
+import com.example.dndviewer.Models.CharacterModel
 import com.example.dndviewer.Screens.Inventory.Items.RowConsumible
 import com.example.dndviewer.Screens.Inventory.Items.RowItem
 import com.example.dndviewer.Screens.Inventory.Spells.RowSpell
-import com.example.dndviewer.Screens.characterModel
 import com.example.dndviewer.Screens.viewModel
 import com.example.dndviewer.R
 
 @Composable
-fun InventoryScreen(context: Context) {
+fun InventoryScreen(context: Context, characterModel: CharacterModel) {
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
