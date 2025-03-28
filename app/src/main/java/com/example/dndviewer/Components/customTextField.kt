@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.TextFieldColors
@@ -21,7 +20,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.dndviewer.Theme.discordBlue
 import com.example.dndviewer.Theme.discordDarkBlack
 import com.example.dndviewer.Theme.discordLigthBlack
 import com.example.dndviewer.Theme.invertedTextColor
@@ -82,7 +80,7 @@ fun CustomTextField(
             singleLine = singleLine,
             enabled = enabled,
             interactionSource = interactionSource,
-            contentPadding = PaddingValues(6.dp), // this is how you can remove the padding
+            contentPadding = PaddingValues(6.dp), //this is how you can remove the padding
             trailingIcon = trailingIcon,
             placeholder = placeHolder,
             leadingIcon = leadingIcon,

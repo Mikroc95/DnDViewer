@@ -154,18 +154,27 @@ fun DialogNewItem(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        if (name.value.isNotEmpty() && description.value.isNotEmpty() && charges.value.isNotEmpty()) {
-                            onDismissRequest(
-                                ItemsModel(
-                                    name = name.value,
-                                    description = description.value,
-                                    charges = charges.value,
-                                    actualCharges = charges.value,
-                                    isEquiped = false,
-                                    isConsumible = isConsumable,
-                                    character = characterName
+                        if (name.value.isNotEmpty() && description.value.isNotEmpty()) {
+                            val charge = checkInteger(charges.value,isConsumable)
+                            if(charge.toInt()<=0 && isConsumable){
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.new_item_warning_add_quantity),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }else{
+                                onDismissRequest(
+                                    ItemsModel(
+                                        name = name.value,
+                                        description = description.value,
+                                        charges = charge,
+                                        actualCharges = charge,
+                                        isEquiped = false,
+                                        isConsumible = isConsumable,
+                                        character = characterName
+                                    )
                                 )
-                            )
+                            }
                         } else {
                             Toast.makeText(
                                 context,
@@ -183,4 +192,14 @@ fun DialogNewItem(
             }
         }
     }
+}
+
+private fun checkInteger (value:String,isConsumable: Boolean):String{
+    try{
+        val integer:Int = value.toInt()
+        return integer.toString()
+    }catch (e:Exception){
+        e.printStackTrace()
+    }
+    return if(isConsumable) "-1" else "0"
 }

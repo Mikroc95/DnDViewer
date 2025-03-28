@@ -18,6 +18,7 @@
     <string name="new_item_charges">Càrregues</string>
     <string name="new_item_quantity">Quantitat</string>
     <string name="new_item_consumable">Consumible</string>
+    <string name="new_item_warning_add_quantity">Afegeix Quantitat</string>
 
     <string name="item_charges">Carregues</string>
     <string name="item_max_items_equiped">Ja tens 3 objectes equipats, desequipat algun</string>

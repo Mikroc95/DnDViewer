@@ -42,11 +42,10 @@ fun RowSpell(spell: SpellModel, count: Int, context: Context) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .wrapContentWidth()
-                .weight(0.1f)
+                .weight(0.07f)
         ) {
             Text(text = "$count. ",
                 color = textColor(),
-                modifier = Modifier.fillMaxWidth()
             )
         }
         Row(

@@ -103,53 +103,55 @@ fun RowItem(
                     )
                 }
             }
-
-            val counterText =
-                "${charges.intValue} / ${item.charges} ${context.getString(R.string.item_charges)}"
-            val valueTextField = remember {
-                mutableStateOf("")
-            }
-            InputCounter(
-                totalResult = counterText,
-                borderColor = discordOrangeAccent,
-                valueTextField = valueTextField,
-                onKeyBoardDone = {
-                    try{
-                        if (valueTextField.value.isNotEmpty()) {
-                            val value = valueTextField.value.toInt()
-                            charges.intValue = if (item.actualCharges.toInt() + value > 0) {
-                                if (item.actualCharges.toInt() + value <= item.charges.toInt()) {
-                                    item.actualCharges.toInt() + value
+            if(item.charges.toInt()>0){
+                val counterText =
+                    "${charges.intValue} / ${item.charges} ${context.getString(R.string.item_charges)}"
+                val valueTextField = remember {
+                    mutableStateOf("")
+                }
+                InputCounter(
+                    totalResult = counterText,
+                    borderColor = discordOrangeAccent,
+                    valueTextField = valueTextField,
+                    onKeyBoardDone = {
+                        try{
+                            if (valueTextField.value.isNotEmpty()) {
+                                val value = valueTextField.value.toInt()
+                                charges.intValue = if (item.actualCharges.toInt() + value > 0) {
+                                    if (item.actualCharges.toInt() + value <= item.charges.toInt()) {
+                                        item.actualCharges.toInt() + value
+                                    } else {
+                                        item.charges.toInt()
+                                    }
                                 } else {
-                                    item.charges.toInt()
+                                    0
                                 }
-                            } else {
-                                0
+                                item.actualCharges = charges.intValue.toString()
+                                saveObjectes(item)
                             }
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                            valueTextField.value = ""
+                        }
+                    },
+                    onLessClicked = {
+                        val charge = charges.intValue
+                        if (charge - 1 >= 0) {
+                            charges.intValue = charge - 1
                             item.actualCharges = charges.intValue.toString()
                             saveObjectes(item)
                         }
-                    }catch (e:Exception){
-                        e.printStackTrace()
-                        valueTextField.value = ""
+                    },
+                    onPlusClicked = {
+                        val charge = charges.intValue
+                        if (charge + 1 <= item.charges.toInt()) {
+                            charges.intValue = charge + 1
+                            item.actualCharges = charges.intValue.toString()
+                            saveObjectes(item)
+                        }
                     }
-                },
-                onLessClicked = {
-                    val charge = charges.intValue
-                    if (charge - 1 >= 0) {
-                        charges.intValue = charge - 1
-                        item.actualCharges = charges.intValue.toString()
-                        saveObjectes(item)
-                    }
-                },
-                onPlusClicked = {
-                    val charge = charges.intValue
-                    if (charge + 1 <= item.charges.toInt()) {
-                        charges.intValue = charge + 1
-                        item.actualCharges = charges.intValue.toString()
-                        saveObjectes(item)
-                    }
-                })
+                )
+            }
             Text(
                 text = item.description,
                 color = textColor()
@@ -253,7 +255,9 @@ fun RowConsumible(
                         item.actualCharges = item.charges
                         saveObjectes(item)
                     }
-                })
+                }
+            )
+
             Text(
                 text = item.description,
                 color = textColor()

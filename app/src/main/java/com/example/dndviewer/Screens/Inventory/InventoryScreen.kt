@@ -125,6 +125,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
             }
         }
     }
+
     //ENCANTERIS
     if (characterModel.maxSpell > 0) {
         ExpandableBox(title = context.getString(R.string.inventory_spells)) {

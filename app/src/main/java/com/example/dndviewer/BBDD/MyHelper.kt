@@ -202,7 +202,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
             null,
             BaseColumns._ID,
             "${MyBBDD.Spells.COLUMN_NAME_PERSONATGE} = '$personatge'",
-            "${MyBBDD.Spells.COLUMN_NAME_NIVELL} ASC"
+            BaseColumns._ID
         )
         val list = mutableListOf<SpellModel>()
         with(cursor) {

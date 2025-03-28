@@ -166,6 +166,6 @@ private fun EmptySelection() {
     Image(
         painter = painterResource(R.drawable.empty),
         contentDescription = "",
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().padding(start = 16.dp,end = 8.dp)
     )
 }

@@ -39,6 +39,8 @@ import com.example.dndviewer.Theme.textColorAccent
 import com.example.dndviewer.utils.GetCustomContents
 import com.example.dndviewer.R
 import com.example.dndviewer.Screens.viewModel
+import com.example.dndviewer.Theme.blueMana
+import com.example.dndviewer.Theme.discordRed
 import java.io.File
 
 
@@ -167,13 +169,14 @@ fun DialogNewCharacter(
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.Center
             ) {
+                val borderColor = if(characterModel.name.isEmpty()) discordBlue else discordRed
                 CustomTextField(
                     value = hp.value,
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
-                        .border(2.dp, discordBlue),
+                        .border(2.dp, borderColor),
                     onValueChange = {
                         hp.value = it
                         try {
@@ -183,8 +186,6 @@ fun DialogNewCharacter(
                             newCharacter.value.vida = 0
                             newCharacter.value.vidaMax = 0
                         }
-
-
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     placeHolder = {
@@ -207,13 +208,14 @@ fun DialogNewCharacter(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
+                val borderColor = if(characterModel.name.isEmpty()) discordBlue else blueMana
                 CustomTextField(
                     value = mana.value,
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
-                        .border(2.dp, discordBlue),
+                        .border(2.dp, borderColor),
                     onValueChange = {
                         mana.value = it
                         try {
