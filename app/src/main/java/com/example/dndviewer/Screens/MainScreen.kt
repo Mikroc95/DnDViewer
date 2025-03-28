@@ -54,16 +54,15 @@ lateinit var viewModel: MainViewModel
 @Composable
 fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewModel: MainViewModel) {
     characterModel = characterSelected
-    //context = cont
     viewModel = mainViewModel
     pdfVerticalReaderState = VerticalPdfReaderState(
         resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
         isZoomEnable = true,
     )
-    if (characterSelected.name.isEmpty()) {
+    if (characterModel.name.isEmpty()) {
         EmptySelection()
     } else {
-        TabRowCharacter(context = context, characterSelected)
+        TabRowCharacter(context = context, characterModel)
     }
 }
 

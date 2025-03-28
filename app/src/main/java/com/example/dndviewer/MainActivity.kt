@@ -137,8 +137,18 @@ private fun Main(
                         viewModel.updateCharacters(character = it)
                         updateCharacter = CharacterModel()
                     }
-                    characterSelected.value = it
                     viewModel.insertSpells(it.name, it.maxSpell)
+                    characterSelected.value = CharacterModel(
+                        name = it.name,
+                        imageCharacter = it.imageCharacter,
+                        homebrewRoute = it.homebrewRoute,
+                        vida = it.vida,
+                        vidaMax = it.vidaMax,
+                        mana = it.mana,
+                        manaMax = it.manaMax,
+                        maxSpell = it.maxSpell,
+                        observations = it.observations
+                    )
                     dialogNewCharacter.intValue = 0
 
 
