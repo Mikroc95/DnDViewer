@@ -7,11 +7,11 @@ plugins {
 
 
 android {
-    namespace = "com.example.dndviewer"
+    namespace = "com.Mikroc.DnDViewer"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.dndviewer"
+        applicationId = "com.Mikroc.DnDViewer"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
