@@ -2,7 +2,6 @@ package com.example.dndviewer.Components
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.IconButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerState
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Edit
@@ -30,13 +29,11 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
@@ -58,7 +55,6 @@ private lateinit var drawerState: DrawerState
 private lateinit var coroutineScope: CoroutineScope
 private lateinit var title: MutableState<String>
 private lateinit var listCharacters: MutableList<CharacterModel>
-private lateinit var context: Context
 
 
 @Composable
@@ -68,13 +64,12 @@ fun CustomNavigationDrawer(
     characters: MutableList<CharacterModel>,
     onCharacterSelected: (CharacterModel) -> Unit,
     onNewCharacterClicked: () -> Unit,
-    onUpdateCharacter:(CharacterModel)->Unit,
-    onDeleteCharacter:()->Unit,
-    cntxt: Context,
+    onUpdateCharacter: (CharacterModel) -> Unit,
+    onDeleteCharacter: () -> Unit,
+    context: Context,
     content: @Composable () -> Unit,
 ) {
     title = topBarTitle
-    context = cntxt
     listCharacters = characters
     drawerState = rememberDrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
     coroutineScope = rememberCoroutineScope()
@@ -83,13 +78,21 @@ fun CustomNavigationDrawer(
             GetNavigationDrawer(
                 onCharacterSelected = onCharacterSelected,
                 onNewCharacterClicked = onNewCharacterClicked,
-                onUpdateCharacter = onUpdateCharacter
+                onUpdateCharacter = onUpdateCharacter,
+                context = context
             )
         },
+        gesturesEnabled = false,
         drawerState = drawerState
     ) {
         Scaffold(
-            topBar = { GetTopBar(topBarIcon,onDeleteCharacter) },
+            topBar = {
+                GetTopBar(
+                    icon = topBarIcon,
+                    onDeleteCharacter = onDeleteCharacter,
+                    context = context
+                )
+            },
             contentColor = transparent,
             containerColor = backgroundColor()
         ) {
@@ -105,7 +108,8 @@ fun CustomNavigationDrawer(
 fun GetNavigationDrawer(
     onCharacterSelected: (CharacterModel) -> Unit,
     onNewCharacterClicked: () -> Unit,
-    onUpdateCharacter:(CharacterModel)->Unit
+    onUpdateCharacter: (CharacterModel) -> Unit,
+    context: Context
 ) {
     val configuration = LocalConfiguration.current
     var screenWidth = configuration.screenWidthDp.dp / 2
@@ -123,7 +127,8 @@ fun GetNavigationDrawer(
         ) {
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
             listCharacters.forEach {
-                Row(horizontalArrangement = Arrangement.SpaceBetween,
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -138,7 +143,7 @@ fun GetNavigationDrawer(
                                     onDrawerClicked()
                                     onCharacterSelected(it)
                                 }
-                            }){
+                            }) {
                         Text(
                             it.name,
                             modifier = Modifier.fillMaxWidth(),
@@ -190,7 +195,7 @@ fun GetNavigationDrawer(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GetTopBar(icon: Painter?,onDeleteCharacter:()->Unit) {
+fun GetTopBar(icon: Painter?, onDeleteCharacter: () -> Unit, context: Context) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = topBarColor()
@@ -203,15 +208,13 @@ fun GetTopBar(icon: Painter?,onDeleteCharacter:()->Unit) {
             )
         },
         actions = @Composable {
-            if(title.value != context.getString(R.string.app_name)){
+            if (title.value != context.getString(R.string.app_name)) {
                 IconButton(onClick = {
                     onDeleteCharacter()
                 }) {
                     Icon(Icons.Filled.Delete, contentDescription = null, tint = textColor())
                 }
             }
-
-
         },
 
         navigationIcon = {

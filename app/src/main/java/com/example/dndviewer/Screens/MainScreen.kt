@@ -61,7 +61,7 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewMode
         if (name.isEmpty()) {
             EmptySelection()
         } else {
-            if (isFuckingEmpty(this)) {
+            if (isCharacterEmpty(character = this)) {
                 InventoryScreen(context = context, characterModel = this)
             } else {
                 TabRowCharacter(context = context, characterSelected = this)
@@ -70,7 +70,7 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewMode
     }
 }
 
-fun isFuckingEmpty(character: CharacterModel): Boolean {
+fun isCharacterEmpty(character: CharacterModel): Boolean {
     if (character.homebrewRoute.isEmpty()) {
         if (character.imageCharacter.contentEquals(byteArrayOf())) {
             if (character.vidaMax <= 0) {

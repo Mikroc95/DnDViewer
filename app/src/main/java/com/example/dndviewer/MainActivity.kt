@@ -110,7 +110,7 @@ private fun Main(
             characterSelected.value = CharacterModel()
             topBarTitle.value = context.getString(R.string.app_name)
         },
-        cntxt = context
+        context = context
     ) {
         MainScreen(
             context = context,
