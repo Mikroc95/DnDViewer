@@ -1,4 +1,4 @@
-package com.example.dndviewer.utils
+package com.example.dndviewer.Utils
 
 import android.app.Activity
 import android.content.Context
@@ -6,9 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.result.contract.ActivityResultContract
 
-class GetCustomContents(
-    private val isMultiple: Boolean = false, //This input check if the select file option is multiple or not
-): ActivityResultContract<String, List<@JvmSuppressWildcards Uri>>() {
+class GetCustomContents : ActivityResultContract<String, List<@JvmSuppressWildcards Uri>>() {
 
     override fun createIntent(context: Context, input: String): Intent {
         return Intent(Intent.ACTION_GET_CONTENT).apply {

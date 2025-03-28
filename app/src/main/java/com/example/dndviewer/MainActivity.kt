@@ -95,16 +95,7 @@ private fun Main(
                 maxSpell = it.maxSpell,
                 observations = it.observations
             )
-            if (characterSelected.value.vidaMax > 0 ||
-                characterSelected.value.manaMax > 0 ||
-                !characterSelected.value.imageCharacter.contentEquals(
-                    byteArrayOf()
-                )
-            ) {
-                tabSelected.value = 0
-            } else {
-                tabSelected.value = 2
-            }
+            tabSelected.value = 0
         },
         onNewCharacterClicked = {
             dialogNewCharacter.intValue = 1
@@ -150,8 +141,7 @@ private fun Main(
                         observations = it.observations
                     )
                     dialogNewCharacter.intValue = 0
-
-
+                    tabSelected.value = 0
                 },
                 onClose = {
                     updateCharacter = CharacterModel()

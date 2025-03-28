@@ -36,7 +36,7 @@ import com.example.dndviewer.Theme.backgroundColor
 import com.example.dndviewer.Theme.discordBlue
 import com.example.dndviewer.Theme.textColor
 import com.example.dndviewer.Theme.textColorAccent
-import com.example.dndviewer.utils.GetCustomContents
+import com.example.dndviewer.Utils.GetCustomContents
 import com.example.dndviewer.R
 import com.example.dndviewer.Screens.viewModel
 import com.example.dndviewer.Theme.blueMana
@@ -91,7 +91,7 @@ fun DialogNewCharacter(
         )
     }
     val characterPicker = rememberLauncherForActivityResult(
-        contract = GetCustomContents(isMultiple = false),
+        contract = GetCustomContents(),
         onResult = { uris ->
             val item = context.contentResolver.openInputStream(uris.first())
             val imgByte = item?.readBytes()
@@ -100,7 +100,7 @@ fun DialogNewCharacter(
         }
     )
     val homebrewPicker = rememberLauncherForActivityResult(
-        contract = GetCustomContents(isMultiple = false),
+        contract = GetCustomContents(),
         onResult = { uris ->
             newCharacter.value.homebrewRoute = saveHomeBrew(
                 context = context,

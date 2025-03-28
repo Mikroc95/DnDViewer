@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TabRow
@@ -40,7 +38,6 @@ import com.rizzi.bouquet.VerticalPDFReader
 import com.rizzi.bouquet.VerticalPdfReaderState
 import java.io.File
 
-
 var tabSelected: MutableState<Int> = mutableIntStateOf(0)
 
 var characterModel = CharacterModel(imageCharacter = byteArrayOf())
@@ -49,6 +46,7 @@ var pdfVerticalReaderState = VerticalPdfReaderState(
     resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
     isZoomEnable = true
 )
+
 lateinit var viewModel: MainViewModel
 
 @Composable
@@ -59,11 +57,30 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewMode
         resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
         isZoomEnable = true,
     )
-    if (characterModel.name.isEmpty()) {
-        EmptySelection()
-    } else {
-        TabRowCharacter(context = context, characterModel)
+    characterModel.apply {
+        if (name.isEmpty()) {
+            EmptySelection()
+        } else {
+            if (isFuckingEmpty(this)) {
+                InventoryScreen(context = context, characterModel = this)
+            } else {
+                TabRowCharacter(context = context, characterSelected = this)
+            }
+        }
     }
+}
+
+fun isFuckingEmpty(character: CharacterModel): Boolean {
+    if (character.homebrewRoute.isEmpty()) {
+        if (character.imageCharacter.contentEquals(byteArrayOf())) {
+            if (character.vidaMax <= 0) {
+                if (character.manaMax <= 0) {
+                    return true
+                }
+            }
+        }
+    }
+    return false
 }
 
 @Composable
@@ -80,7 +97,6 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
             TabRowDefaults.SecondaryIndicator(
                 Modifier.tabIndicatorOffset(it[tabSelected.value]),
                 color = discordBlue
-
             )
         }
     ) {
@@ -96,7 +112,6 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
             }
             Text(text = context.getString(R.string.tab_1), color = color)
         }
-
 
         Tab(modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 1,
@@ -146,17 +161,9 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
             }
 
             2 -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .background(backgroundColor())
-                ) {
-                    InventoryScreen(context = context, characterModel = characterSelected)
-                }
+                InventoryScreen(context = context, characterModel = characterSelected)
             }
         }
-
     }
 }
 
@@ -165,6 +172,8 @@ private fun EmptySelection() {
     Image(
         painter = painterResource(R.drawable.empty),
         contentDescription = "",
-        modifier = Modifier.fillMaxSize().padding(start = 16.dp,end = 8.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 16.dp, end = 8.dp)
     )
 }
