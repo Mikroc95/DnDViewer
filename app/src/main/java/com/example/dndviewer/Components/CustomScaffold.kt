@@ -82,7 +82,6 @@ fun CustomNavigationDrawer(
                 context = context
             )
         },
-        gesturesEnabled = false,
         drawerState = drawerState
     ) {
         Scaffold(
