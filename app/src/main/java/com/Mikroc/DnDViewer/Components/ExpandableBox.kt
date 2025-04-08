@@ -50,7 +50,10 @@ fun ExpandableBox(title:String,icon: Painter? = null,onIconClicked:()->Unit = {}
             Row(horizontalArrangement = Arrangement.Start,verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(0.6f)){
                 Text(text = title, modifier = Modifier.padding(16.dp), color = textColor())
                 if(icon != null){
-                    Icon(painter = icon, contentDescription = "", modifier = Modifier.clickable { onIconClicked() })
+                    Icon(painter = icon, contentDescription = "", modifier = Modifier.clickable {
+                        isRowExpanded.value = false
+                        onIconClicked()
+                    })
                 }
             }
 
