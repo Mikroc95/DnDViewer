@@ -14,8 +14,8 @@ android {
         applicationId = "com.Mikroc.DnDViewer"
         minSdk = 26
         targetSdk = 34
-        versionCode = 3
-        versionName = "1.02"
+        versionCode = 4
+        versionName = "1.03"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
