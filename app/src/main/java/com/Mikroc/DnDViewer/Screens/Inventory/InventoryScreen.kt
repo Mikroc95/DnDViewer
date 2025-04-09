@@ -82,22 +82,27 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                                 .filter { !it.isConsumible }
                         },
                         onEquipItem = { it ->
-                            if (it.isEquiped) {
-                                it.isEquiped = false
-                                viewModel.updateObjectes(it)
-                            } else {
-                                if (listItems.value.filter { it.isEquiped }.size < 3) {
-                                    it.isEquiped = true
+                            try {
+                                if (it.isEquiped) {
+                                    it.isEquiped = false
                                     viewModel.updateObjectes(it)
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        context.getString(R.string.item_max_items_equiped),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    if (listItems.value.filter { it.isEquiped }.size < 3) {
+                                        it.isEquiped = true
+                                        viewModel.updateObjectes(it)
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.item_max_items_equiped),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
+                                return@RowItem it.isEquiped
+                            } catch (e: Exception) {
+                                e.printStackTrace()
                             }
-                            return@RowItem it.isEquiped
+                            return@RowItem false
                         }
                     )
                 }
@@ -173,32 +178,25 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
             )
         }
         //DIALOG NEW ITEM
-        if (dialogNewItem.intValue == 1) {
+        if (dialogNewItem.intValue == 1 || dialogNewItem.intValue == 2) {
             DialogNewItem(
                 characterName = characterModel.name,
                 onDismissRequest = { item ->
                     viewModel.setObjectes(item)
+                    if (dialogNewItem.intValue == 1) {
+                        listItems.value = viewModel.getObjectes(characterModel.name)
+                            .filter { !it.isConsumible }
+                    } else {
+                        listConsumables.value = viewModel.getObjectes(characterModel.name)
+                            .filter { it.isConsumible }
+                    }
                     dialogNewItem.intValue = 0
-                    listItems.value = viewModel.getObjectes(characterModel.name)
-                        .filter { !it.isConsumible }
                 },
                 onClose = { dialogNewItem.intValue = 0 },
-                isConsumable = false,
-                context = context
-            )
-        } else if (dialogNewItem.intValue == 2) {
-            DialogNewItem(
-                characterName = characterModel.name,
-                onDismissRequest = { item ->
-                    viewModel.setObjectes(item)
-                    dialogNewItem.intValue = 0
-                    listConsumables.value = viewModel.getObjectes(characterModel.name)
-                        .filter { it.isConsumible }
-                },
-                onClose = { dialogNewItem.intValue = 0 },
-                isConsumable = true,
+                isConsumable = dialogNewItem.intValue == 2,
                 context = context
             )
         }
+
     }
 }

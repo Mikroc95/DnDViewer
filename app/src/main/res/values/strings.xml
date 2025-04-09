@@ -13,6 +13,9 @@
     <string name="new_character_file">fitxa.PNG</string>
     <string name="new_character_homebrew">homebrew.PDF</string>
     <string name="new_character_alert_name_empty">Escull un nom pel personatge</string>
+    <string name="new_character_error_homebrew">Error a l\'adjuntar homebrew</string>
+    <string name="new_character_error_character">Error a l\'adjuntar fitxa</string>
+    <string name="new_character_repeated_character">Aquest personatge ja existeix</string>
 
     <string name="new_item_description">Descripció</string>
     <string name="new_item_charges">Càrregues</string>

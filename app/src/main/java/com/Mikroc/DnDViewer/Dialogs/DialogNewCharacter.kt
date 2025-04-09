@@ -93,20 +93,40 @@ fun DialogNewCharacter(
     val characterPicker = rememberLauncherForActivityResult(
         contract = GetCustomContents(),
         onResult = { uris ->
-            val item = context.contentResolver.openInputStream(uris.first())
-            val imgByte = item?.readBytes()
-            item?.close()
-            newCharacter.value.imageCharacter = imgByte!!
+            try {
+                val item = context.contentResolver.openInputStream(uris.first())
+                val imgByte = item?.readBytes()
+                item?.close()
+                newCharacter.value.imageCharacter = imgByte!!
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.new_character_error_character),
+                    Toast.LENGTH_SHORT
+                ).show()
+                newCharacter.value.imageCharacter = byteArrayOf()
+                e.printStackTrace()
+            }
         }
     )
     val homebrewPicker = rememberLauncherForActivityResult(
         contract = GetCustomContents(),
         onResult = { uris ->
-            newCharacter.value.homebrewRoute = saveHomeBrew(
-                context = context,
-                name = newCharacter.value.name,
-                uri = uris.first()
-            )
+            try {
+                newCharacter.value.homebrewRoute = saveHomeBrew(
+                    context = context,
+                    name = newCharacter.value.name,
+                    uri = uris.first()
+                )
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.new_character_error_homebrew),
+                    Toast.LENGTH_SHORT
+                ).show()
+                newCharacter.value.homebrewRoute = ""
+                e.printStackTrace()
+            }
         }
     )
 
@@ -169,7 +189,7 @@ fun DialogNewCharacter(
                     .fillMaxWidth()
                     .padding(8.dp), horizontalArrangement = Arrangement.Center
             ) {
-                val borderColor = if(characterModel.name.isEmpty()) discordBlue else discordRed
+                val borderColor = if (characterModel.name.isEmpty()) discordBlue else discordRed
                 CustomTextField(
                     value = hp.value,
                     modifier = Modifier
@@ -208,7 +228,7 @@ fun DialogNewCharacter(
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
-                val borderColor = if(characterModel.name.isEmpty()) discordBlue else blueMana
+                val borderColor = if (characterModel.name.isEmpty()) discordBlue else blueMana
                 CustomTextField(
                     value = mana.value,
                     modifier = Modifier
@@ -328,9 +348,17 @@ fun DialogNewCharacter(
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
                         if (name.value.isNotEmpty()) {
-                            newCharacter.value.apply {
-                                this.name = name.value
-                                onDismissRequest(this)
+                            if (viewModel.getCharacter(name.value).size > 0) {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.new_character_repeated_character),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                newCharacter.value.apply {
+                                    this.name = name.value
+                                    onDismissRequest(this)
+                                }
                             }
                         } else {
                             Toast.makeText(
