@@ -92,7 +92,7 @@ fun RowItem(
                         fontSize = 16.sp
                     )
                 }
-                Row(horizontalArrangement = Arrangement.End) {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Image(
                         imageVector = Icons.Outlined.Delete,
                         colorFilter = ColorFilter.tint(textColor()),

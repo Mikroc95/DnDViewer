@@ -5,6 +5,7 @@
     <string name="tab_3">Inventari</string>
     <string name="create_character">Crear Nou Personatge</string>
     <string name="choose_your_character">Escull el personatge</string>
+    <string name="delete_character">Eliminar personatge</string>
 
     <string name="new_character_name">nom</string>
     <string name="new_character_health_points">vida</string>
@@ -36,5 +37,10 @@
     <string name="inventory_consumables">Consumibles</string>
     <string name="iventory_observations">Observacions</string>
     <string name="inventory_spells">Encanteris</string>
+    <string name="inventory_delete_item_title">Eliminar Objecte</string>
+
+    <string name="common_delete_text">Segur que vols continuar?</string>
+    <string name="common_yes">Si</string>
+    <string name="common_no">No</string>
 
 </resources>
