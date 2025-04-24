@@ -21,16 +21,26 @@ class MainViewModel : ViewModel() {
     fun getCharacters(): MutableList<CharacterModel> {
         return helper.getCharacters()
     }
-    fun deleteHomeBrew(character: CharacterModel, context: Context){
-        val directory = File(context.filesDir.absolutePath + "/${character.name}")
-        if (directory.exists()) {
-            directory.deleteRecursively()
+
+    fun getCharacter(character: String): MutableList<CharacterModel> {
+        return helper.getCharacter(character = character)
+    }
+
+    fun deleteHomeBrew(character: CharacterModel, context: Context) {
+        try {
+            val directory = File(context.filesDir.absolutePath + "/${character.name}")
+            if (directory.exists()) {
+                directory.deleteRecursively()
+            }
+            val file = File(character.homebrewRoute)
+            if (file.exists()) {
+                //file.delete()
+                file.deleteRecursively()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        val file = File(character.homebrewRoute)
-        if(file.exists()){
-            //file.delete()
-            file.deleteRecursively()
-        }
+
     }
 
     fun deleteCharacter(character: CharacterModel, context: Context) {
@@ -149,24 +159,28 @@ class MainViewModel : ViewModel() {
     }
 
     fun insertSpells(name: String, numerSpells: Int) {
-        val list = helper.getSpells(name)
-        var counter = list.size
-        if (counter < numerSpells) {
-            while (counter < numerSpells) {
-                setSpells(item = SpellModel(character = name))
-                counter++
+        try {
+            val list = helper.getSpells(name)
+            var counter = list.size
+            if (counter < numerSpells) {
+                while (counter < numerSpells) {
+                    setSpells(item = SpellModel(character = name))
+                    counter++
+                }
+            } else {
+                while (counter > numerSpells) {
+                    val index = list.last().id
+                    helper.deleteSpells(index)
+                    counter--
+                    list.remove(list.last())
+                }
             }
-        } else {
-            while (counter > numerSpells) {
-                val index = list.last().id
-                helper.deleteSpells(index)
-                counter--
-                list.remove(list.last())
-            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    fun setSpells(item: SpellModel) {
+    private fun setSpells(item: SpellModel) {
         try {
             val db = helper.writableDatabase
 
@@ -194,12 +208,10 @@ class MainViewModel : ViewModel() {
                 MyBBDD.Spells.TABLE_NAME,
                 values,
                 "${MyBBDD.Spells.COLUMN_NAME_PERSONATGE} = ? AND ${BaseColumns._ID} = ?",
-                arrayOf(item.character,item.id.toString())
+                arrayOf(item.character, item.id.toString())
             )
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
-
-
 }
