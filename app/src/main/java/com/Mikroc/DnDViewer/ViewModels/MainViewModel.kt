@@ -142,16 +142,16 @@ class MainViewModel : ViewModel() {
             db?.update(
                 MyBBDD.Objectes.TABLE_NAME,
                 values,
-                "${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = ? AND ${MyBBDD.Objectes.COLUMN_NAME_NOM} = ?",
-                arrayOf(item.character, item.name)
+                "${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = ? AND ${BaseColumns._ID} = ?",
+                arrayOf(item.character, item.id.toString())
             )
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun deleteObjecte(itemName: String, characterName: String) {
-        helper.deleteObjectes(itemName = itemName, characterName = characterName)
+    fun deleteObjecte(id: Int, characterName: String) {
+        helper.deleteObjectes(id = id, characterName = characterName)
     }
 
     fun getSpells(name: String): MutableList<SpellModel> {

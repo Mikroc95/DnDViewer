@@ -204,6 +204,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                 MyBBDD.Objectes.COLUMN_NAME_CONSUMIBLE,
                 MyBBDD.Objectes.COLUMN_NAME_PERSONATGE,
                 MyBBDD.Objectes.COLUMN_NAME_CARREGUES_ACTUALS,
+                BaseColumns._ID
             )
 
             val cursor = readableDatabase.query(
@@ -226,6 +227,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                         isEquiped = cursor.getInt(3) == 1
                         isConsumible = cursor.getInt(4) == 1
                         character = cursor.getString(5)
+                        id = cursor.getInt(7)
                     }
                     list.add(item)
                 }
@@ -238,12 +240,12 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
         return mutableListOf()
     }
 
-    fun deleteObjectes(itemName: String, characterName: String) {
+    fun deleteObjectes(id: Int, characterName: String) {
         try {
             val db = this.writableDatabase
             db.execSQL(
                 "DELETE FROM ${MyBBDD.Objectes.TABLE_NAME}" +
-                        " WHERE ${MyBBDD.Objectes.COLUMN_NAME_NOM} = '$itemName' " +
+                        " WHERE ${ BaseColumns._ID} = '$id' " +
                         "AND ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$characterName'"
             )
             db.close()

@@ -43,16 +43,17 @@ fun DialogNewItem(
     onDismissRequest: (ItemsModel) -> Unit,
     onClose: () -> Unit,
     context: Context,
-    isConsumable:Boolean = false
+    isConsumable:Boolean = false,
+    editing:ItemsModel = ItemsModel()
 ) {
     val name = remember {
-        mutableStateOf("")
+        mutableStateOf(editing.name)
     }
     val description = remember {
-        mutableStateOf("")
+        mutableStateOf(editing.description)
     }
     val charges = remember {
-        mutableStateOf("")
+        mutableStateOf(editing.charges)
     }
     Dialog(onDismissRequest = onClose) {
         Column(
@@ -165,6 +166,7 @@ fun DialogNewItem(
                             }else{
                                 onDismissRequest(
                                     ItemsModel(
+                                        id = editing.id,
                                         name = name.value,
                                         description = description.value,
                                         charges = charge,

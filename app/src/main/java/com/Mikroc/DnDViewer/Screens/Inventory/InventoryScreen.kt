@@ -56,6 +56,9 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
     val dialogDeleteItem = remember {
         mutableStateOf(ItemsModel())
     }
+    val dialogEditItem = remember {
+        mutableStateOf(ItemsModel())
+    }
     val list = viewModel.getObjectes(characterModel.name)
     val listItems = remember {
         mutableStateOf(list.filter { !it.isConsumible })
@@ -94,6 +97,9 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                         context = context,
                         onDeleteClicked = {
                           dialogDeleteItem.value = item
+                        },
+                        onEditClicked = {
+                            dialogEditItem.value = it
                         },
                         onEquipItem = { it ->
                             try {
@@ -142,7 +148,10 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                             saveObjectes = { viewModel.setObjectes(it) },
                             onDeleteClicked = {
                                 dialogDeleteItem.value = item
-                            }
+                            },
+                            onEditClicked = {
+                                dialogEditItem.value = it
+                            },
                         )
                     }
                 }
@@ -200,9 +209,32 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                             .filter { it.isConsumible }
                     }
                     dialogNewItem.intValue = 0
+                    dialogEditItem.value = ItemsModel()
                 },
                 onClose = { dialogNewItem.intValue = 0 },
                 isConsumable = dialogNewItem.intValue == 2,
+                context = context
+            )
+        }
+        if(dialogEditItem.value.name.isNotEmpty()){
+            DialogNewItem(
+                characterName = characterModel.name,
+                onDismissRequest = { item ->
+                    viewModel.updateObjectes(item)
+                    if (item.isConsumible) {
+                        listConsumables.value = viewModel.getObjectes(characterModel.name)
+                             .filter { it.isConsumible }
+                    } else {
+                        listItems.value = viewModel.getObjectes(characterModel.name)
+                            .filter { !it.isConsumible }
+                    }
+                   dialogEditItem.value = ItemsModel()
+                   dialogNewItem.intValue = 0
+                },
+                onClose = {  dialogEditItem.value = ItemsModel()
+                    dialogNewItem.intValue = 0 },
+                isConsumable = dialogEditItem.value.isConsumible,
+                editing = dialogEditItem.value,
                 context = context
             )
         }
@@ -238,7 +270,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                         Button(
                             onClick = {
                                 viewModel.deleteObjecte(
-                                    itemName = dialogDeleteItem.value.name,
+                                    id = dialogDeleteItem.value.id,
                                     characterName = characterModel.name
                                 )
                                 if(dialogDeleteItem.value.isConsumible){

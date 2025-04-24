@@ -1,6 +1,7 @@
 package com.Mikroc.DnDViewer.Models
 
 data class ItemsModel(
+    var id:Int =0,
     var name:String="",
     var description:String="",
     var charges:String="",

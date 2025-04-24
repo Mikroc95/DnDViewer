@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +45,7 @@ fun RowItem(
     saveObjectes: (ItemsModel) -> Unit,
     onEquipItem: (ItemsModel) -> Boolean,
     onDeleteClicked: () -> Unit,
+    onEditClicked:(ItemsModel) ->Unit,
     context: Context
 ) {
     val isEquiped = remember {
@@ -62,8 +64,9 @@ fun RowItem(
 
     }
     val charges = remember {
-        mutableIntStateOf(item.actualCharges.toInt().or(0))
+        mutableIntStateOf(0)
     }
+    charges.intValue = item.actualCharges.toInt().or(0)
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top,
@@ -93,6 +96,14 @@ fun RowItem(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    Image(
+                        imageVector = Icons.Outlined.Edit,
+                        colorFilter = ColorFilter.tint(textColor()),
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            onEditClicked(item)
+                        }
+                    )
                     Image(
                         imageVector = Icons.Outlined.Delete,
                         colorFilter = ColorFilter.tint(textColor()),
@@ -170,11 +181,13 @@ fun RowItem(
 fun RowConsumible(
     item: ItemsModel,
     onDeleteClicked: () -> Unit,
+    onEditClicked: (ItemsModel) -> Unit,
     saveObjectes: (ItemsModel) -> Unit
 ) {
     val totalConsumibles = remember {
-        mutableIntStateOf(item.charges.toInt())
+        mutableIntStateOf(0)
     }
+    totalConsumibles.intValue = item.charges.toInt()
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top,
@@ -199,6 +212,14 @@ fun RowConsumible(
                     )
                 }
                 Row(horizontalArrangement = Arrangement.End) {
+                    Image(
+                        imageVector = Icons.Outlined.Edit,
+                        colorFilter = ColorFilter.tint(textColor()),
+                        contentDescription = "",
+                        modifier = Modifier.clickable {
+                            onEditClicked(item)
+                        }
+                    )
                     Image(
                         imageVector = Icons.Outlined.Delete,
                         colorFilter = ColorFilter.tint(textColor()),
