@@ -1,5 +1,6 @@
 package com.Mikroc.DnDViewer.ViewModels
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
@@ -124,6 +125,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    @SuppressLint("SuspiciousIndentation")
     fun updateObjectes(item: ItemsModel) {
         try {
             val db = helper.writableDatabase
@@ -139,19 +141,20 @@ class MainViewModel : ViewModel() {
                 put(MyBBDD.Objectes.COLUMN_NAME_CONSUMIBLE, intConsumible)
             }
 
-            db?.update(
+            val result = db?.update(
                 MyBBDD.Objectes.TABLE_NAME,
                 values,
-                "${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = ? AND ${BaseColumns._ID} = ?",
-                arrayOf(item.character, item.id.toString())
+                "${BaseColumns._ID} = ? AND ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE } = ?",
+                arrayOf(item.id.toString(), item.character)
             )
+            System.out.println(result)
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun deleteObjecte(id: Int, characterName: String) {
-        helper.deleteObjectes(id = id, characterName = characterName)
+    fun deleteObjecte(id: Int) {
+        helper.deleteObjectes(id = id)
     }
 
     fun getSpells(name: String): MutableList<SpellModel> {

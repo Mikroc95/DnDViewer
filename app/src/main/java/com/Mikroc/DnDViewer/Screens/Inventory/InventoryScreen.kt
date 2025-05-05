@@ -93,7 +93,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                 listItems.value.forEach { item ->
                     RowItem(
                         item = item,
-                        saveObjectes = { viewModel.setObjectes(it) },
+                        saveObjectes = { viewModel.updateObjectes(it) },
                         context = context,
                         onDeleteClicked = {
                           dialogDeleteItem.value = item
@@ -145,7 +145,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                     listConsumables.value.forEach { item ->
                         RowConsumible(
                             item = item,
-                            saveObjectes = { viewModel.setObjectes(it) },
+                            saveObjectes = { viewModel.updateObjectes(it) },
                             onDeleteClicked = {
                                 dialogDeleteItem.value = item
                             },
@@ -271,7 +271,6 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                             onClick = {
                                 viewModel.deleteObjecte(
                                     id = dialogDeleteItem.value.id,
-                                    characterName = characterModel.name
                                 )
                                 if(dialogDeleteItem.value.isConsumible){
                                     listConsumables.value = viewModel.getObjectes(characterModel.name)

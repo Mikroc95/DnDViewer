@@ -347,26 +347,43 @@ fun DialogNewCharacter(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        if (name.value.isNotEmpty()) {
-                            if (viewModel.getCharacter(name.value).size > 0) {
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.new_character_repeated_character),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                newCharacter.value.apply {
-                                    this.name = name.value
-                                    onDismissRequest(this)
+                        try{
+                            if(characterModel.name.isEmpty()){
+                                // SI ESTEM CREANT
+                                if (name.value.isNotEmpty()) {
+                                    if (viewModel.getCharacter(name.value).size > 0) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(R.string.new_character_repeated_character),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        newCharacter.value.apply {
+                                            this.name = name.value
+                                            onDismissRequest(this)
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.new_character_alert_name_empty),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
+                            }else{
+                                // SI ESTEM EDITANT
+                                onDismissRequest(newCharacter.value)
                             }
-                        } else {
+                        }catch (e:Exception){
+                            e.printStackTrace()
                             Toast.makeText(
                                 context,
-                                context.getString(R.string.new_character_alert_name_empty),
+                                context.getString(R.string.new_character_error_save),
                                 Toast.LENGTH_SHORT
-                            ).show()
+                            )
                         }
+
+
                     },
                 ) {
                     Text(
