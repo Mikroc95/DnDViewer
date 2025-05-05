@@ -155,34 +155,38 @@ fun DialogNewItem(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        if (name.value.isNotEmpty() && description.value.isNotEmpty()) {
-                            val charge = checkInteger(charges.value,isConsumable)
-                            if(charge.toInt()<=0 && isConsumable){
+                        try{
+                            if (name.value.isNotEmpty() && description.value.isNotEmpty()) {
+                                val charge = checkInteger(charges.value,isConsumable)
+                                if(charge.toInt()<=0 && isConsumable){
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.new_item_warning_add_quantity),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }else{
+                                    onDismissRequest(
+                                        ItemsModel(
+                                            id = editing.id,
+                                            name = name.value,
+                                            description = description.value,
+                                            charges = charge,
+                                            actualCharges = charge,
+                                            isEquiped = false,
+                                            isConsumible = isConsumable,
+                                            character = characterName
+                                        )
+                                    )
+                                }
+                            } else {
                                 Toast.makeText(
                                     context,
-                                    context.getString(R.string.new_item_warning_add_quantity),
+                                    context.getString(R.string.dialog_error_empty_fields),
                                     Toast.LENGTH_SHORT
                                 ).show()
-                            }else{
-                                onDismissRequest(
-                                    ItemsModel(
-                                        id = editing.id,
-                                        name = name.value,
-                                        description = description.value,
-                                        charges = charge,
-                                        actualCharges = charge,
-                                        isEquiped = false,
-                                        isConsumible = isConsumable,
-                                        character = characterName
-                                    )
-                                )
                             }
-                        } else {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.dialog_error_empty_fields),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        }catch (e:Exception){
+                            e.printStackTrace()
                         }
                     },
                 ) {
