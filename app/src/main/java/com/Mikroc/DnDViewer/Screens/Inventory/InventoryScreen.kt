@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens.Inventory
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +48,8 @@ import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: MainViewModel) {
+fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
+    val context = LocalContext.current
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
@@ -68,12 +68,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
     }
     val listConsumables = remember { mutableStateOf(list.filter { it.isConsumible }) }
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
-    val expandableHeight = if (characterModel.maxSpell > 0) {
-        screenHeight / 3
-    } else {
-        screenHeight / 2
-    }
+    val expandableHeight =configuration.screenHeightDp.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -101,7 +96,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
                     RowItem(
                         item = item,
                         saveObjectes = { viewModel.updateObjectes(it) },
-                        context = context,
+
                         onDeleteClicked = {
                           dialogDeleteItem.value = item
                         },
@@ -176,7 +171,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
                 ) {
                     val listSpells = viewModel.getSpells(characterModel.name)
                     listSpells.forEach {
-                        RowSpell(spell = it, count = listSpells.indexOf(it) + 1, context = context, viewModel = viewModel)
+                        RowSpell(spell = it, count = listSpells.indexOf(it) + 1, viewModel = viewModel)
                     }
                 }
             }
@@ -185,17 +180,14 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
         val observations = remember {
             mutableStateOf(characterModel.observations)
         }
-        ExpandableBox(
-            title = context.getString(R.string.iventory_observations),
-            icon = painterResource(R.drawable.save),
-            onIconClicked = {
-                characterModel.observations = observations.value
-                viewModel.updateCharacters(character = characterModel)
-            }
-        ) {
+        ExpandableBox(title = context.getString(R.string.iventory_observations)) {
             CustomTextField(
                 value = observations.value,
-                onValueChange = { observations.value = it },
+                onValueChange = {
+                    observations.value = it
+                    characterModel.observations = observations.value
+                    viewModel.updateCharacters(character = characterModel)
+                },
                 modifier = Modifier
                     .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
                     .fillMaxWidth(),
@@ -220,7 +212,6 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
                 },
                 onClose = { dialogNewItem.intValue = 0 },
                 isConsumable = dialogNewItem.intValue == 2,
-                context = context
             )
         }
         if(dialogEditItem.value.name.isNotEmpty()){
@@ -242,7 +233,6 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
                     dialogNewItem.intValue = 0 },
                 isConsumable = dialogEditItem.value.isConsumible,
                 editing = dialogEditItem.value,
-                context = context
             )
         }
         if(dialogDeleteItem.value.name.isNotEmpty()){
@@ -323,7 +313,6 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
 @Composable
 private fun InventoryScreenPreview(){
     InventoryScreen(
-        context = LocalContext.current,
         characterModel = CharacterModel(),
         viewModel = MainViewModel()
     )

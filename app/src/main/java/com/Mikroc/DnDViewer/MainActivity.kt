@@ -1,12 +1,8 @@
 package com.Mikroc.DnDViewer
 
-import android.Manifest
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.*
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,36 +42,20 @@ import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 class MainActivity : FragmentActivity() {
     private lateinit var viewModel: MainViewModel
 
-    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val requestPermissionLauncher =
-            registerForActivityResult(
-                ActivityResultContracts.RequestPermission()
-            ) { _ ->
-                viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-                viewModel.getBBDD(this)
-
-                setContent {
-                    val listCharacters: MutableList<CharacterModel> = rememberSaveable {
-                        viewModel.getCharacters()
-                    }
-                    Main(
-                        context = this,
-                        listCharacters = listCharacters,
-                        viewModel = viewModel
-                    )
-                }
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel.getBBDD(this)
+        setContent {
+            val listCharacters: MutableList<CharacterModel> = rememberSaveable {
+                viewModel.getCharacters()
             }
-        requestPermissionLauncher.launch(
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        requestPermissionLauncher.launch(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        requestPermissionLauncher.launch(
-            Manifest.permission.MANAGE_EXTERNAL_STORAGE
-        )
+            Main(
+                context = this,
+                listCharacters = listCharacters,
+                viewModel = viewModel
+            )
+        }
     }
 }
 
@@ -108,7 +88,8 @@ private fun Main(
         topBarIcon = painterResource(id = R.drawable.hamburger),
         characters = listCharacters,
         onCharacterSelected = {
-            characterSelected.value = CharacterModel(
+            characterSelected.value = viewModel.getCharacter(it.name).first()
+            /*CharacterModel(
                 name = it.name,
                 imageCharacter = it.imageCharacter,
                 homebrewRoute = it.homebrewRoute,
@@ -118,7 +99,7 @@ private fun Main(
                 manaMax = it.manaMax,
                 maxSpell = it.maxSpell,
                 observations = it.observations
-            )
+            )*/
             tabSelected.value = 0
         },
         onNewCharacterClicked = {
@@ -130,11 +111,9 @@ private fun Main(
         },
         onDeleteCharacter = {
             dialogDeleteCharacter.value = true
-        },
-        context = context
+        }
     ) {
         MainScreen(
-            context = context,
             characterSelected = characterSelected.value,
             viewModel = viewModel
         )
@@ -169,7 +148,6 @@ private fun Main(
                     dialogNewCharacter.intValue = 0
                 },
                 viewModel = viewModel,
-                context = context
             )
         }
         if(dialogDeleteCharacter.value){

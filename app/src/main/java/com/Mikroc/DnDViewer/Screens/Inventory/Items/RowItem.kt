@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens.Inventory.Items
 
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,8 +48,8 @@ fun RowItem(
     onEquipItem: (ItemsModel) -> Boolean,
     onDeleteClicked: () -> Unit,
     onEditClicked:(ItemsModel) ->Unit,
-    context: Context
 ) {
+    val context = LocalContext.current
     val isEquiped = remember {
         mutableStateOf(item.isEquiped)
     }
@@ -306,7 +305,6 @@ private fun RowItemPreview(){
         onEquipItem = {false},
         onDeleteClicked = { },
         onEditClicked = {},
-        context = LocalContext.current
     )
 }
 

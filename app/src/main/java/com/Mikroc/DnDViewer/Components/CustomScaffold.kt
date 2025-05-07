@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Components
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Models.CharacterModel
@@ -66,7 +66,6 @@ fun CustomNavigationDrawer(
     onNewCharacterClicked: () -> Unit,
     onUpdateCharacter: (CharacterModel) -> Unit,
     onDeleteCharacter: () -> Unit,
-    context: Context,
     content: @Composable () -> Unit,
 ) {
     title = topBarTitle
@@ -79,7 +78,6 @@ fun CustomNavigationDrawer(
                 onCharacterSelected = onCharacterSelected,
                 onNewCharacterClicked = onNewCharacterClicked,
                 onUpdateCharacter = onUpdateCharacter,
-                context = context
             )
         },
         drawerState = drawerState
@@ -88,8 +86,7 @@ fun CustomNavigationDrawer(
             topBar = {
                 GetTopBar(
                     icon = topBarIcon,
-                    onDeleteCharacter = onDeleteCharacter,
-                    context = context
+                    onDeleteCharacter = onDeleteCharacter
                 )
             },
             contentColor = transparent,
@@ -108,7 +105,6 @@ fun GetNavigationDrawer(
     onCharacterSelected: (CharacterModel) -> Unit,
     onNewCharacterClicked: () -> Unit,
     onUpdateCharacter: (CharacterModel) -> Unit,
-    context: Context
 ) {
     val configuration = LocalConfiguration.current
     var screenWidth = configuration.screenWidthDp.dp / 2
@@ -183,7 +179,7 @@ fun GetNavigationDrawer(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue)
                 ) {
-                    Text(text = context.getString(R.string.create_character), color = textColor())
+                    Text(text = LocalContext.current.getString(R.string.create_character), color = textColor())
                 }
             }
 
@@ -194,7 +190,7 @@ fun GetNavigationDrawer(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GetTopBar(icon: Painter?, onDeleteCharacter: () -> Unit, context: Context) {
+fun GetTopBar(icon: Painter?, onDeleteCharacter: () -> Unit) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = topBarColor()
@@ -207,7 +203,7 @@ fun GetTopBar(icon: Painter?, onDeleteCharacter: () -> Unit, context: Context) {
             )
         },
         actions = @Composable {
-            if (title.value != context.getString(R.string.app_name)) {
+            if (title.value != LocalContext.current.getString(R.string.app_name)) {
                 IconButton(onClick = {
                     onDeleteCharacter()
                 }) {

@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens.Character
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
@@ -31,7 +30,7 @@ import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun CharacterScreen(context: Context, characterModel: CharacterModel,viewModel:MainViewModel) {
+fun CharacterScreen(characterModel: CharacterModel,viewModel:MainViewModel) {
     var scaleCharacters by remember { mutableFloatStateOf(1f) }
     var offsetCharacters by remember { mutableStateOf(Offset(0f, 0f)) }
     if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
@@ -94,7 +93,6 @@ private fun CharacterScreenPreview(){
         2, 0, 0, 0, 39, 0, 0, 0, 86, -121, 105, 0, 4, 0, 0, 0, 1, 0, 0, 0, -111, 1, 18, 0, 3, 0, 0,
         0, 1, 0, 1, 0, 0, 1, 50, 0, 2, 0, 0, 0, 20, 0, 0, 0, 125, 0, 0, 0, 0, 65, 110)
     CharacterScreen(
-        context = LocalContext.current,
         characterModel = CharacterModel(vidaMax = 10, manaMax = 10, imageCharacter = img),
         viewModel = MainViewModel()
     )

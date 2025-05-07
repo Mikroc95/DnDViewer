@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens
 
-import android.content.Context
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Models.CharacterModel
@@ -50,7 +50,7 @@ var pdfVerticalReaderState = VerticalPdfReaderState(
 //lateinit var viewModel: MainViewModel
 
 @Composable
-fun MainScreen(context: Context, characterSelected: CharacterModel, viewModel: MainViewModel) {
+fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
     characterModel = characterSelected
    // viewModel = mainViewModel
     pdfVerticalReaderState = VerticalPdfReaderState(
@@ -62,9 +62,9 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, viewModel: M
             EmptySelection()
         } else {
             if (isCharacterEmpty(character = this)) {
-                InventoryScreen(context = context, characterModel = this, viewModel = viewModel)
+                InventoryScreen(characterModel = this, viewModel = viewModel)
             } else {
-                TabRowCharacter(context = context, characterSelected = this, viewModel = viewModel)
+                TabRowCharacter(characterSelected = this, viewModel = viewModel)
             }
         }
     }
@@ -80,7 +80,8 @@ fun isCharacterEmpty(character: CharacterModel): Boolean {
 }
 
 @Composable
-private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,viewModel: MainViewModel) {
+private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainViewModel) {
+    val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -143,7 +144,6 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,
         when (tabSelected.value) {
             0 -> {
                 CharacterScreen(
-                    context = context,
                     characterModel = characterSelected,
                     viewModel = viewModel
                 )
@@ -162,7 +162,6 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,
 
             2 -> {
                 InventoryScreen(
-                    context = context,
                     characterModel = characterSelected,
                     viewModel = viewModel
                 )

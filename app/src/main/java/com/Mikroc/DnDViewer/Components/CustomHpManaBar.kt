@@ -147,7 +147,8 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                             characterModel.mana = currentMana.intValue
                             viewModel.updateCharacters(character = characterModel)
                         }
-                    })
+                    }
+                )
             }
         }
     }

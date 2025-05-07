@@ -51,9 +51,9 @@ fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
     onDismissRequest: (CharacterModel) -> Unit,
     onClose: () -> Unit,
-    context: Context,
     viewModel:MainViewModel
 ) {
+    val context = LocalContext.current
     val character = if (characterModel.name.isEmpty()) {
         CharacterModel()
     } else {
@@ -420,7 +420,6 @@ private fun DialogNewCharacterPreview(){
     DialogNewCharacter(
         onDismissRequest = {},
         onClose = {  },
-        context = LocalContext.current,
         viewModel = MainViewModel()
     )
 }

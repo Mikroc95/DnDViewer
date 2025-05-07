@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Dialogs
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,10 +43,10 @@ fun DialogNewItem(
     characterName: String,
     onDismissRequest: (ItemsModel) -> Unit,
     onClose: () -> Unit,
-    context: Context,
     isConsumable:Boolean = false,
     editing:ItemsModel = ItemsModel()
 ) {
+    val context = LocalContext.current
     val name = remember {
         mutableStateOf(editing.name)
     }
@@ -219,6 +218,5 @@ fun DialogNewItemPreview(){
         characterName = "Mock",
         onDismissRequest = {},
         onClose = {  },
-        context = LocalContext.current
     )
 }

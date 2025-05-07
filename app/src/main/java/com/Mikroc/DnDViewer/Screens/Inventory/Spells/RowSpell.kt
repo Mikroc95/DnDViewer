@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens.Inventory.Spells
 
-import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Models.SpellModel
@@ -25,7 +25,8 @@ import com.Mikroc.DnDViewer.Screens.characterModel
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun RowSpell(spell: SpellModel, count: Int, context: Context,viewModel:MainViewModel) {
+fun RowSpell(spell: SpellModel, count: Int, viewModel:MainViewModel) {
+    val context = LocalContext.current
     val valueName = remember {
         mutableStateOf(spell.name)
     }
