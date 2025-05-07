@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.Mikroc.DnDViewer.Components.CustomHpManaBar
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Components.ExpandableBox
 import com.Mikroc.DnDViewer.Dialogs.DialogNewItem
@@ -79,6 +80,10 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: 
             .verticalScroll(rememberScrollState())
             .background(backgroundColor())
     ) {
+        //VIDA MANA EN CAS DE QUE TINGUIN 1 TAB
+        if (characterModel.imageCharacter.contentEquals(byteArrayOf()) && characterModel.homebrewRoute.isEmpty()) {
+            CustomHpManaBar(characterModel = characterModel, viewModel = viewModel)
+        }
         //ITEMS
         ExpandableBox(
             title = context.getString(R.string.inventory_bag),

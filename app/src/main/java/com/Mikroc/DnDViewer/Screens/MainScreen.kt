@@ -73,11 +73,7 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, viewModel: M
 fun isCharacterEmpty(character: CharacterModel): Boolean {
     if (character.homebrewRoute.isEmpty()) {
         if (character.imageCharacter.contentEquals(byteArrayOf())) {
-            if (character.vidaMax <= 0) {
-                if (character.manaMax <= 0) {
-                    return true
-                }
-            }
+            return true
         }
     }
     return false
@@ -146,7 +142,11 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,
         ) {
         when (tabSelected.value) {
             0 -> {
-                CharacterScreen(context = context, characterModel = characterSelected, viewModel = viewModel)
+                CharacterScreen(
+                    context = context,
+                    characterModel = characterSelected,
+                    viewModel = viewModel
+                )
             }
 
             1 -> {
@@ -161,7 +161,11 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,
             }
 
             2 -> {
-                InventoryScreen(context = context, characterModel = characterSelected, viewModel = viewModel)
+                InventoryScreen(
+                    context = context,
+                    characterModel = characterSelected,
+                    viewModel = viewModel
+                )
             }
         }
     }
