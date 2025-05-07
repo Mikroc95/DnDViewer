@@ -136,7 +136,7 @@ private fun Main(
         MainScreen(
             context = context,
             characterSelected = characterSelected.value,
-            mainViewModel = viewModel
+            viewModel = viewModel
         )
         if (dialogNewCharacter.intValue > 0) {
             DialogNewCharacter(
@@ -168,6 +168,7 @@ private fun Main(
                     updateCharacter = CharacterModel()
                     dialogNewCharacter.intValue = 0
                 },
+                viewModel = viewModel,
                 context = context
             )
         }

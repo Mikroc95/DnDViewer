@@ -26,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Mikroc.DnDViewer.Components.InputCounter
@@ -37,6 +39,7 @@ import com.Mikroc.DnDViewer.Theme.discordLigthBlack
 import com.Mikroc.DnDViewer.Theme.discordOrangeAccent
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.R
+import com.Mikroc.DnDViewer.Utils.stringToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -66,7 +69,7 @@ fun RowItem(
     val charges = remember {
         mutableIntStateOf(0)
     }
-    charges.intValue = item.actualCharges.toInt().or(0)
+    charges.intValue = item.actualCharges.stringToInt()
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top,
@@ -114,7 +117,7 @@ fun RowItem(
                     )
                 }
             }
-            if(item.charges.toInt()>0){
+            if(item.charges.stringToInt()>0){
                 val counterText =
                     "${charges.intValue} / ${item.charges} ${context.getString(R.string.item_charges)}"
                 val valueTextField = remember {
@@ -187,7 +190,7 @@ fun RowConsumible(
     val totalConsumibles = remember {
         mutableIntStateOf(0)
     }
-    totalConsumibles.intValue = item.charges.toInt()
+    totalConsumibles.intValue = item.charges.stringToInt()
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top,
@@ -291,4 +294,29 @@ fun RowConsumible(
             )
         }
     }
+}
+
+
+@Preview
+@Composable
+private fun RowItemPreview(){
+    RowItem(
+        item = ItemsModel(),
+        saveObjectes = {},
+        onEquipItem = {false},
+        onDeleteClicked = { },
+        onEditClicked = {},
+        context = LocalContext.current
+    )
+}
+
+@Preview
+@Composable
+private fun RowConsumablePreview(){
+    RowConsumible(
+        item = ItemsModel(),
+        saveObjectes = {},
+        onDeleteClicked = { },
+        onEditClicked = {},
+    )
 }

@@ -27,16 +27,19 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import com.Mikroc.DnDViewer.Components.InputCounter
 import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Screens.viewModel
 import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
 import com.Mikroc.DnDViewer.R
+import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun CharacterScreen(context: Context, characterModel: CharacterModel) {
+fun CharacterScreen(context: Context, characterModel: CharacterModel,viewModel:MainViewModel) {
     var scaleCharacters by remember { mutableFloatStateOf(1f) }
     var offsetCharacters by remember { mutableStateOf(Offset(0f, 0f)) }
     if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
@@ -174,8 +177,12 @@ fun CharacterScreen(context: Context, characterModel: CharacterModel) {
     }
 
     if (!characterModel.imageCharacter.contentEquals(byteArrayOf())) {
-        // Create an Image composable with zooming and panning.
-        val bitmap = characterModel.imageCharacter.toBitmap()
+        val bitmap = try{
+            characterModel.imageCharacter.toBitmap()
+        }catch (e:Exception){
+            e.printStackTrace()
+            LocalContext.current.getDrawable(R.drawable.empty)?.toBitmap()
+        }
         val scrollImage = rememberScrollState()
         Row(
             modifier = Modifier
@@ -183,7 +190,7 @@ fun CharacterScreen(context: Context, characterModel: CharacterModel) {
                 .scrollable(scrollImage, orientation = Orientation.Vertical)
         ) {
             Image(
-                bitmap = bitmap.asImageBitmap(), // Replace 'imagePainter' with your image
+                bitmap = bitmap?.asImageBitmap()!!,
                 contentDescription = null,
                 modifier = Modifier
                     .clipToBounds()
@@ -214,4 +221,19 @@ fun CharacterScreen(context: Context, characterModel: CharacterModel) {
 
 fun ByteArray.toBitmap(): Bitmap {
     return BitmapFactory.decodeByteArray(this, 0, this.size)
+}
+
+@Preview
+@Composable
+private fun CharacterScreenPreview(){
+
+    val img = byteArrayOf(-1, -40, -1, -31, 1, 122, 69, 120, 105, 102, 0, 0, 77, 77, 0, 42, 0, 0, 0,
+        8, 0, 6, 1, 0, 0, 3, 0, 0, 0, 1, 4, 56, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1, 9, 36, 0, 0, 1, 49, 0,
+        2, 0, 0, 0, 39, 0, 0, 0, 86, -121, 105, 0, 4, 0, 0, 0, 1, 0, 0, 0, -111, 1, 18, 0, 3, 0, 0,
+        0, 1, 0, 1, 0, 0, 1, 50, 0, 2, 0, 0, 0, 20, 0, 0, 0, 125, 0, 0, 0, 0, 65, 110)
+    CharacterScreen(
+        context = LocalContext.current,
+        characterModel = CharacterModel(vidaMax = 10, manaMax = 10, imageCharacter = img),
+        viewModel = MainViewModel()
+    )
 }

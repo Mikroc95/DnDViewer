@@ -1,5 +1,6 @@
 package com.Mikroc.DnDViewer.Components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Mikroc.DnDViewer.Theme.backgroundColor
@@ -42,8 +45,12 @@ fun InputCounter(
     onLessClicked: () -> Unit,
     onPlusClicked: () -> Unit,
 ){
-    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Top,
-        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp)) {
         Text(
             text = totalResult,
             textAlign = TextAlign.Center,
@@ -55,7 +62,9 @@ fun InputCounter(
             .fillMaxWidth()){
             Row(horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().weight(0.3f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.remove),
@@ -69,7 +78,10 @@ fun InputCounter(
                         }
                 )
             }
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth().weight(0.4f).padding(horizontal = 8.dp)){
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.4f)
+                .padding(horizontal = 8.dp)){
                 CustomTextField(
                     value =  valueTextField.value,
                     onValueChange = {
@@ -102,7 +114,9 @@ fun InputCounter(
             }
             Row(horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().weight(0.3f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
             ){
                 Icon(
                     painter = painterResource(id = R.drawable.add),
@@ -118,5 +132,22 @@ fun InputCounter(
         }
     }
 
+
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Preview
+@Composable
+private fun InputCounterPreview(){
+    Row(modifier = Modifier.background(Color.Black)){
+        InputCounter(
+            totalResult = "10",
+            borderColor = Color.Red,
+            valueTextField = mutableStateOf(""),
+            onKeyBoardDone = { },
+            onPlusClicked = { },
+            onLessClicked = { }
+        )
+    }
 
 }

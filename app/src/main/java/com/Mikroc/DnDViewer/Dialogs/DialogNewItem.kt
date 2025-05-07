@@ -25,7 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.Mikroc.DnDViewer.Components.CustomTextField
@@ -148,7 +150,7 @@ fun DialogNewItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp,end = 16.dp,top = 4.dp, bottom = 8.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
@@ -208,4 +210,15 @@ private fun checkInteger (value:String,isConsumable: Boolean):String{
         e.printStackTrace()
     }
     return if(isConsumable) "-1" else "0"
+}
+
+@Composable
+@Preview
+fun DialogNewItemPreview(){
+    DialogNewItem(
+        characterName = "Mock",
+        onDismissRequest = {},
+        onClose = {  },
+        context = LocalContext.current
+    )
 }

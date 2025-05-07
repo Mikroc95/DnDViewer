@@ -141,13 +141,12 @@ class MainViewModel : ViewModel() {
                 put(MyBBDD.Objectes.COLUMN_NAME_CONSUMIBLE, intConsumible)
             }
 
-            val result = db?.update(
+             db?.update(
                 MyBBDD.Objectes.TABLE_NAME,
                 values,
                 "${BaseColumns._ID} = ? AND ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE } = ?",
                 arrayOf(item.id.toString(), item.character)
             )
-            System.out.println(result)
         } catch (e: Exception) {
             e.printStackTrace()
         }

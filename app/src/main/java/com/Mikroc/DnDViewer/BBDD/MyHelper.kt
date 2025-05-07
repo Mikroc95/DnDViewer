@@ -7,6 +7,7 @@ import android.provider.BaseColumns
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Models.ItemsModel
 import com.Mikroc.DnDViewer.Models.SpellModel
+import com.Mikroc.DnDViewer.Utils.stringToInt
 
 class MyHelper(context: Context) : SQLiteOpenHelper(
     context,
@@ -107,12 +108,12 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                         name = cursor.getString(0).orEmpty(),
                         homebrewRoute = cursor.getString(1).orEmpty(),
                         imageCharacter = cursor.getBlob(2),
-                        vida = cursor.getInt(3).or(0),
-                        vidaMax = cursor.getInt(4).or(0),
-                        mana = cursor.getInt(5).or(0),
-                        manaMax = cursor.getInt(6).or(0),
+                        vida = cursor.getString(3).orEmpty().stringToInt(),
+                        vidaMax = cursor.getString(4).orEmpty().stringToInt(),
+                        mana = cursor.getString(5).orEmpty().stringToInt(),
+                        manaMax = cursor.getString(6).orEmpty().stringToInt(),
                         observations = cursor.getString(7).orEmpty(),
-                        maxSpell = cursor.getInt(8).or(0)
+                        maxSpell = cursor.getString(8).orEmpty().stringToInt()
                     )
                     list.add(character)
                 }
@@ -155,12 +156,12 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                         name = cursor.getString(0).orEmpty(),
                         homebrewRoute = cursor.getString(1).orEmpty(),
                         imageCharacter = cursor.getBlob(2),
-                        vida = cursor.getInt(3).or(0),
-                        vidaMax = cursor.getInt(4).or(0),
-                        mana = cursor.getInt(5).or(0),
-                        manaMax = cursor.getInt(6).or(0),
+                        vida = cursor.getString(3).orEmpty().stringToInt(),
+                        vidaMax = cursor.getString(4).orEmpty().stringToInt(),
+                        mana = cursor.getString(5).orEmpty().stringToInt(),
+                        manaMax = cursor.getString(6).orEmpty().stringToInt(),
                         observations = cursor.getString(7).orEmpty(),
-                        maxSpell = cursor.getInt(8).or(0)
+                        maxSpell = cursor.getString(8).orEmpty().stringToInt()
                     )
                     list.add(item)
                 }

@@ -25,7 +25,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -38,9 +40,9 @@ import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.Theme.textColorAccent
 import com.Mikroc.DnDViewer.Utils.GetCustomContents
 import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Screens.viewModel
 import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
+import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import java.io.File
 
 
@@ -49,7 +51,8 @@ fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
     onDismissRequest: (CharacterModel) -> Unit,
     onClose: () -> Unit,
-    context: Context
+    context: Context,
+    viewModel:MainViewModel
 ) {
     val character = if (characterModel.name.isEmpty()) {
         CharacterModel()
@@ -349,7 +352,7 @@ fun DialogNewCharacter(
                     onClick = {
                         try{
                             if(characterModel.name.isEmpty()){
-                                // SI ESTEM CREANT
+                                // CREANT
                                 if (name.value.isNotEmpty()) {
                                     if (viewModel.getCharacter(name.value).size > 0) {
                                         Toast.makeText(
@@ -371,7 +374,7 @@ fun DialogNewCharacter(
                                     ).show()
                                 }
                             }else{
-                                // SI ESTEM EDITANT
+                                //EDITANT
                                 onDismissRequest(newCharacter.value)
                             }
                         }catch (e:Exception){
@@ -410,3 +413,16 @@ private fun saveHomeBrew(context: Context, name: String, uri: Uri): String {
     input?.close()
     return file.absolutePath.toString()
 }
+
+@Preview
+@Composable
+private fun DialogNewCharacterPreview(){
+    DialogNewCharacter(
+        onDismissRequest = {},
+        onClose = {  },
+        context = LocalContext.current,
+        viewModel = MainViewModel()
+    )
+}
+
+

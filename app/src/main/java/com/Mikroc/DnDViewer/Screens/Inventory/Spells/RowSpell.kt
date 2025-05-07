@@ -18,14 +18,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Models.SpellModel
-import com.Mikroc.DnDViewer.Screens.viewModel
 import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Screens.characterModel
+import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun RowSpell(spell: SpellModel, count: Int, context: Context) {
+fun RowSpell(spell: SpellModel, count: Int, context: Context,viewModel:MainViewModel) {
     val valueName = remember {
         mutableStateOf(spell.name)
     }

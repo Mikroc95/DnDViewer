@@ -24,8 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -37,16 +39,16 @@ import com.Mikroc.DnDViewer.Models.ItemsModel
 import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowConsumible
 import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowItem
 import com.Mikroc.DnDViewer.Screens.Inventory.Spells.RowSpell
-import com.Mikroc.DnDViewer.Screens.viewModel
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Theme.backgroundColor
 import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
 import com.Mikroc.DnDViewer.Theme.textColor
+import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryScreen(context: Context, characterModel: CharacterModel) {
+fun InventoryScreen(context: Context, characterModel: CharacterModel,viewModel: MainViewModel) {
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
@@ -169,7 +171,7 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
                 ) {
                     val listSpells = viewModel.getSpells(characterModel.name)
                     listSpells.forEach {
-                        RowSpell(spell = it, count = listSpells.indexOf(it) + 1, context = context)
+                        RowSpell(spell = it, count = listSpells.indexOf(it) + 1, context = context, viewModel = viewModel)
                     }
                 }
             }
@@ -310,4 +312,14 @@ fun InventoryScreen(context: Context, characterModel: CharacterModel) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun InventoryScreenPreview(){
+    InventoryScreen(
+        context = LocalContext.current,
+        characterModel = CharacterModel(),
+        viewModel = MainViewModel()
+    )
 }

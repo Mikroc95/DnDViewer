@@ -1,7 +1,10 @@
 package com.Mikroc.DnDViewer.Components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Theme.discordDarkBlack
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
@@ -80,11 +84,22 @@ fun CustomTextField(
             singleLine = singleLine,
             enabled = enabled,
             interactionSource = interactionSource,
-            contentPadding = PaddingValues(6.dp), //this is how you can remove the padding
+            contentPadding = PaddingValues(6.dp), //padding
             trailingIcon = trailingIcon,
             placeholder = placeHolder,
             leadingIcon = leadingIcon,
             shape = shape,
         )
     }
+}
+
+@Preview
+@Composable
+private fun CustomTextFieldPreview(){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center){
+        CustomTextField(value = "Mock", onValueChange = {})
+    }
+
 }

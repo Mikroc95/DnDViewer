@@ -47,12 +47,12 @@ var pdfVerticalReaderState = VerticalPdfReaderState(
     isZoomEnable = true
 )
 
-lateinit var viewModel: MainViewModel
+//lateinit var viewModel: MainViewModel
 
 @Composable
-fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewModel: MainViewModel) {
+fun MainScreen(context: Context, characterSelected: CharacterModel, viewModel: MainViewModel) {
     characterModel = characterSelected
-    viewModel = mainViewModel
+   // viewModel = mainViewModel
     pdfVerticalReaderState = VerticalPdfReaderState(
         resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
         isZoomEnable = true,
@@ -62,9 +62,9 @@ fun MainScreen(context: Context, characterSelected: CharacterModel, mainViewMode
             EmptySelection()
         } else {
             if (isCharacterEmpty(character = this)) {
-                InventoryScreen(context = context, characterModel = this)
+                InventoryScreen(context = context, characterModel = this, viewModel = viewModel)
             } else {
-                TabRowCharacter(context = context, characterSelected = this)
+                TabRowCharacter(context = context, characterSelected = this, viewModel = viewModel)
             }
         }
     }
@@ -84,7 +84,7 @@ fun isCharacterEmpty(character: CharacterModel): Boolean {
 }
 
 @Composable
-private fun TabRowCharacter(context: Context, characterSelected: CharacterModel) {
+private fun TabRowCharacter(context: Context, characterSelected: CharacterModel,viewModel: MainViewModel) {
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +146,7 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
         ) {
         when (tabSelected.value) {
             0 -> {
-                CharacterScreen(context = context, characterModel = characterSelected)
+                CharacterScreen(context = context, characterModel = characterSelected, viewModel = viewModel)
             }
 
             1 -> {
@@ -161,7 +161,7 @@ private fun TabRowCharacter(context: Context, characterSelected: CharacterModel)
             }
 
             2 -> {
-                InventoryScreen(context = context, characterModel = characterSelected)
+                InventoryScreen(context = context, characterModel = characterSelected, viewModel = viewModel)
             }
         }
     }
