@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.Mikroc.DnDViewer.BBDD.MyBBDD
 import com.Mikroc.DnDViewer.BBDD.MyHelper
@@ -15,6 +16,8 @@ import java.io.File
 
 class MainViewModel : ViewModel() {
     private lateinit var helper: MyHelper
+
+    var characterSelected = mutableStateOf(CharacterModel())
     fun getBBDD(context: Context) {
         helper = MyHelper(context)
     }

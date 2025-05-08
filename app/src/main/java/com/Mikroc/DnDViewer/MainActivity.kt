@@ -15,7 +15,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,8 +66,6 @@ private fun Main(
     viewModel: MainViewModel,
 ) {
     var updateCharacter = CharacterModel()
-    val characterSelected: MutableState<CharacterModel> =
-        remember { mutableStateOf(CharacterModel()) }
     val topBarTitle = remember { mutableStateOf(context.getString(R.string.app_name)) }
     val dialogNewCharacter = remember {
         //0 tancat
@@ -80,15 +77,15 @@ private fun Main(
         mutableStateOf(false)
     }
 
-    if (characterSelected.value.name.isNotEmpty()) {
-        topBarTitle.value = characterSelected.value.name
+    if (viewModel.characterSelected.value.name.isNotEmpty()) {
+        topBarTitle.value = viewModel.characterSelected.value.name
     }
     CustomNavigationDrawer(
         topBarTitle = topBarTitle,
         topBarIcon = painterResource(id = R.drawable.hamburger),
         characters = listCharacters,
         onCharacterSelected = {
-            characterSelected.value = viewModel.getCharacter(it.name).first()
+            viewModel.characterSelected.value = viewModel.getCharacter(it.name).first()
             /*CharacterModel(
                 name = it.name,
                 imageCharacter = it.imageCharacter,
@@ -114,7 +111,7 @@ private fun Main(
         }
     ) {
         MainScreen(
-            characterSelected = characterSelected.value,
+            characterSelected = viewModel.characterSelected.value,
             viewModel = viewModel
         )
         if (dialogNewCharacter.intValue > 0) {
@@ -129,7 +126,7 @@ private fun Main(
                         updateCharacter = CharacterModel()
                     }
                     viewModel.insertSpells(it.name, it.maxSpell)
-                    characterSelected.value = CharacterModel(
+                    viewModel.characterSelected.value = CharacterModel(
                         name = it.name,
                         imageCharacter = it.imageCharacter,
                         homebrewRoute = it.homebrewRoute,
@@ -180,9 +177,9 @@ private fun Main(
                     ) {
                         Button(
                             onClick = {
-                                listCharacters.remove(characterSelected.value)
-                                viewModel.deleteCharacter(character = characterSelected.value, context = context)
-                                characterSelected.value = CharacterModel()
+                                listCharacters.remove(viewModel.characterSelected.value)
+                                viewModel.deleteCharacter(character = viewModel.characterSelected.value, context = context)
+                                viewModel.characterSelected.value = CharacterModel()
                                 topBarTitle.value = context.getString(R.string.app_name)
                                 dialogDeleteCharacter.value = false
                             },
