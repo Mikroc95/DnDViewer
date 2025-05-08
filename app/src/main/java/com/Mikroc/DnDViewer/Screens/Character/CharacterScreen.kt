@@ -24,18 +24,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.graphics.drawable.toBitmap
-import com.Mikroc.DnDViewer.Components.CustomHpManaBar
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun CharacterScreen(characterModel: CharacterModel,viewModel:MainViewModel) {
+fun CharacterScreen(characterModel: CharacterModel) {
     var scaleCharacters by remember { mutableFloatStateOf(1f) }
     var offsetCharacters by remember { mutableStateOf(Offset(0f, 0f)) }
-    if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
-        CustomHpManaBar(characterModel = characterModel, viewModel = viewModel)
-    }
 
     if (!characterModel.imageCharacter.contentEquals(byteArrayOf())) {
         val bitmap = try{
@@ -94,6 +89,5 @@ private fun CharacterScreenPreview(){
         0, 1, 0, 1, 0, 0, 1, 50, 0, 2, 0, 0, 0, 20, 0, 0, 0, 125, 0, 0, 0, 0, 65, 110)
     CharacterScreen(
         characterModel = CharacterModel(vidaMax = 10, manaMax = 10, imageCharacter = img),
-        viewModel = MainViewModel()
     )
 }

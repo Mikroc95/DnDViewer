@@ -12,14 +12,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.Mikroc.DnDViewer.Dialogs.DialogFall
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
+
 @Composable
-fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
+fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
+    val isCharacterFalled = remember {
+        mutableStateOf(false)
+    }
+
+    val valueHP = remember {
+        mutableStateOf("")
+    }
+    val currentHP = remember {
+        mutableIntStateOf(characterModel.vida)
+    }
+    val valueMana = remember {
+        mutableStateOf("")
+    }
+    val currentMana = remember {
+        mutableIntStateOf(0)
+    }
     Row(
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -34,12 +52,7 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                val valueHP = remember {
-                    mutableStateOf("")
-                }
-                val currentHP = remember {
-                    mutableIntStateOf(characterModel.vida)
-                }
+
 
                 InputCounter(
                     totalResult = "${currentHP.intValue} / ${characterModel.vidaMax} ${
@@ -51,7 +64,7 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                     labelColor = discordRed,
                     valueTextField = valueHP,
                     onKeyBoardDone = {
-                        try{
+                        try {
                             if (valueHP.value.isNotEmpty()) {
                                 val value = valueHP.value.toInt()
                                 currentHP.intValue = if (currentHP.intValue + value > 0) {
@@ -64,8 +77,11 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                                     0
                                 }
                                 characterModel.vida = currentHP.intValue
+                                if(characterModel.vida<=0){
+                                    isCharacterFalled.value = true
+                                }
                             }
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                             valueHP.value = ""
                         }
@@ -76,6 +92,9 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                             currentHP.intValue = hp - 1
                             characterModel.vida = currentHP.intValue
                             viewModel.updateCharacters(character = characterModel)
+                        }
+                        if(characterModel.vida<=0){
+                            isCharacterFalled.value = true
                         }
                     },
                     onPlusClicked = {
@@ -96,12 +115,7 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                val valueMana = remember {
-                    mutableStateOf("")
-                }
-                val currentMana = remember {
-                    mutableIntStateOf(0)
-                }
+
                 currentMana.intValue = characterModel.mana
                 InputCounter(
                     totalResult = "${currentMana.intValue} / ${characterModel.manaMax} ${
@@ -113,7 +127,7 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                     labelColor = blueMana,
                     valueTextField = valueMana,
                     onKeyBoardDone = {
-                        try{
+                        try {
                             if (valueMana.value.isNotEmpty()) {
                                 val value = valueMana.value.toInt()
                                 currentMana.intValue = if (currentMana.intValue + value > 0) {
@@ -127,7 +141,7 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
                                 }
                                 characterModel.mana = currentMana.intValue
                             }
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                             valueMana.value = ""
                         }
@@ -152,4 +166,8 @@ fun CustomHpManaBar(characterModel: CharacterModel,viewModel:MainViewModel){
             }
         }
     }
+    if(isCharacterFalled.value){
+        DialogFall(fallen = isCharacterFalled, hp = currentHP, viewModel = viewModel)
+    }
 }
+

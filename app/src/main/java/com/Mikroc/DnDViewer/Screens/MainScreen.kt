@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.Mikroc.DnDViewer.Components.CustomHpManaBar
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Screens.Character.CharacterScreen
 import com.Mikroc.DnDViewer.Screens.Inventory.InventoryScreen
@@ -42,49 +43,74 @@ var tabSelected: MutableState<Int> = mutableIntStateOf(0)
 
 var characterModel = CharacterModel(imageCharacter = byteArrayOf())
 
-var pdfVerticalReaderState = VerticalPdfReaderState(
+private var pdfVerticalReaderState = VerticalPdfReaderState(
     resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
     isZoomEnable = true
 )
-
-//lateinit var viewModel: MainViewModel
-
 @Composable
 fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
     characterModel = characterSelected
-   // viewModel = mainViewModel
     pdfVerticalReaderState = VerticalPdfReaderState(
         resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
         isZoomEnable = true,
     )
-    characterModel.apply {
-        if (name.isEmpty()) {
-            EmptySelection()
-        } else {
-            if (isCharacterEmpty(character = this)) {
-                InventoryScreen(characterModel = this, viewModel = viewModel)
-            } else {
-                TabRowCharacter(characterSelected = this, viewModel = viewModel)
+    if (characterModel.name.isEmpty()) {
+        EmptySelection()
+    } else {
+        Column(modifier = Modifier.background(topBarColor())) {
+            if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
+                CustomHpManaBar(characterModel = characterModel, viewModel = viewModel)
+            }
+            when (isCharacterEmpty(character = characterModel)) {
+                0 -> {
+                    TabRowFull(characterSelected = characterModel, viewModel = viewModel)
+                }
+
+                1 -> {
+                    TabRowCharacter(characterSelected = characterModel, viewModel = viewModel)
+                }
+
+                2 -> {
+                    TabRowHomeBrew(characterSelected = characterModel, viewModel = viewModel)
+                }
+
+                3 -> {
+                    InventoryScreen(characterModel = characterModel, viewModel = viewModel)
+                }
             }
         }
+
     }
 }
 
-fun isCharacterEmpty(character: CharacterModel): Boolean {
-    if (character.homebrewRoute.isEmpty()) {
-        if (character.imageCharacter.contentEquals(byteArrayOf())) {
-            return true
+//0-->>show Personatge + homebrew + inventari
+//1-->show Personatge + inventari
+//2-->show homebrew + inventari
+//3 --> show inventari
+fun isCharacterEmpty(character: CharacterModel): Int {
+    return if (
+        character.homebrewRoute.isNotEmpty() &&
+        !character.imageCharacter.contentEquals(byteArrayOf())
+    ) {
+        0
+    } else {
+        if (character.homebrewRoute.isEmpty() && !character.imageCharacter.contentEquals(byteArrayOf())) {
+            1
+        } else if (character.imageCharacter.contentEquals(byteArrayOf()) && character.homebrewRoute.isNotEmpty()) {
+            2
+        } else {
+            3
         }
     }
-    return false
 }
 
 @Composable
-private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainViewModel) {
+private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewModel) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
         selectedTabIndex = tabSelected.value,
         containerColor = topBarColor(),
@@ -107,7 +133,7 @@ private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainVi
             } else {
                 textColor()
             }
-            Text(text = context.getString(R.string.tab_1), color = color)
+            Text(text = context.getString(R.string.tab_personatge), color = color)
         }
 
         Tab(modifier = Modifier.padding(8.dp),
@@ -119,7 +145,7 @@ private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainVi
             } else {
                 textColor()
             }
-            Text(text = context.getString(R.string.tab_2), color = color)
+            Text(text = context.getString(R.string.tab_homebrew), color = color)
         }
 
         Tab(modifier = Modifier.padding(8.dp),
@@ -131,7 +157,7 @@ private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainVi
             } else {
                 textColor()
             }
-            Text(text = context.getString(R.string.tab_3), color = color)
+            Text(text = context.getString(R.string.tab_inventari), color = color)
         }
     }
 
@@ -143,10 +169,7 @@ private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainVi
         ) {
         when (tabSelected.value) {
             0 -> {
-                CharacterScreen(
-                    characterModel = characterSelected,
-                    viewModel = viewModel
-                )
+                CharacterScreen(characterModel = characterSelected)
             }
 
             1 -> {
@@ -161,6 +184,137 @@ private fun TabRowCharacter( characterSelected: CharacterModel,viewModel: MainVi
             }
 
             2 -> {
+                InventoryScreen(
+                    characterModel = characterSelected,
+                    viewModel = viewModel
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainViewModel) {
+    val context = LocalContext.current
+    TabRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clip(RoundedCornerShape(0.dp)),
+        selectedTabIndex = tabSelected.value,
+        containerColor = topBarColor(),
+        indicator = {
+
+            TabRowDefaults.SecondaryIndicator(
+                Modifier.tabIndicatorOffset(it[tabSelected.value]),
+                color = discordBlue
+            )
+        }
+    ) {
+
+        Tab(modifier = Modifier.padding(8.dp),
+            selected = tabSelected.value == 0,
+            onClick = { tabSelected.value = 0 }
+        ) {
+            val color = if (tabSelected.value == 0) {
+                textColorAccent()
+            } else {
+                textColor()
+            }
+            Text(text = context.getString(R.string.tab_personatge), color = color)
+        }
+
+        Tab(modifier = Modifier.padding(8.dp),
+            selected = tabSelected.value == 1,
+            onClick = { tabSelected.value = 1 }
+        ) {
+            val color = if (tabSelected.value == 1) {
+                textColorAccent()
+            } else {
+                textColor()
+            }
+            Text(text = context.getString(R.string.tab_inventari), color = color)
+        }
+    }
+
+    Column(modifier = Modifier
+            .background(backgroundColor())
+            .fillMaxSize()
+    ) {
+        when (tabSelected.value) {
+            0 -> {
+                CharacterScreen(characterModel = characterSelected)
+            }
+
+            1 -> {
+                InventoryScreen(
+                    characterModel = characterSelected,
+                    viewModel = viewModel
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainViewModel) {
+    val context = LocalContext.current
+    TabRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .clip(RoundedCornerShape(0.dp)),
+        selectedTabIndex = tabSelected.value,
+        containerColor = topBarColor(),
+        indicator = {
+            TabRowDefaults.SecondaryIndicator(
+                Modifier.tabIndicatorOffset(it[tabSelected.value]),
+                color = discordBlue
+            )
+        }
+    ) {
+        Tab(modifier = Modifier.padding(8.dp),
+            selected = tabSelected.value == 0,
+            onClick = { tabSelected.value = 0 }
+        ) {
+            val color = if (tabSelected.value == 0) {
+                textColorAccent()
+            } else {
+                textColor()
+            }
+            Text(text = context.getString(R.string.tab_homebrew), color = color)
+        }
+
+        Tab(modifier = Modifier.padding(8.dp),
+            selected = tabSelected.value == 1,
+            onClick = { tabSelected.value = 1 }
+        ) {
+            val color = if (tabSelected.value == 1) {
+                textColorAccent()
+            } else {
+                textColor()
+            }
+            Text(text = context.getString(R.string.tab_inventari), color = color)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .background(backgroundColor())
+            .fillMaxSize(),
+
+        ) {
+        when (tabSelected.value) {
+            0 -> {
+                VerticalPDFReader(
+                    state = pdfVerticalReaderState,
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .clipToBounds(),
+                )
+            }
+
+            1 -> {
                 InventoryScreen(
                     characterModel = characterSelected,
                     viewModel = viewModel

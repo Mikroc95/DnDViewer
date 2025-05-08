@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">DnDViewer</string>
-    <string name="tab_1">Personatge</string>
-    <string name="tab_2">HomeBrew</string>
-    <string name="tab_3">Inventari</string>
+    <string name="tab_personatge">Personatge</string>
+    <string name="tab_homebrew">HomeBrew</string>
+    <string name="tab_inventari">Inventari</string>
     <string name="create_character">Crear Nou Personatge</string>
     <string name="choose_your_character">Escull el personatge</string>
     <string name="delete_character">Eliminar personatge</string>
@@ -46,5 +46,8 @@
     <string name="common_delete_text">Segur que vols continuar?</string>
     <string name="common_yes">Si</string>
     <string name="common_no">No</string>
+
+    <string name="Dialog_fall_title">estas inconcient a terra</string>
+    <string name="Dialog_fall_description">tira 1 d20 si surt per sota de 10 es una pifia, si treus 3 pifies el teu personatge mor, si treus 3 encerts el teu personatge s\'aixeca amb 1HP</string>
 
 </resources>
