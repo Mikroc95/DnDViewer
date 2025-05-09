@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.Screens
 
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,8 +17,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -34,26 +31,17 @@ import com.Mikroc.DnDViewer.Theme.textColorAccent
 import com.Mikroc.DnDViewer.Theme.topBarColor
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import com.Mikroc.DnDViewer.R
-import com.rizzi.bouquet.ResourceType
-import com.rizzi.bouquet.VerticalPDFReader
-import com.rizzi.bouquet.VerticalPdfReaderState
+import com.Mikroc.DnDViewer.Screens.HomeBrew.HomeBrewViewer
+
 import java.io.File
 
 var tabSelected: MutableState<Int> = mutableIntStateOf(0)
 
 var characterModel = CharacterModel(imageCharacter = byteArrayOf())
 
-private var pdfVerticalReaderState = VerticalPdfReaderState(
-    resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
-    isZoomEnable = true
-)
 @Composable
 fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
     characterModel = characterSelected
-    pdfVerticalReaderState = VerticalPdfReaderState(
-        resource = ResourceType.Local(Uri.fromFile(File(characterModel.homebrewRoute))),
-        isZoomEnable = true,
-    )
     if (characterModel.name.isEmpty()) {
         EmptySelection()
     } else {
@@ -63,7 +51,10 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
             }
             when (isCharacterEmpty(character = characterModel)) {
                 0 -> {
-                    TabRowFull(characterSelected = characterModel, viewModel = viewModel)
+                    TabRowFull(
+                        characterSelected = characterModel,
+                        viewModel = viewModel,
+                    )
                 }
 
                 1 -> {
@@ -71,7 +62,10 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
                 }
 
                 2 -> {
-                    TabRowHomeBrew(characterSelected = characterModel, viewModel = viewModel)
+                    TabRowHomeBrew(
+                        characterSelected = characterModel,
+                        viewModel = viewModel,
+                    )
                 }
 
                 3 -> {
@@ -173,14 +167,7 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             }
 
             1 -> {
-                if (characterSelected.homebrewRoute.isNotEmpty()) {
-                    VerticalPDFReader(
-                        state = pdfVerticalReaderState,
-                        modifier = Modifier
-                            .background(color = Color.White)
-                            .clipToBounds(),
-                    )
-                }
+                HomeBrewViewer(File(characterSelected.homebrewRoute))
             }
 
             2 -> {
@@ -238,8 +225,8 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
     }
 
     Column(modifier = Modifier
-            .background(backgroundColor())
-            .fillMaxSize()
+        .background(backgroundColor())
+        .fillMaxSize()
     ) {
         when (tabSelected.value) {
             0 -> {
@@ -306,12 +293,7 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
         ) {
         when (tabSelected.value) {
             0 -> {
-                VerticalPDFReader(
-                    state = pdfVerticalReaderState,
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .clipToBounds(),
-                )
+                HomeBrewViewer(File(characterSelected.homebrewRoute))
             }
 
             1 -> {

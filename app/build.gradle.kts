@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.Mikroc.DnDViewer"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.Mikroc.DnDViewer"
@@ -53,7 +53,8 @@ android {
 }
 
 dependencies {
-    implementation ("io.github.grizzi91:bouquet:1.1.2")
+    implementation("io.github.veselyjan92:pdfviewer-pdfium:1.0.5")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
