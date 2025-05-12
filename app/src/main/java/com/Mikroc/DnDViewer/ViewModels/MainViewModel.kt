@@ -27,7 +27,11 @@ class MainViewModel : ViewModel() {
     }
 
     fun getCharacter(character: String): CharacterModel {
-        return helper.getCharacter(character = character)
+        return helper.getCharacter(characterCode = character)
+    }
+
+    fun getCharacterByName(characterName: String): CharacterModel {
+        return helper.getCharacterByName(characterName = characterName)
     }
 
     fun deleteHomeBrew(character: CharacterModel, context: Context) {
@@ -48,7 +52,7 @@ class MainViewModel : ViewModel() {
 
     fun deleteCharacter(character: CharacterModel, context: Context) {
         deleteHomeBrew(character = character, context = context)
-        helper.deleteCharacter(character.name)
+        helper.deleteCharacter(character.code)
     }
 
     fun setCharacter(character: CharacterModel) {
@@ -89,20 +93,21 @@ class MainViewModel : ViewModel() {
                 put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA, character.metaMagia)
                 put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA_MAX, character.metaMagiaMax)
                 put(MyBBDD.Personatge.COLUMN_NAME_MAX_SPELL, character.maxSpell)
+                put(MyBBDD.Personatge.COLUMN_NAME_OBS, character.observations)
             }
             db?.update(
                 MyBBDD.Personatge.TABLE_NAME,
                 values,
-                "${MyBBDD.Personatge.COLUMN_NAME_NOM} = ?",
-                arrayOf(character.name)
+                "${BaseColumns._ID} = ?",
+                arrayOf(character.code)
             )
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun getObjectes(name: String): MutableList<ItemsModel> {
-        return helper.getObjectes(name)
+    fun getObjectes(characterCode: String): MutableList<ItemsModel> {
+        return helper.getObjectes(characterCode)
     }
 
     fun setObjectes(item: ItemsModel) {
@@ -158,17 +163,17 @@ class MainViewModel : ViewModel() {
         helper.deleteObjectes(id = id)
     }
 
-    fun getSpells(name: String): MutableList<SpellModel> {
-        return helper.getSpells(name)
+    fun getSpells(characterCode: String): MutableList<SpellModel> {
+        return helper.getSpells(characterCode)
     }
 
-    fun insertSpells(name: String, numerSpells: Int) {
+    fun insertSpells(characterCode: String, numerSpells: Int) {
         try {
-            val list = helper.getSpells(name)
+            val list = helper.getSpells(characterCode)
             var counter = list.size
             if (counter < numerSpells) {
                 while (counter < numerSpells) {
-                    setSpells(item = SpellModel(character = name))
+                    setSpells(item = SpellModel(character = characterCode))
                     counter++
                 }
             } else {

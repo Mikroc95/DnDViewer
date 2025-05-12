@@ -177,7 +177,6 @@ fun DialogNewCharacter(
                         name.value = it
                         newCharacter.value.name = it
                     },
-                    enabled = characterModel.name.isEmpty(),
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .fillMaxWidth()
@@ -410,7 +409,7 @@ fun DialogNewCharacter(
                             if (characterModel.name.isEmpty()) {
                                 // CREANT
                                 if (name.value.isNotEmpty()) {
-                                    if (viewModel.getCharacter(name.value).name.isNotEmpty()) {
+                                    if (viewModel.getCharacterByName(name.value).name.isNotEmpty()) {
                                         Toast.makeText(
                                             context,
                                             context.getString(R.string.new_character_repeated_character),

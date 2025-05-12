@@ -129,7 +129,8 @@ fun GetNavigationDrawer(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                 ) {
-                    Row(horizontalArrangement = Arrangement.Start,
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.8f)
@@ -146,7 +147,8 @@ fun GetNavigationDrawer(
                         )
                     }
 
-                    Row(horizontalArrangement = Arrangement.End,
+                    Row(
+                        horizontalArrangement = Arrangement.End,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(0.2f)
@@ -179,7 +181,11 @@ fun GetNavigationDrawer(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue)
                 ) {
-                    Text(text = LocalContext.current.getString(R.string.create_character), color = textColor())
+                    Text(
+                        text = LocalContext.current.getString(R.string.create_character),
+                        color = textColor(),
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 

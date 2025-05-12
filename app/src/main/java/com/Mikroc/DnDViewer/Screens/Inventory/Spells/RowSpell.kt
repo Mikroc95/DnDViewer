@@ -25,7 +25,7 @@ import com.Mikroc.DnDViewer.Screens.characterModel
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun RowSpell(spell: SpellModel, count: Int, viewModel:MainViewModel) {
+fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
     val context = LocalContext.current
     val valueName = remember {
         mutableStateOf(spell.name)
@@ -45,7 +45,8 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel:MainViewModel) {
                 .wrapContentWidth()
                 .weight(0.07f)
         ) {
-            Text(text = "$count. ",
+            Text(
+                text = "$count. ",
                 color = textColor(),
             )
         }
@@ -97,7 +98,7 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel:MainViewModel) {
                             id = spell.id,
                             name = valueName.value,
                             level = valueLevel.value,
-                            character = characterModel.name
+                            character = characterModel.code
                         )
                     )
                 },

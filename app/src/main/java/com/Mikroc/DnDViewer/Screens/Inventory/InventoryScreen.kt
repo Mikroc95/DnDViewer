@@ -47,7 +47,7 @@ import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
+fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
     val context = LocalContext.current
     val dialogNewItem = remember {
         //0 = dialogClosed
@@ -61,13 +61,13 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
     val dialogEditItem = remember {
         mutableStateOf(ItemsModel())
     }
-    val list = viewModel.getObjectes(characterModel.name)
+    val list = viewModel.getObjectes(characterModel.code)
     val listItems = remember {
         mutableStateOf(list.filter { !it.isConsumible })
     }
     val listConsumables = remember { mutableStateOf(list.filter { it.isConsumible }) }
     val configuration = LocalConfiguration.current
-    val expandableHeight =configuration.screenHeightDp.dp
+    val expandableHeight = configuration.screenHeightDp.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,7 +94,7 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
                         saveObjectes = { viewModel.updateObjectes(it) },
 
                         onDeleteClicked = {
-                          dialogDeleteItem.value = item
+                            dialogDeleteItem.value = item
                         },
                         onEditClicked = {
                             dialogEditItem.value = it
@@ -165,9 +165,13 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
                         .padding(16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    val listSpells = viewModel.getSpells(characterModel.name)
+                    val listSpells = viewModel.getSpells(characterModel.code)
                     listSpells.forEach {
-                        RowSpell(spell = it, count = listSpells.indexOf(it) + 1, viewModel = viewModel)
+                        RowSpell(
+                            spell = it,
+                            count = listSpells.indexOf(it) + 1,
+                            viewModel = viewModel
+                        )
                     }
                 }
             }
@@ -193,14 +197,14 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
         //DIALOG NEW ITEM
         if (dialogNewItem.intValue == 1 || dialogNewItem.intValue == 2) {
             DialogNewItem(
-                characterName = characterModel.name,
+                characterCode = characterModel.code,
                 onDismissRequest = { item ->
                     viewModel.setObjectes(item)
                     if (dialogNewItem.intValue == 1) {
-                        listItems.value = viewModel.getObjectes(characterModel.name)
+                        listItems.value = viewModel.getObjectes(characterModel.code)
                             .filter { !it.isConsumible }
                     } else {
-                        listConsumables.value = viewModel.getObjectes(characterModel.name)
+                        listConsumables.value = viewModel.getObjectes(characterModel.code)
                             .filter { it.isConsumible }
                     }
                     dialogNewItem.intValue = 0
@@ -210,47 +214,51 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
                 isConsumable = dialogNewItem.intValue == 2,
             )
         }
-        if(dialogEditItem.value.name.isNotEmpty()){
+        if (dialogEditItem.value.name.isNotEmpty()) {
             DialogNewItem(
-                characterName = characterModel.name,
+                characterCode = characterModel.code,
                 onDismissRequest = { item ->
                     viewModel.updateObjectes(item)
                     if (item.isConsumible) {
-                        listConsumables.value = viewModel.getObjectes(characterModel.name)
-                             .filter { it.isConsumible }
+                        listConsumables.value = viewModel.getObjectes(characterModel.code)
+                            .filter { it.isConsumible }
                     } else {
-                        listItems.value = viewModel.getObjectes(characterModel.name)
+                        listItems.value = viewModel.getObjectes(characterModel.code)
                             .filter { !it.isConsumible }
                     }
-                   dialogEditItem.value = ItemsModel()
-                   dialogNewItem.intValue = 0
+                    dialogEditItem.value = ItemsModel()
+                    dialogNewItem.intValue = 0
                 },
-                onClose = {  dialogEditItem.value = ItemsModel()
-                    dialogNewItem.intValue = 0 },
+                onClose = {
+                    dialogEditItem.value = ItemsModel()
+                    dialogNewItem.intValue = 0
+                },
                 isConsumable = dialogEditItem.value.isConsumible,
                 editing = dialogEditItem.value,
             )
         }
-        if(dialogDeleteItem.value.name.isNotEmpty()){
+        if (dialogDeleteItem.value.name.isNotEmpty()) {
             BasicAlertDialog(onDismissRequest = { dialogDeleteItem.value = ItemsModel() }) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(discordLigthBlack),
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(discordLigthBlack),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center) {
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = context.getString(R.string.inventory_delete_item_title),
                             modifier = Modifier.padding(start = 16.dp),
                             fontWeight = FontWeight.Bold,
-                            fontSize = TextUnit(14f,TextUnitType.Sp),
+                            fontSize = TextUnit(14f, TextUnitType.Sp),
                             color = textColor()
                         )
                         Text(
                             text = context.getString(R.string.common_delete_text),
                             modifier = Modifier.padding(top = 16.dp),
-                            fontSize = TextUnit(12f,TextUnitType.Sp),
+                            fontSize = TextUnit(12f, TextUnitType.Sp),
                             color = textColor()
                         )
                     }
@@ -265,12 +273,13 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
                                 viewModel.deleteObjecte(
                                     id = dialogDeleteItem.value.id,
                                 )
-                                if(dialogDeleteItem.value.isConsumible){
-                                    listConsumables.value = viewModel.getObjectes(characterModel.name)
-                                        .filter { it.isConsumible}
-                                }else{
-                                    listItems.value = viewModel.getObjectes(characterModel.name)
-                                        .filter { !it.isConsumible}
+                                if (dialogDeleteItem.value.isConsumible) {
+                                    listConsumables.value =
+                                        viewModel.getObjectes(characterModel.code)
+                                            .filter { it.isConsumible }
+                                } else {
+                                    listItems.value = viewModel.getObjectes(characterModel.code)
+                                        .filter { !it.isConsumible }
                                 }
                                 dialogDeleteItem.value = ItemsModel()
                             },
@@ -307,7 +316,7 @@ fun InventoryScreen(characterModel: CharacterModel,viewModel: MainViewModel) {
 
 @Preview
 @Composable
-private fun InventoryScreenPreview(){
+private fun InventoryScreenPreview() {
     InventoryScreen(
         characterModel = CharacterModel(),
         viewModel = MainViewModel()

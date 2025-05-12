@@ -40,11 +40,11 @@ import com.Mikroc.DnDViewer.R
 
 @Composable
 fun DialogNewItem(
-    characterName: String,
+    characterCode: String,
     onDismissRequest: (ItemsModel) -> Unit,
     onClose: () -> Unit,
-    isConsumable:Boolean = false,
-    editing:ItemsModel = ItemsModel()
+    isConsumable: Boolean = false,
+    editing: ItemsModel = ItemsModel()
 ) {
     val context = LocalContext.current
     val name = remember {
@@ -109,7 +109,7 @@ fun DialogNewItem(
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                     placeHolder = {
                         Text(
-                            text = if(isConsumable) context.getString(R.string.new_item_quantity)
+                            text = if (isConsumable) context.getString(R.string.new_item_quantity)
                             else context.getString(R.string.new_item_charges),
                             color = textColor()
                         )
@@ -119,7 +119,8 @@ fun DialogNewItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = Arrangement.Center
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
                 CustomTextField(
                     value = description.value,
@@ -156,16 +157,16 @@ fun DialogNewItem(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        try{
+                        try {
                             if (name.value.isNotEmpty() && description.value.isNotEmpty()) {
-                                val charge = checkInteger(charges.value,isConsumable)
-                                if(charge.toInt()<=0 && isConsumable){
+                                val charge = checkInteger(charges.value, isConsumable)
+                                if (charge.toInt() <= 0 && isConsumable) {
                                     Toast.makeText(
                                         context,
                                         context.getString(R.string.new_item_warning_add_quantity),
                                         Toast.LENGTH_SHORT
                                     ).show()
-                                }else{
+                                } else {
                                     onDismissRequest(
                                         ItemsModel(
                                             id = editing.id,
@@ -175,7 +176,7 @@ fun DialogNewItem(
                                             actualCharges = charge,
                                             isEquiped = false,
                                             isConsumible = isConsumable,
-                                            character = characterName
+                                            character = characterCode
                                         )
                                     )
                                 }
@@ -186,7 +187,7 @@ fun DialogNewItem(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     },
@@ -201,22 +202,22 @@ fun DialogNewItem(
     }
 }
 
-private fun checkInteger (value:String,isConsumable: Boolean):String{
-    try{
-        val integer:Int = value.toInt()
+private fun checkInteger(value: String, isConsumable: Boolean): String {
+    try {
+        val integer: Int = value.toInt()
         return integer.toString()
-    }catch (e:Exception){
+    } catch (e: Exception) {
         e.printStackTrace()
     }
-    return if(isConsumable) "-1" else "0"
+    return if (isConsumable) "-1" else "0"
 }
 
 @Composable
 @Preview
-fun DialogNewItemPreview(){
+fun DialogNewItemPreview() {
     DialogNewItem(
-        characterName = "Mock",
+        characterCode = "Mock",
         onDismissRequest = {},
-        onClose = {  },
+        onClose = { },
     )
 }

@@ -95,6 +95,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
     fun getCharacters(): MutableList<CharacterModel> {
         try {
             val projection = arrayOf(
+                BaseColumns._ID,
                 MyBBDD.Personatge.COLUMN_NAME_NOM,
                 MyBBDD.Personatge.COLUMN_NAME_RUTA_HOMEBREW,
                 MyBBDD.Personatge.COLUMN_NAME_IMG_FITXA,
@@ -121,17 +122,18 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
             with(cursor) {
                 while (moveToNext()) {
                     val character = CharacterModel(
-                        name = cursor.getString(0).orEmpty(),
-                        homebrewRoute = cursor.getString(1).orEmpty(),
-                        imageCharacter = cursor.getBlob(2),
-                        vida = cursor.getString(3).orEmpty().stringToInt(),
-                        vidaMax = cursor.getString(4).orEmpty().stringToInt(),
-                        mana = cursor.getString(5).orEmpty().stringToInt(),
-                        manaMax = cursor.getString(6).orEmpty().stringToInt(),
-                        metaMagia = cursor.getString(7).orEmpty().stringToInt(),
-                        metaMagiaMax = cursor.getString(8).orEmpty().stringToInt(),
-                        observations = cursor.getString(9).orEmpty(),
-                        maxSpell = cursor.getString(10).orEmpty().stringToInt()
+                        code = cursor.getString(0).orEmpty(),
+                        name = cursor.getString(1).orEmpty(),
+                        homebrewRoute = cursor.getString(2).orEmpty(),
+                        imageCharacter = cursor.getBlob(3),
+                        vida = cursor.getString(4).orEmpty().stringToInt(),
+                        vidaMax = cursor.getString(5).orEmpty().stringToInt(),
+                        mana = cursor.getString(6).orEmpty().stringToInt(),
+                        manaMax = cursor.getString(7).orEmpty().stringToInt(),
+                        metaMagia = cursor.getString(8).orEmpty().stringToInt(),
+                        metaMagiaMax = cursor.getString(9).orEmpty().stringToInt(),
+                        observations = cursor.getString(10).orEmpty(),
+                        maxSpell = cursor.getString(11).orEmpty().stringToInt()
                     )
                     list.add(character)
                 }
@@ -144,9 +146,10 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
         return mutableListOf()
     }
 
-    fun getCharacter(character: String): CharacterModel {
+    fun getCharacter(characterCode: String): CharacterModel {
         try {
             val projection = arrayOf(
+                BaseColumns._ID,
                 MyBBDD.Personatge.COLUMN_NAME_NOM,
                 MyBBDD.Personatge.COLUMN_NAME_RUTA_HOMEBREW,
                 MyBBDD.Personatge.COLUMN_NAME_IMG_FITXA,
@@ -166,25 +169,27 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                 null,
                 null,
                 MyBBDD.Personatge.COLUMN_NAME_NOM,
-                "${MyBBDD.Personatge.COLUMN_NAME_NOM} = '$character'",
+                "${BaseColumns._ID} = '$characterCode'",
                 MyBBDD.Personatge.COLUMN_NAME_NOM
             )
             with(cursor) {
                 moveToNext()
-                return CharacterModel(
-                    name = getString(0).orEmpty(),
-                    homebrewRoute = getString(1).orEmpty(),
-                    imageCharacter = getBlob(2),
-                    vida = getString(3).orEmpty().stringToInt(),
-                    vidaMax = getString(4).orEmpty().stringToInt(),
-                    mana = getString(5).orEmpty().stringToInt(),
-                    manaMax = getString(6).orEmpty().stringToInt(),
-                    metaMagia = getString(7).orEmpty().stringToInt(),
-                    metaMagiaMax = getString(8).orEmpty().stringToInt(),
-                    observations = getString(9).orEmpty(),
-                    maxSpell = getString(10).orEmpty().stringToInt()
+                val item = CharacterModel(
+                    code = cursor.getString(0).orEmpty(),
+                    name = cursor.getString(1).orEmpty(),
+                    homebrewRoute = cursor.getString(2).orEmpty(),
+                    imageCharacter = cursor.getBlob(3),
+                    vida = cursor.getString(4).orEmpty().stringToInt(),
+                    vidaMax = cursor.getString(5).orEmpty().stringToInt(),
+                    mana = cursor.getString(6).orEmpty().stringToInt(),
+                    manaMax = cursor.getString(7).orEmpty().stringToInt(),
+                    metaMagia = cursor.getString(8).orEmpty().stringToInt(),
+                    metaMagiaMax = cursor.getString(9).orEmpty().stringToInt(),
+                    observations = cursor.getString(10).orEmpty(),
+                    maxSpell = cursor.getString(11).orEmpty().stringToInt()
                 )
                 close()
+                return item
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -192,20 +197,71 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
         return CharacterModel()
     }
 
-    fun deleteCharacter(characterName: String) {
+    fun getCharacterByName(characterName: String): CharacterModel {
+        try {
+            val projection = arrayOf(
+                BaseColumns._ID,
+                MyBBDD.Personatge.COLUMN_NAME_NOM,
+                MyBBDD.Personatge.COLUMN_NAME_RUTA_HOMEBREW,
+                MyBBDD.Personatge.COLUMN_NAME_IMG_FITXA,
+                MyBBDD.Personatge.COLUMN_NAME_VIDA,
+                MyBBDD.Personatge.COLUMN_NAME_VIDA_MAX,
+                MyBBDD.Personatge.COLUMN_NAME_MANA,
+                MyBBDD.Personatge.COLUMN_NAME_MANA_MAX,
+                MyBBDD.Personatge.COLUMN_NAME_METAMAGIA,
+                MyBBDD.Personatge.COLUMN_NAME_METAMAGIA_MAX,
+                MyBBDD.Personatge.COLUMN_NAME_OBS,
+                MyBBDD.Personatge.COLUMN_NAME_MAX_SPELL
+            )
+
+            val cursor = readableDatabase.query(
+                MyBBDD.Personatge.TABLE_NAME,
+                projection,
+                null,
+                null,
+                MyBBDD.Personatge.COLUMN_NAME_NOM,
+                "${MyBBDD.Personatge.COLUMN_NAME_NOM} = '$characterName'",
+                MyBBDD.Personatge.COLUMN_NAME_NOM
+            )
+            with(cursor) {
+                moveToNext()
+                val item = CharacterModel(
+                    code = cursor.getString(0).orEmpty(),
+                    name = cursor.getString(1).orEmpty(),
+                    homebrewRoute = cursor.getString(2).orEmpty(),
+                    imageCharacter = cursor.getBlob(3),
+                    vida = cursor.getString(4).orEmpty().stringToInt(),
+                    vidaMax = cursor.getString(5).orEmpty().stringToInt(),
+                    mana = cursor.getString(6).orEmpty().stringToInt(),
+                    manaMax = cursor.getString(7).orEmpty().stringToInt(),
+                    metaMagia = cursor.getString(8).orEmpty().stringToInt(),
+                    metaMagiaMax = cursor.getString(9).orEmpty().stringToInt(),
+                    observations = cursor.getString(10).orEmpty(),
+                    maxSpell = cursor.getString(11).orEmpty().stringToInt()
+                )
+                close()
+                return item
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return CharacterModel()
+    }
+
+    fun deleteCharacter(characterCode: String) {
         try {
             val db = this.writableDatabase
             db.execSQL(
                 "DELETE FROM ${MyBBDD.Personatge.TABLE_NAME}" +
-                        " WHERE ${MyBBDD.Personatge.COLUMN_NAME_NOM} = '$characterName'"
+                        " WHERE ${BaseColumns._ID} = '$characterCode'"
             )
             db.execSQL(
                 "DELETE FROM ${MyBBDD.Objectes.TABLE_NAME}" +
-                        " WHERE ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$characterName'"
+                        " WHERE ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$characterCode'"
             )
             db.execSQL(
                 "DELETE FROM ${MyBBDD.Spells.TABLE_NAME}" +
-                        " WHERE ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$characterName'"
+                        " WHERE ${MyBBDD.Spells.COLUMN_NAME_PERSONATGE} = '$characterCode'"
             )
             db.close()
         } catch (e: Exception) {
@@ -213,7 +269,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
         }
     }
 
-    fun getObjectes(personatge: String): MutableList<ItemsModel> {
+    fun getObjectes(characterCode: String): MutableList<ItemsModel> {
         try {
             val projection = arrayOf(
                 MyBBDD.Objectes.COLUMN_NAME_NOM,
@@ -232,7 +288,7 @@ class MyHelper(context: Context) : SQLiteOpenHelper(
                 null,
                 null,
                 BaseColumns._ID,
-                "${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$personatge'",
+                "${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = '$characterCode'",
                 "${MyBBDD.Objectes.COLUMN_NAME_CONSUMIBLE} DESC"
             )
             val list = mutableListOf<ItemsModel>()

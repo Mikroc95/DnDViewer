@@ -85,7 +85,7 @@ private fun Main(
         topBarIcon = painterResource(id = R.drawable.hamburger),
         characters = listCharacters,
         onCharacterSelected = {
-            viewModel.characterSelected.value = viewModel.getCharacter(it.name)
+            viewModel.characterSelected.value = viewModel.getCharacter(it.code)
             tabSelected.value = 0
         },
         onNewCharacterClicked = {
@@ -107,26 +107,29 @@ private fun Main(
             DialogNewCharacter(
                 characterModel = updateCharacter,
                 onDismissRequest = {
+                    var item = it
                     if (dialogNewCharacter.intValue == 1) {
-                        viewModel.setCharacter(it)
-                        listCharacters.add(it)
+                        viewModel.setCharacter(item)
+                        item = viewModel.getCharacterByName(it.name)
+                        listCharacters.add(item)
                     } else {
-                        viewModel.updateCharacters(character = it)
+                        viewModel.updateCharacters(character = item)
                         updateCharacter = CharacterModel()
                     }
-                    viewModel.insertSpells(it.name, it.maxSpell)
+                    viewModel.insertSpells(item.code, item.maxSpell)
                     viewModel.characterSelected.value = CharacterModel(
-                        name = it.name,
-                        imageCharacter = it.imageCharacter,
-                        homebrewRoute = it.homebrewRoute,
-                        vida = it.vida,
-                        vidaMax = it.vidaMax,
-                        mana = it.mana,
-                        manaMax = it.manaMax,
-                        metaMagia = it.metaMagia,
-                        metaMagiaMax = it.metaMagiaMax,
-                        maxSpell = it.maxSpell,
-                        observations = it.observations
+                        code = item.code,
+                        name = item.name,
+                        imageCharacter = item.imageCharacter,
+                        homebrewRoute = item.homebrewRoute,
+                        vida = item.vida,
+                        vidaMax = item.vidaMax,
+                        mana = item.mana,
+                        manaMax = item.manaMax,
+                        metaMagia = item.metaMagia,
+                        metaMagiaMax = item.metaMagiaMax,
+                        maxSpell = item.maxSpell,
+                        observations = item.observations
                     )
                     dialogNewCharacter.intValue = 0
                     tabSelected.value = 0

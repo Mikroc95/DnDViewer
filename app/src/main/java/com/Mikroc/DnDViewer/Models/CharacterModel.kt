@@ -3,6 +3,7 @@ package com.Mikroc.DnDViewer.Models
 import java.io.Serializable
 
 data class CharacterModel(
+    var code: String = "",
     var name: String = "",
     var imageCharacter: ByteArray = byteArrayOf(),
     var homebrewRoute: String = "",
