@@ -10,9 +10,11 @@ data class CharacterModel(
     var vidaMax: Int = 0,
     var mana: Int = 0,
     var manaMax: Int = 0,
+    var metaMagia: Int = 0,
+    var metaMagiaMax: Int = 0,
     var observations: String = "",
     var maxSpell: Int = 0
-): Serializable {
+) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -26,6 +28,8 @@ data class CharacterModel(
         if (vidaMax != other.vidaMax) return false
         if (mana != other.mana) return false
         if (manaMax != other.manaMax) return false
+        if (metaMagia != other.metaMagia) return false
+        if (metaMagiaMax != other.metaMagiaMax) return false
         if (observations != other.observations) return false
         if (maxSpell != other.maxSpell) return false
 
@@ -40,6 +44,8 @@ data class CharacterModel(
         result = 31 * result + vidaMax
         result = 31 * result + mana
         result = 31 * result + manaMax
+        result = 31 * result + metaMagia
+        result = 31 * result + metaMagiaMax
         result = 31 * result + observations.hashCode()
         result = 31 * result + maxSpell
         return result

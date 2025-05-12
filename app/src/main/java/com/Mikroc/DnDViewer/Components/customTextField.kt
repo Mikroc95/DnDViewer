@@ -35,6 +35,7 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    inputPadding: PaddingValues = PaddingValues(6.dp), //padding
     visualTransformation: VisualTransformation = VisualTransformation.None,
     enabled: Boolean = true,
     singleLine: Boolean = true,
@@ -51,12 +52,12 @@ fun CustomTextField(
         focusedIndicatorColor = Color.Transparent
 
     ),
-    textStyle: TextStyle =if(enabled) LocalTextStyle.current.copy(color = textColor())
+    textStyle: TextStyle = if (enabled) LocalTextStyle.current.copy(color = textColor())
     else LocalTextStyle.current.copy(color = invertedTextColor()),
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     placeHolder: @Composable (() -> Unit)? = null,
-){
+) {
     val interactionSource = remember {
         MutableInteractionSource()
     }
@@ -84,7 +85,7 @@ fun CustomTextField(
             singleLine = singleLine,
             enabled = enabled,
             interactionSource = interactionSource,
-            contentPadding = PaddingValues(6.dp), //padding
+            contentPadding = inputPadding,
             trailingIcon = trailingIcon,
             placeholder = placeHolder,
             leadingIcon = leadingIcon,
@@ -95,10 +96,11 @@ fun CustomTextField(
 
 @Preview
 @Composable
-private fun CustomTextFieldPreview(){
+private fun CustomTextFieldPreview() {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center){
+        horizontalArrangement = Arrangement.Center
+    ) {
         CustomTextField(value = "Mock", onValueChange = {})
     }
 

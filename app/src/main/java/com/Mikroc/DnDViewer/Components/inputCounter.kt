@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -40,17 +41,19 @@ fun InputCounter(
     totalResult: String,
     borderColor: Color,
     labelColor: Color = textColor(),
+    inputPadding: PaddingValues = PaddingValues(6.dp),
     valueTextField: MutableState<String>,
     onKeyBoardDone: () -> Unit,
     onLessClicked: () -> Unit,
     onPlusClicked: () -> Unit,
-){
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp)) {
+            .padding(bottom = 8.dp)
+    ) {
         Text(
             text = totalResult,
             textAlign = TextAlign.Center,
@@ -58,9 +61,12 @@ fun InputCounter(
             fontSize = 12.sp,
             color = labelColor
         )
-        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
-            .fillMaxWidth()){
-            Row(horizontalArrangement = Arrangement.End,
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -78,12 +84,14 @@ fun InputCounter(
                         }
                 )
             }
-            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.4f)
-                .padding(horizontal = 8.dp)){
+            Row(
+                horizontalArrangement = Arrangement.Center, modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(horizontal = 8.dp)
+            ) {
                 CustomTextField(
-                    value =  valueTextField.value,
+                    value = valueTextField.value,
                     onValueChange = {
                         valueTextField.value = it
                     },
@@ -95,6 +103,7 @@ fun InputCounter(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Done
                     ),
+                    inputPadding = inputPadding,
                     singleLine = true,
                     keyboardActions = KeyboardActions(
                         onDone = {
@@ -112,12 +121,13 @@ fun InputCounter(
                     textStyle = LocalTextStyle.current.copy(color = textColor()),
                 )
             }
-            Row(horizontalArrangement = Arrangement.Start,
+            Row(
+                horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.3f)
-            ){
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.add),
                     tint = Color.White,
@@ -138,8 +148,8 @@ fun InputCounter(
 @SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
-private fun InputCounterPreview(){
-    Row(modifier = Modifier.background(Color.Black)){
+private fun InputCounterPreview() {
+    Row(modifier = Modifier.background(Color.Black)) {
         InputCounter(
             totalResult = "10",
             borderColor = Color.Red,

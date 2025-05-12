@@ -46,7 +46,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
         EmptySelection()
     } else {
         Column(modifier = Modifier.background(topBarColor())) {
-            if (characterModel.vidaMax > 0 || characterModel.manaMax > 0) {
+            if (characterModel.vidaMax > 0 || characterModel.manaMax > 0 || characterModel.metaMagiaMax > 0) {
                 CustomHpManaBar(characterModel = characterModel, viewModel = viewModel)
             }
             when (isCharacterEmpty(character = characterModel)) {
@@ -118,7 +118,8 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
         }
     ) {
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 0,
             onClick = { tabSelected.value = 0 }
         ) {
@@ -130,7 +131,8 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             Text(text = context.getString(R.string.tab_personatge), color = color)
         }
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 1,
             onClick = { tabSelected.value = 1 }
         ) {
@@ -142,7 +144,8 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             Text(text = context.getString(R.string.tab_homebrew), color = color)
         }
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 2,
             onClick = { tabSelected.value = 2 }
         ) {
@@ -199,7 +202,8 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
         }
     ) {
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 0,
             onClick = { tabSelected.value = 0 }
         ) {
@@ -211,7 +215,8 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
             Text(text = context.getString(R.string.tab_personatge), color = color)
         }
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 1,
             onClick = { tabSelected.value = 1 }
         ) {
@@ -224,9 +229,10 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
         }
     }
 
-    Column(modifier = Modifier
-        .background(backgroundColor())
-        .fillMaxSize()
+    Column(
+        modifier = Modifier
+            .background(backgroundColor())
+            .fillMaxSize()
     ) {
         when (tabSelected.value) {
             0 -> {
@@ -260,7 +266,8 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
             )
         }
     ) {
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 0,
             onClick = { tabSelected.value = 0 }
         ) {
@@ -272,7 +279,8 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
             Text(text = context.getString(R.string.tab_homebrew), color = color)
         }
 
-        Tab(modifier = Modifier.padding(8.dp),
+        Tab(
+            modifier = Modifier.padding(8.dp),
             selected = tabSelected.value == 1,
             onClick = { tabSelected.value = 1 }
         ) {

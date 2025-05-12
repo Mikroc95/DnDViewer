@@ -12,6 +12,8 @@ object MyBBDD {
         const val COLUMN_NAME_VIDA_MAX = "vida_max"
         const val COLUMN_NAME_MANA = "mana"
         const val COLUMN_NAME_MANA_MAX = "mana_max"
+        const val COLUMN_NAME_METAMAGIA = "metamagia"
+        const val COLUMN_NAME_METAMAGIA_MAX = "metamagia_max"
         const val COLUMN_NAME_OBS = "observacions"
         const val COLUMN_NAME_MAX_SPELL = "max_spell"
     }

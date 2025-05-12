@@ -26,7 +26,7 @@ class MainViewModel : ViewModel() {
         return helper.getCharacters()
     }
 
-    fun getCharacter(character: String): MutableList<CharacterModel> {
+    fun getCharacter(character: String): CharacterModel {
         return helper.getCharacter(character = character)
     }
 
@@ -38,7 +38,6 @@ class MainViewModel : ViewModel() {
             }
             val file = File(character.homebrewRoute)
             if (file.exists()) {
-                //file.delete()
                 file.deleteRecursively()
             }
         } catch (e: Exception) {
@@ -64,6 +63,8 @@ class MainViewModel : ViewModel() {
                 put(MyBBDD.Personatge.COLUMN_NAME_VIDA_MAX, character.vidaMax)
                 put(MyBBDD.Personatge.COLUMN_NAME_MANA, character.mana)
                 put(MyBBDD.Personatge.COLUMN_NAME_MANA_MAX, character.manaMax)
+                put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA, character.metaMagia)
+                put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA_MAX, character.metaMagiaMax)
                 put(MyBBDD.Personatge.COLUMN_NAME_MAX_SPELL, character.maxSpell)
             }
             db?.insert(MyBBDD.Personatge.TABLE_NAME, null, values)
@@ -75,22 +76,20 @@ class MainViewModel : ViewModel() {
 
     fun updateCharacters(character: CharacterModel) {
         try {
-            // Gets the data repository in write mode
             val db = helper.writableDatabase
 
-            // Create a new map of values, where column names are the keys
             val values = ContentValues().apply {
+                put(MyBBDD.Personatge.COLUMN_NAME_NOM, character.name)
                 put(MyBBDD.Personatge.COLUMN_NAME_RUTA_HOMEBREW, character.homebrewRoute)
                 put(MyBBDD.Personatge.COLUMN_NAME_IMG_FITXA, character.imageCharacter)
                 put(MyBBDD.Personatge.COLUMN_NAME_VIDA, character.vida)
                 put(MyBBDD.Personatge.COLUMN_NAME_VIDA_MAX, character.vidaMax)
                 put(MyBBDD.Personatge.COLUMN_NAME_MANA, character.mana)
                 put(MyBBDD.Personatge.COLUMN_NAME_MANA_MAX, character.manaMax)
-                put(MyBBDD.Personatge.COLUMN_NAME_OBS, character.observations)
+                put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA, character.metaMagia)
+                put(MyBBDD.Personatge.COLUMN_NAME_METAMAGIA_MAX, character.metaMagiaMax)
                 put(MyBBDD.Personatge.COLUMN_NAME_MAX_SPELL, character.maxSpell)
-
             }
-            // Insert the new row, returning the primary key value of the new row
             db?.update(
                 MyBBDD.Personatge.TABLE_NAME,
                 values,
@@ -144,10 +143,10 @@ class MainViewModel : ViewModel() {
                 put(MyBBDD.Objectes.COLUMN_NAME_CONSUMIBLE, intConsumible)
             }
 
-             db?.update(
+            db?.update(
                 MyBBDD.Objectes.TABLE_NAME,
                 values,
-                "${BaseColumns._ID} = ? AND ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE } = ?",
+                "${BaseColumns._ID} = ? AND ${MyBBDD.Objectes.COLUMN_NAME_PERSONATGE} = ?",
                 arrayOf(item.id.toString(), item.character)
             )
         } catch (e: Exception) {

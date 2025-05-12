@@ -10,6 +10,7 @@
     <string name="new_character_name">nom</string>
     <string name="new_character_health_points">vida</string>
     <string name="new_character_mana">mana</string>
+    <string name="new_character_meta_magic">metamàgia</string>
     <string name="new_character_maxSpell">Núm. Conjurs equipats</string>
     <string name="new_character_file">fitxa.PNG</string>
     <string name="new_character_homebrew">homebrew.PDF</string>
@@ -33,6 +34,7 @@
 
     <string name="counter_hp">HP</string>
     <string name="counter_mana">MANA</string>
+    <string name="counter_metamagic">M.M</string>
 
     <string name="row_spell_name">Encanteri</string>
     <string name="row_spell_level">Nivell</string>

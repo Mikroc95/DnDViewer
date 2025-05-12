@@ -42,6 +42,7 @@ import com.Mikroc.DnDViewer.Utils.GetCustomContents
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
+import com.Mikroc.DnDViewer.Theme.yellowMetamagic
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import java.io.File
 
@@ -51,7 +52,7 @@ fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
     onDismissRequest: (CharacterModel) -> Unit,
     onClose: () -> Unit,
-    viewModel:MainViewModel
+    viewModel: MainViewModel
 ) {
     val context = LocalContext.current
     val character = if (characterModel.name.isEmpty()) {
@@ -79,6 +80,15 @@ fun DialogNewCharacter(
         mutableStateOf(
             if (character.manaMax > 0) {
                 character.manaMax.toString()
+            } else {
+                ""
+            }
+        )
+    }
+    val metamagia = remember {
+        mutableStateOf(
+            if (character.metaMagiaMax > 0) {
+                character.metaMagiaMax.toString()
             } else {
                 ""
             }
@@ -206,6 +216,7 @@ fun DialogNewCharacter(
                             newCharacter.value.vida = hp.value.toInt()
                             newCharacter.value.vidaMax = hp.value.toInt()
                         } catch (e: Exception) {
+                            e.printStackTrace()
                             newCharacter.value.vida = 0
                             newCharacter.value.vidaMax = 0
                         }
@@ -246,6 +257,7 @@ fun DialogNewCharacter(
                             newCharacter.value.manaMax = mana.value.toInt()
 
                         } catch (e: Exception) {
+                            e.printStackTrace()
                             newCharacter.value.mana = 0
                             newCharacter.value.manaMax = 0
                         }
@@ -255,6 +267,49 @@ fun DialogNewCharacter(
                     placeHolder = {
                         Text(
                             text = context.getString(R.string.new_character_mana),
+                            color = textColor()
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = backgroundColor(),
+                        unfocusedContainerColor = backgroundColor(),
+                        focusedTextColor = textColor(),
+                        unfocusedTextColor = textColorAccent()
+                    )
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                val borderColor =
+                    if (characterModel.name.isEmpty()) discordBlue else yellowMetamagic
+                CustomTextField(
+                    value = metamagia.value,
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(3.dp))
+                        .border(2.dp, borderColor),
+                    onValueChange = {
+                        metamagia.value = it
+                        try {
+                            newCharacter.value.metaMagia = metamagia.value.toInt()
+                            newCharacter.value.metaMagiaMax = metamagia.value.toInt()
+
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            newCharacter.value.metaMagia = 0
+                            newCharacter.value.metaMagiaMax = 0
+                        }
+
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    placeHolder = {
+                        Text(
+                            text = context.getString(R.string.new_character_meta_magic),
                             color = textColor()
                         )
                     },
@@ -285,6 +340,7 @@ fun DialogNewCharacter(
                         try {
                             newCharacter.value.maxSpell = maxSpell.value.toInt()
                         } catch (e: Exception) {
+                            e.printStackTrace()
                             newCharacter.value.maxSpell = 0
                         }
 
@@ -350,11 +406,11 @@ fun DialogNewCharacter(
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = discordBlue),
                     onClick = {
-                        try{
-                            if(characterModel.name.isEmpty()){
+                        try {
+                            if (characterModel.name.isEmpty()) {
                                 // CREANT
                                 if (name.value.isNotEmpty()) {
-                                    if (viewModel.getCharacter(name.value).size > 0) {
+                                    if (viewModel.getCharacter(name.value).name.isNotEmpty()) {
                                         Toast.makeText(
                                             context,
                                             context.getString(R.string.new_character_repeated_character),
@@ -373,17 +429,17 @@ fun DialogNewCharacter(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 }
-                            }else{
+                            } else {
                                 //EDITANT
                                 onDismissRequest(newCharacter.value)
                             }
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                             Toast.makeText(
                                 context,
                                 context.getString(R.string.new_character_error_save),
                                 Toast.LENGTH_SHORT
-                            )
+                            ).show()
                         }
 
 
@@ -416,10 +472,10 @@ private fun saveHomeBrew(context: Context, name: String, uri: Uri): String {
 
 @Preview
 @Composable
-private fun DialogNewCharacterPreview(){
+private fun DialogNewCharacterPreview() {
     DialogNewCharacter(
         onDismissRequest = {},
-        onClose = {  },
+        onClose = { },
         viewModel = MainViewModel()
     )
 }

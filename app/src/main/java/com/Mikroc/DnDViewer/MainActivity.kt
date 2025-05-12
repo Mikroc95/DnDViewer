@@ -85,18 +85,7 @@ private fun Main(
         topBarIcon = painterResource(id = R.drawable.hamburger),
         characters = listCharacters,
         onCharacterSelected = {
-            viewModel.characterSelected.value = viewModel.getCharacter(it.name).first()
-            /*CharacterModel(
-                name = it.name,
-                imageCharacter = it.imageCharacter,
-                homebrewRoute = it.homebrewRoute,
-                vida = it.vida,
-                vidaMax = it.vidaMax,
-                mana = it.mana,
-                manaMax = it.manaMax,
-                maxSpell = it.maxSpell,
-                observations = it.observations
-            )*/
+            viewModel.characterSelected.value = viewModel.getCharacter(it.name)
             tabSelected.value = 0
         },
         onNewCharacterClicked = {
@@ -134,6 +123,8 @@ private fun Main(
                         vidaMax = it.vidaMax,
                         mana = it.mana,
                         manaMax = it.manaMax,
+                        metaMagia = it.metaMagia,
+                        metaMagiaMax = it.metaMagiaMax,
                         maxSpell = it.maxSpell,
                         observations = it.observations
                     )
@@ -147,14 +138,16 @@ private fun Main(
                 viewModel = viewModel,
             )
         }
-        if(dialogDeleteCharacter.value){
-            BasicAlertDialog(onDismissRequest = { dialogDeleteCharacter.value = false}) {
-                Column(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .background(discordLigthBlack),
+        if (dialogDeleteCharacter.value) {
+            BasicAlertDialog(onDismissRequest = { dialogDeleteCharacter.value = false }) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .background(discordLigthBlack),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center) {
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = context.getString(R.string.delete_character),
@@ -178,7 +171,10 @@ private fun Main(
                         Button(
                             onClick = {
                                 listCharacters.remove(viewModel.characterSelected.value)
-                                viewModel.deleteCharacter(character = viewModel.characterSelected.value, context = context)
+                                viewModel.deleteCharacter(
+                                    character = viewModel.characterSelected.value,
+                                    context = context
+                                )
                                 viewModel.characterSelected.value = CharacterModel()
                                 topBarTitle.value = context.getString(R.string.app_name)
                                 dialogDeleteCharacter.value = false

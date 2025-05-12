@@ -1,6 +1,7 @@
 package com.Mikroc.DnDViewer.Components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
+import com.Mikroc.DnDViewer.Theme.yellowMetamagic
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 
@@ -25,7 +27,6 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
     val isCharacterFalled = remember {
         mutableStateOf(false)
     }
-
     val valueHP = remember {
         mutableStateOf("")
     }
@@ -36,30 +37,38 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
         mutableStateOf("")
     }
     val currentMana = remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(characterModel.mana)
     }
+    val valueMetaMagia = remember { mutableStateOf("") }
+    val currentMetaMagia = remember {
+        mutableIntStateOf(characterModel.metaMagia)
+    }
+    //cutre pero eficaç
+    currentMana.intValue = characterModel.mana
+    currentHP.intValue = characterModel.vida
+    currentMetaMagia.intValue = characterModel.metaMagia
     Row(
+        modifier = Modifier
+            .fillMaxWidth(),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .padding(top = 8.dp)
-            .fillMaxWidth()
-    ) {
+
+        ) {
         if (characterModel.vidaMax > 0) {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
                     .weight(1f)
             ) {
-
-
                 InputCounter(
                     totalResult = "${currentHP.intValue} / ${characterModel.vidaMax} ${
                         LocalContext.current.getString(
                             R.string.counter_hp
                         )
                     }",
+                    inputPadding = PaddingValues(horizontal = 6.dp),
                     borderColor = discordRed,
                     labelColor = discordRed,
                     valueTextField = valueHP,
@@ -77,7 +86,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                                     0
                                 }
                                 characterModel.vida = currentHP.intValue
-                                if(characterModel.vida<=0){
+                                if (characterModel.vida <= 0) {
                                     isCharacterFalled.value = true
                                 }
                             }
@@ -93,7 +102,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                             characterModel.vida = currentHP.intValue
                             viewModel.updateCharacters(character = characterModel)
                         }
-                        if(characterModel.vida<=0){
+                        if (characterModel.vida <= 0) {
                             isCharacterFalled.value = true
                         }
                     },
@@ -108,21 +117,25 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                 )
             }
         }
+
+
+
         if (characterModel.manaMax > 0) {
             Row(
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = if (characterModel.metaMagiaMax > 0) Arrangement.Center else Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
                     .weight(1f)
-            ) {
 
-                currentMana.intValue = characterModel.mana
+            ) {
                 InputCounter(
                     totalResult = "${currentMana.intValue} / ${characterModel.manaMax} ${
                         LocalContext.current.getString(
                             R.string.counter_mana
                         )
                     }",
+                    inputPadding = PaddingValues(horizontal = 6.dp),
                     borderColor = blueMana,
                     labelColor = blueMana,
                     valueTextField = valueMana,
@@ -165,8 +178,67 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                 )
             }
         }
+
+        if (characterModel.metaMagiaMax > 0) {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .weight(1f)
+            ) {
+                InputCounter(
+                    totalResult = "${currentMetaMagia.intValue} / ${characterModel.metaMagiaMax} ${
+                        LocalContext.current.getString(
+                            R.string.counter_metamagic
+                        )
+                    }",
+                    inputPadding = PaddingValues(horizontal = 6.dp),
+                    borderColor = yellowMetamagic,
+                    labelColor = yellowMetamagic,
+                    valueTextField = valueMetaMagia,
+                    onKeyBoardDone = {
+                        try {
+                            if (valueMetaMagia.value.isNotEmpty()) {
+                                val value = valueMetaMagia.value.toInt()
+                                currentMetaMagia.intValue =
+                                    if (currentMetaMagia.intValue + value > 0) {
+                                        if (currentMetaMagia.intValue + value <= characterModel.metaMagiaMax) {
+                                            currentHP.intValue + value
+                                        } else {
+                                            characterModel.metaMagiaMax
+                                        }
+                                    } else {
+                                        0
+                                    }
+                                characterModel.metaMagia = currentMetaMagia.intValue
+                            }
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            valueHP.value = ""
+                        }
+                    },
+                    onLessClicked = {
+                        val metamagia = currentMetaMagia.intValue
+                        if (metamagia - 1 >= 0) {
+                            currentMetaMagia.intValue = metamagia - 1
+                            characterModel.metaMagia = currentMetaMagia.intValue
+                            viewModel.updateCharacters(character = characterModel)
+                        }
+                    },
+                    onPlusClicked = {
+                        val metamagia = currentMetaMagia.intValue
+                        if (metamagia + 1 <= characterModel.metaMagiaMax) {
+                            currentMetaMagia.intValue = metamagia + 1
+                            characterModel.metaMagia = currentMetaMagia.intValue
+                            viewModel.updateCharacters(character = characterModel)
+                        }
+                    }
+                )
+            }
+        }
     }
-    if(isCharacterFalled.value){
+    if (isCharacterFalled.value) {
         DialogFall(fallen = isCharacterFalled, hp = currentHP, viewModel = viewModel)
     }
 }
