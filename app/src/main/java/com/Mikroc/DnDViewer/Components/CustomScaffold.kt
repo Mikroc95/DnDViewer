@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Theme.backgroundColor
@@ -205,7 +206,9 @@ fun GetTopBar(icon: Painter?, onDeleteCharacter: () -> Unit) {
             Text(
                 text = title.value,
                 textAlign = TextAlign.Center,
-                color = topBarTextColor()
+                color = topBarTextColor(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         },
         actions = @Composable {
