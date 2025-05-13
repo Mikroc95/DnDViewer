@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -132,8 +131,7 @@ class MainActivity : FragmentActivity() {
                             maxSpell = item.maxSpell,
                             observations = item.observations
                         )
-                        listCharacters.remove(listCharacters.filter { it.code == item.code }
-                            .first())
+                        listCharacters.remove(listCharacters.first { it.code == item.code })
                         listCharacters.add(item)
                         dialogNewCharacter.intValue = 0
                         tabSelected.value = 0
@@ -178,8 +176,7 @@ class MainActivity : FragmentActivity() {
                         ) {
                             Button(
                                 onClick = {
-                                    listCharacters.remove(listCharacters.filter { it.code == viewModel.characterSelected.value.code }
-                                        .first())
+                                    listCharacters.remove(listCharacters.first { it.code == viewModel.characterSelected.value.code })
                                     viewModel.deleteCharacter(
                                         character = viewModel.characterSelected.value,
                                         context = context
