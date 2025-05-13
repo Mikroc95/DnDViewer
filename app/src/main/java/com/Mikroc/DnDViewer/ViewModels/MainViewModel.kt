@@ -1,6 +1,5 @@
 package com.Mikroc.DnDViewer.ViewModels
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.provider.BaseColumns
@@ -34,13 +33,13 @@ class MainViewModel : ViewModel() {
         return helper.getCharacterByName(characterName = characterName)
     }
 
-    fun deleteHomeBrew(character: CharacterModel, context: Context) {
+    fun deleteHomeBrew(characterName: String, homebrewRoute: String, context: Context) {
         try {
-            val directory = File(context.filesDir.absolutePath + "/${character.name}")
+            val directory = File(context.filesDir.absolutePath + "/${characterName}")
             if (directory.exists()) {
                 directory.deleteRecursively()
             }
-            val file = File(character.homebrewRoute)
+            val file = File(homebrewRoute)
             if (file.exists()) {
                 file.deleteRecursively()
             }
@@ -51,11 +50,15 @@ class MainViewModel : ViewModel() {
     }
 
     fun deleteCharacter(character: CharacterModel, context: Context) {
-        deleteHomeBrew(character = character, context = context)
+        deleteHomeBrew(
+            characterName = character.name,
+            homebrewRoute = character.homebrewRoute,
+            context = context
+        )
         helper.deleteCharacter(character.code)
     }
 
-    fun setCharacter(character: CharacterModel) {
+    fun insertCharacter(character: CharacterModel) {
         try {
             val db = helper.writableDatabase
 
@@ -110,7 +113,7 @@ class MainViewModel : ViewModel() {
         return helper.getObjectes(characterCode)
     }
 
-    fun setObjectes(item: ItemsModel) {
+    fun insertObjectes(item: ItemsModel) {
         try {
             val db = helper.writableDatabase
             val intEquiped = if (item.isEquiped) 1 else 0
@@ -132,7 +135,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
     fun updateObjectes(item: ItemsModel) {
         try {
             val db = helper.writableDatabase
@@ -219,6 +221,26 @@ class MainViewModel : ViewModel() {
                 "${MyBBDD.Spells.COLUMN_NAME_PERSONATGE} = ? AND ${BaseColumns._ID} = ?",
                 arrayOf(item.character, item.id.toString())
             )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun checkUselessFolder(context: Context) {
+        try {
+            val characterList = helper.getCharacters().map { it.name }.toSet()
+            val filesDir = context.filesDir.listFiles()
+
+            filesDir?.forEach { item ->
+                if (item.isDirectory && !characterList.contains(item.name)) {
+                    try {
+                        item.deleteRecursively()
+                    } catch (deleteException: Exception) {
+                        deleteException.printStackTrace()
+                    }
+                }
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

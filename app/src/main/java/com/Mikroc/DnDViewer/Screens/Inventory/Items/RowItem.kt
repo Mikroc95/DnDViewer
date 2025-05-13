@@ -47,12 +47,13 @@ fun RowItem(
     saveObjectes: (ItemsModel) -> Unit,
     onEquipItem: (ItemsModel) -> Boolean,
     onDeleteClicked: () -> Unit,
-    onEditClicked:(ItemsModel) ->Unit,
+    onEditClicked: (ItemsModel) -> Unit,
 ) {
     val context = LocalContext.current
     val isEquiped = remember {
-        mutableStateOf(item.isEquiped)
+        mutableStateOf(false)
     }
+    isEquiped.value = item.isEquiped
     val rowModifier = if (isEquiped.value) {
         Modifier
             .background(discordBlue)
@@ -116,7 +117,7 @@ fun RowItem(
                     )
                 }
             }
-            if(item.charges.stringToInt()>0){
+            if (item.charges.stringToInt() > 0) {
                 val counterText =
                     "${charges.intValue} / ${item.charges} ${context.getString(R.string.item_charges)}"
                 val valueTextField = remember {
@@ -127,7 +128,7 @@ fun RowItem(
                     borderColor = discordOrangeAccent,
                     valueTextField = valueTextField,
                     onKeyBoardDone = {
-                        try{
+                        try {
                             if (valueTextField.value.isNotEmpty()) {
                                 val value = valueTextField.value.toInt()
                                 charges.intValue = if (item.actualCharges.toInt() + value > 0) {
@@ -142,7 +143,7 @@ fun RowItem(
                                 item.actualCharges = charges.intValue.toString()
                                 saveObjectes(item)
                             }
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
                             e.printStackTrace()
                             valueTextField.value = ""
                         }
@@ -240,7 +241,7 @@ fun RowConsumible(
                 valueTextField = valueTextField,
                 borderColor = discordOrangeAccent,
                 onKeyBoardDone = {
-                    try{
+                    try {
                         if (valueTextField.value.isNotEmpty()) {
                             val value = valueTextField.value.toInt()
                             if (totalConsumibles.intValue + value > 0) {
@@ -252,7 +253,7 @@ fun RowConsumible(
                             item.actualCharges = item.charges
                             saveObjectes(item)
                         }
-                    }catch (e:Exception){
+                    } catch (e: Exception) {
                         e.printStackTrace()
                         valueTextField.value = ""
                     }
@@ -298,11 +299,11 @@ fun RowConsumible(
 
 @Preview
 @Composable
-private fun RowItemPreview(){
+private fun RowItemPreview() {
     RowItem(
         item = ItemsModel(),
         saveObjectes = {},
-        onEquipItem = {false},
+        onEquipItem = { false },
         onDeleteClicked = { },
         onEditClicked = {},
     )
@@ -310,7 +311,7 @@ private fun RowItemPreview(){
 
 @Preview
 @Composable
-private fun RowConsumablePreview(){
+private fun RowConsumablePreview() {
     RowConsumible(
         item = ItemsModel(),
         saveObjectes = {},

@@ -199,7 +199,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
             DialogNewItem(
                 characterCode = characterModel.code,
                 onDismissRequest = { item ->
-                    viewModel.setObjectes(item)
+                    viewModel.insertObjectes(item)
                     if (dialogNewItem.intValue == 1) {
                         listItems.value = viewModel.getObjectes(characterModel.code)
                             .filter { !it.isConsumible }

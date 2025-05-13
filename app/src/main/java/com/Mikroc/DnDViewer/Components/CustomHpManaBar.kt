@@ -89,6 +89,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                                 if (characterModel.vida <= 0) {
                                     isCharacterFalled.value = true
                                 }
+                                viewModel.updateCharacters(character = characterModel)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -117,8 +118,6 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                 )
             }
         }
-
-
 
         if (characterModel.manaMax > 0) {
             Row(
@@ -153,6 +152,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                                     0
                                 }
                                 characterModel.mana = currentMana.intValue
+                                viewModel.updateCharacters(character = characterModel)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -204,7 +204,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                                 currentMetaMagia.intValue =
                                     if (currentMetaMagia.intValue + value > 0) {
                                         if (currentMetaMagia.intValue + value <= characterModel.metaMagiaMax) {
-                                            currentHP.intValue + value
+                                            currentMetaMagia.intValue + value
                                         } else {
                                             characterModel.metaMagiaMax
                                         }
@@ -212,6 +212,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
                                         0
                                     }
                                 characterModel.metaMagia = currentMetaMagia.intValue
+                                viewModel.updateCharacters(character = characterModel)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()

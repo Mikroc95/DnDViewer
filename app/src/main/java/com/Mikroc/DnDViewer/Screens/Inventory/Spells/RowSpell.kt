@@ -66,7 +66,7 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
                             id = spell.id,
                             name = valueName.value,
                             level = valueLevel.value,
-                            character = characterModel.name
+                            character = characterModel.code
                         )
                     )
                 },

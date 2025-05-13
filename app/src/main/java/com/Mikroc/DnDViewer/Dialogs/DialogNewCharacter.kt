@@ -62,7 +62,22 @@ fun DialogNewCharacter(
     }
 
     val newCharacter = remember {
-        mutableStateOf(character)
+        mutableStateOf(
+            CharacterModel(
+                code = character.code,
+                name = character.name,
+                imageCharacter = character.imageCharacter,
+                homebrewRoute = character.homebrewRoute,
+                vida = character.vida,
+                vidaMax = character.vidaMax,
+                mana = character.mana,
+                manaMax = character.manaMax,
+                metaMagia = character.metaMagia,
+                metaMagiaMax = character.metaMagiaMax,
+                observations = character.observations,
+                maxSpell = character.maxSpell
+            )
+        )
     }
     val name = remember {
         mutableStateOf(character.name)
@@ -145,11 +160,12 @@ fun DialogNewCharacter(
 
 
     Dialog(onDismissRequest = {
-        if (characterModel.name.isEmpty()) {
+        if (character.name.isEmpty()) {
             File(newCharacter.value.homebrewRoute).apply {
                 if (exists()) {
                     viewModel.deleteHomeBrew(
-                        character = newCharacter.value,
+                        characterName = newCharacter.value.name,
+                        homebrewRoute = newCharacter.value.homebrewRoute,
                         context = context
                     )
                 }
@@ -430,6 +446,71 @@ fun DialogNewCharacter(
                                 }
                             } else {
                                 //EDITANT
+                                if (characterModel.name != newCharacter.value.name) {
+                                    val oldHomebrewFile = File(characterModel.homebrewRoute)
+                                    if (oldHomebrewFile.exists()) {
+                                        try {
+                                            val newFolder =
+                                                File(context.filesDir.absolutePath + "/${newCharacter.value.name}")
+                                            newFolder.mkdirs()
+                                            val newHomebrewFile =
+                                                File(newFolder.absolutePath + "/homebrew.pdf")
+                                            newHomebrewFile.createNewFile()
+
+                                            oldHomebrewFile.inputStream()
+                                                .use { input -> // Usa inputStream() directamente desde el File
+                                                    newHomebrewFile.outputStream().use { output ->
+                                                        input.copyTo(output)
+                                                    }
+                                                }
+
+                                            newCharacter.value.homebrewRoute =
+                                                newHomebrewFile.absolutePath
+
+                                            viewModel.deleteHomeBrew(
+                                                characterName = characterModel.name,
+                                                homebrewRoute = characterModel.homebrewRoute,
+                                                context = context
+                                            )
+
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                            Toast.makeText(
+                                                context,
+                                                context.getString(R.string.new_character_error_save),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                                val oldItemBD = viewModel.getCharacter(characterModel.code)
+                                if (oldItemBD.vidaMax == newCharacter.value.vidaMax) {
+                                    newCharacter.value.vida = oldItemBD.vida
+                                } else {
+                                    val actualToAdd = newCharacter.value.vidaMax - oldItemBD.vidaMax
+                                    if (actualToAdd > 0) {
+                                        newCharacter.value.vida = oldItemBD.vida + actualToAdd
+
+                                    } else {
+                                        newCharacter.value.vida = oldItemBD.vida
+                                    }
+                                }
+                                if (oldItemBD.manaMax == newCharacter.value.manaMax) {
+                                    newCharacter.value.mana = oldItemBD.mana
+                                }
+                                if (oldItemBD.metaMagiaMax == newCharacter.value.metaMagiaMax) {
+                                    newCharacter.value.metaMagia = oldItemBD.metaMagia
+                                }
+
+                                if (newCharacter.value.homebrewRoute.isEmpty() && characterModel.homebrewRoute.isNotEmpty()) {
+                                    newCharacter.value.homebrewRoute = characterModel.homebrewRoute
+                                }
+                                if (newCharacter.value.imageCharacter.isEmpty() && characterModel.imageCharacter.isNotEmpty()) {
+                                    newCharacter.value.imageCharacter =
+                                        characterModel.imageCharacter
+                                }
+                                newCharacter.value.observations = oldItemBD.observations
                                 onDismissRequest(newCharacter.value)
                             }
                         } catch (e: Exception) {

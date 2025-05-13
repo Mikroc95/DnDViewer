@@ -167,18 +167,34 @@ fun DialogNewItem(
                                         Toast.LENGTH_SHORT
                                     ).show()
                                 } else {
-                                    onDismissRequest(
-                                        ItemsModel(
-                                            id = editing.id,
-                                            name = name.value,
-                                            description = description.value,
-                                            charges = charge,
-                                            actualCharges = charge,
-                                            isEquiped = false,
-                                            isConsumible = isConsumable,
-                                            character = characterCode
+                                    if (editing.name.isEmpty()) {
+                                        onDismissRequest(
+                                            ItemsModel(
+                                                name = name.value,
+                                                description = description.value,
+                                                charges = charge,
+                                                actualCharges = charge,
+                                                isEquiped = false,
+                                                isConsumible = isConsumable,
+                                                character = characterCode
+                                            )
                                         )
-                                    )
+                                    } else {
+                                        val actualCharges = if (editing.charges != charge) charge
+                                        else editing.actualCharges
+                                        onDismissRequest(
+                                            ItemsModel(
+                                                name = name.value,
+                                                description = description.value,
+                                                charges = charge,
+                                                id = editing.id,
+                                                isEquiped = editing.isEquiped,
+                                                actualCharges = actualCharges,
+                                                isConsumible = editing.isConsumible,
+                                                character = characterCode
+                                            )
+                                        )
+                                    }
                                 }
                             } else {
                                 Toast.makeText(

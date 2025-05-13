@@ -315,7 +315,7 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
 }
 
 @Composable
-private fun EmptySelection() {
+fun EmptySelection() {
     Image(
         painter = painterResource(R.drawable.empty),
         contentDescription = "",
