@@ -150,6 +150,11 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                             onEditClicked = {
                                 dialogEditItem.value = it
                             },
+                            onConsumeItem = {
+                                viewModel.deleteObjecte(it.id)
+                                listConsumables.value = viewModel.getObjectes(characterModel.code)
+                                    .filter { it.isConsumible }
+                            }
                         )
                     }
                 }

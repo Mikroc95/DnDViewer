@@ -185,7 +185,8 @@ fun RowConsumible(
     item: ItemsModel,
     onDeleteClicked: () -> Unit,
     onEditClicked: (ItemsModel) -> Unit,
-    saveObjectes: (ItemsModel) -> Unit
+    saveObjectes: (ItemsModel) -> Unit,
+    onConsumeItem: (ItemsModel) -> Unit
 ) {
     val totalConsumibles = remember {
         mutableIntStateOf(0)
@@ -246,12 +247,12 @@ fun RowConsumible(
                             val value = valueTextField.value.toInt()
                             if (totalConsumibles.intValue + value > 0) {
                                 totalConsumibles.intValue += value
+                                item.charges = totalConsumibles.intValue.toString()
+                                item.actualCharges = item.charges
+                                saveObjectes(item)
                             } else {
-                                totalConsumibles.intValue = 0
+                                onConsumeItem(item)
                             }
-                            item.charges = totalConsumibles.intValue.toString()
-                            item.actualCharges = item.charges
-                            saveObjectes(item)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -267,17 +268,14 @@ fun RowConsumible(
                 },
                 onLessClicked = {
                     val total = totalConsumibles.intValue
-                    if (total - 1 >= 0) {
+                    if (total - 1 > 0) {
 
                         totalConsumibles.intValue = total - 1
                         item.charges = totalConsumibles.intValue.toString()
                         item.actualCharges = item.charges
                         saveObjectes(item)
                     } else {
-                        totalConsumibles.intValue = 0
-                        item.charges = totalConsumibles.intValue.toString()
-                        item.actualCharges = item.charges
-                        saveObjectes(item)
+                        onConsumeItem(item)
                     }
                 }
             )
@@ -301,7 +299,12 @@ fun RowConsumible(
 @Composable
 private fun RowItemPreview() {
     RowItem(
-        item = ItemsModel(),
+        item = ItemsModel(
+            name = "MOCK",
+            description = "mockmockmock",
+            charges = "5",
+            actualCharges = "5"
+        ),
         saveObjectes = {},
         onEquipItem = { false },
         onDeleteClicked = { },
@@ -313,9 +316,10 @@ private fun RowItemPreview() {
 @Composable
 private fun RowConsumablePreview() {
     RowConsumible(
-        item = ItemsModel(),
+        item = ItemsModel(name = "MOCK", description = "mockmockmock", charges = "5"),
         saveObjectes = {},
         onDeleteClicked = { },
         onEditClicked = {},
+        onConsumeItem = {}
     )
 }
