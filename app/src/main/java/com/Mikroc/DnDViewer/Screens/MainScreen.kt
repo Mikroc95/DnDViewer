@@ -13,8 +13,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.MutableIntState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -35,41 +36,45 @@ import com.Mikroc.DnDViewer.Screens.HomeBrew.HomeBrewViewer
 
 import java.io.File
 
-var tabSelected: MutableState<Int> = mutableIntStateOf(0)
 
-var characterModel = CharacterModel(imageCharacter = byteArrayOf())
 
 @Composable
 fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
-    characterModel = characterSelected
-    if (characterModel.name.isEmpty()) {
+    val tabSelected = remember { mutableIntStateOf(0) }
+    if (characterSelected.name.isEmpty()) {
         EmptySelection()
     } else {
         Column(modifier = Modifier.background(topBarColor())) {
-            if (characterModel.vidaMax > 0 || characterModel.manaMax > 0 || characterModel.metaMagiaMax > 0) {
-                CustomHpManaBar(characterModel = characterModel, viewModel = viewModel)
+            if (characterSelected.vidaMax > 0 || characterSelected.manaMax > 0 || characterSelected.metaMagiaMax > 0) {
+                CustomHpManaBar(characterModel = characterSelected, viewModel = viewModel)
             }
-            when (isCharacterEmpty(character = characterModel)) {
+            when (isCharacterEmpty(character = characterSelected)) {
                 0 -> {
                     TabRowFull(
-                        characterSelected = characterModel,
+                        characterSelected = characterSelected,
                         viewModel = viewModel,
+                        tabSelected = tabSelected
                     )
                 }
 
                 1 -> {
-                    TabRowCharacter(characterSelected = characterModel, viewModel = viewModel)
+                    TabRowCharacter(
+                        characterSelected = characterSelected,
+                        viewModel = viewModel,
+                        tabSelected = tabSelected
+                    )
                 }
 
                 2 -> {
                     TabRowHomeBrew(
-                        characterSelected = characterModel,
+                        characterSelected = characterSelected,
                         viewModel = viewModel,
+                        tabSelected = tabSelected
                     )
                 }
 
                 3 -> {
-                    InventoryScreen(characterModel = characterModel, viewModel = viewModel)
+                    InventoryScreen(viewModel = viewModel)
                 }
             }
         }
@@ -99,20 +104,20 @@ fun isCharacterEmpty(character: CharacterModel): Int {
 }
 
 @Composable
-private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewModel) {
+private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
+        selectedTabIndex = tabSelected.intValue,
         containerColor = topBarColor(),
 
         indicator = {
 
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
+                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
                 color = discordBlue
             )
         }
@@ -120,10 +125,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { tabSelected.value = 0 }
+            selected = tabSelected.intValue == 0,
+            onClick = { tabSelected.intValue = 0 }
         ) {
-            val color = if (tabSelected.value == 0) {
+            val color = if (tabSelected.intValue == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -133,10 +138,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { tabSelected.value = 1 }
+            selected = tabSelected.intValue == 1,
+            onClick = { tabSelected.intValue = 1 }
         ) {
-            val color = if (tabSelected.value == 1) {
+            val color = if (tabSelected.intValue == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -146,10 +151,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 2,
-            onClick = { tabSelected.value = 2 }
+            selected = tabSelected.intValue == 2,
+            onClick = { tabSelected.intValue = 2 }
         ) {
-            val color = if (tabSelected.value == 2) {
+            val color = if (tabSelected.intValue == 2) {
                 textColorAccent()
             } else {
                 textColor()
@@ -164,7 +169,7 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             .fillMaxSize(),
 
         ) {
-        when (tabSelected.value) {
+        when (tabSelected.intValue) {
             0 -> {
                 CharacterScreen(characterModel = characterSelected)
             }
@@ -174,29 +179,26 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             }
 
             2 -> {
-                InventoryScreen(
-                    characterModel = characterSelected,
-                    viewModel = viewModel
-                )
+                InventoryScreen(viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainViewModel) {
+private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
+        selectedTabIndex = tabSelected.intValue,
         containerColor = topBarColor(),
         indicator = {
 
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
+                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
                 color = discordBlue
             )
         }
@@ -204,10 +206,10 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { tabSelected.value = 0 }
+            selected = tabSelected.intValue == 0,
+            onClick = { tabSelected.intValue = 0 }
         ) {
-            val color = if (tabSelected.value == 0) {
+            val color = if (tabSelected.intValue == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -217,10 +219,10 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { tabSelected.value = 1 }
+            selected = tabSelected.intValue == 1,
+            onClick = { tabSelected.intValue = 1 }
         ) {
-            val color = if (tabSelected.value == 1) {
+            val color = if (tabSelected.intValue == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -234,44 +236,41 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
             .background(backgroundColor())
             .fillMaxSize()
     ) {
-        when (tabSelected.value) {
+        when (tabSelected.intValue) {
             0 -> {
                 CharacterScreen(characterModel = characterSelected)
             }
 
             1 -> {
-                InventoryScreen(
-                    characterModel = characterSelected,
-                    viewModel = viewModel
-                )
+                InventoryScreen(viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainViewModel) {
+private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
+        selectedTabIndex = tabSelected.intValue,
         containerColor = topBarColor(),
         indicator = {
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
+                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
                 color = discordBlue
             )
         }
     ) {
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { tabSelected.value = 0 }
+            selected = tabSelected.intValue == 0,
+            onClick = { tabSelected.intValue = 0 }
         ) {
-            val color = if (tabSelected.value == 0) {
+            val color = if (tabSelected.intValue == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -281,10 +280,10 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { tabSelected.value = 1 }
+            selected = tabSelected.intValue == 1,
+            onClick = { tabSelected.intValue = 1 }
         ) {
-            val color = if (tabSelected.value == 1) {
+            val color = if (tabSelected.intValue == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -299,16 +298,13 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
             .fillMaxSize(),
 
         ) {
-        when (tabSelected.value) {
+        when (tabSelected.intValue) {
             0 -> {
                 HomeBrewViewer(File(characterSelected.homebrewRoute))
             }
 
             1 -> {
-                InventoryScreen(
-                    characterModel = characterSelected,
-                    viewModel = viewModel
-                )
+                InventoryScreen(viewModel = viewModel)
             }
         }
     }

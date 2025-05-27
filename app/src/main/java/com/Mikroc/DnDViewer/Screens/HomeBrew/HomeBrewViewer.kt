@@ -23,6 +23,4 @@ fun HomeBrewViewer(
     } else {
         EmptySelection()
     }
-
-
 }

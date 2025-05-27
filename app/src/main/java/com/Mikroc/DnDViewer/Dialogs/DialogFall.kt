@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeCharacterRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeItemsRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeSpellRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Screens.characterModel
 import com.Mikroc.DnDViewer.Theme.backgroundColor

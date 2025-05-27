@@ -31,7 +31,6 @@ import com.Mikroc.DnDViewer.Components.CustomNavigationDrawer
 import com.Mikroc.DnDViewer.Dialogs.DialogNewCharacter
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Screens.MainScreen
-import com.Mikroc.DnDViewer.Screens.tabSelected
 import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
 import com.Mikroc.DnDViewer.Theme.textColor
@@ -40,8 +39,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -54,7 +51,7 @@ class MainActivity : FragmentActivity() {
             val selected by viewModel.selectedCharacter.collectAsState()
             Main(
                 characterSelected = selected,
-                listCharacters = listCharacters.toMutableList(),
+                listCharacters = listCharacters,
                 viewModel = viewModel
             )
         }
@@ -64,7 +61,7 @@ class MainActivity : FragmentActivity() {
     @Composable
     private fun Main(
         characterSelected: CharacterModel = CharacterModel(),
-        listCharacters: MutableList<CharacterModel>,
+        listCharacters: List<CharacterModel>,
         viewModel: MainViewModel,
     ) {
         val context = LocalContext.current
@@ -90,7 +87,6 @@ class MainActivity : FragmentActivity() {
             onCharacterSelected = {
                 viewModel.getCharacterSelected(it)
                 topBarTitle.value = it.name
-                tabSelected.value = 0
             },
             onNewCharacterClicked = {
                 dialogNewCharacter.intValue = 1
@@ -111,24 +107,8 @@ class MainActivity : FragmentActivity() {
                 DialogNewCharacter(
                     characterModel = updateCharacter,
                     onDismissRequest = {
-                        GlobalScope.launch {
-                            var item = it
-                            if (dialogNewCharacter.intValue == 1) {
-                                item.code = viewModel.insertCharacter(item).toInt()
-                                listCharacters.add(item)
-                            } else {
-                                viewModel.updateCharacters(character = item)
-                                item = viewModel.getCharacterByName(it.name)
-                                updateCharacter = CharacterModel()
-                            }
-                            viewModel.getCharacterSelected(item)
-                            viewModel.insertSpells(item.code, item.maxSpell)
-                            viewModel.checkUselessFolder(it.name, context = context)
-
-
-                            dialogNewCharacter.intValue = 0
-                            tabSelected.value = 0
-                        }
+                        viewModel.saveOrUpdateCharacter(it, dialogNewCharacter.intValue == 1, context)
+                        dialogNewCharacter.intValue = 0
                     },
                     onClose = {
                         updateCharacter = CharacterModel()

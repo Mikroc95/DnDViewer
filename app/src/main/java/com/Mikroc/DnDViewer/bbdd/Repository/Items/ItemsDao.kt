@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Items
+package com.Mikroc.DnDViewer.bbdd.Repository.Items
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.Mikroc.DnDViewer.BBDD.MyBBDD
+import com.Mikroc.DnDViewer.bbdd.MyBBDD
 import com.Mikroc.DnDViewer.Models.ItemsModel
 import kotlinx.coroutines.flow.Flow
 

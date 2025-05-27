@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Spell
+package com.Mikroc.DnDViewer.bbdd.Repository.Spell
 
 import com.Mikroc.DnDViewer.Models.SpellModel
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +11,6 @@ class SpellRepositoryImpl @Inject constructor(
 ) : SpellRepository {
     override fun getSpells(characterCode: Int): Flow<MutableList<SpellModel>> {
         return spellDao.getSpells()
-
     }
 
     override fun insertSpell(spell: SpellModel) {

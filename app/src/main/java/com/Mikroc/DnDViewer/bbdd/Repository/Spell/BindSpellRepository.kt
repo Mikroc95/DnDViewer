@@ -1,5 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Items
-
+package com.Mikroc.DnDViewer.bbdd.Repository.Spell
 
 import dagger.Binds
 import dagger.Module
@@ -10,11 +9,11 @@ import javax.inject.Singleton
 @Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class bindItemsRepository {
+abstract class bindSpellRepository {
 
     @Binds
     @Singleton
-    abstract fun bindItemsRepository(
-        itemsRepositoryImpl: ItemsRepositoryImpl
-    ): ItemsRepository
+    abstract fun bindSpellRepository(
+        spellRepository: SpellRepositoryImpl
+    ): SpellRepository
 }

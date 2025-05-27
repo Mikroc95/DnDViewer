@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Character
+package com.Mikroc.DnDViewer.bbdd.Repository.Character
 
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import kotlinx.coroutines.flow.Flow

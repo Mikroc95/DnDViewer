@@ -55,14 +55,14 @@ import kotlinx.coroutines.launch
 private lateinit var drawerState: DrawerState
 private lateinit var coroutineScope: CoroutineScope
 private lateinit var title: MutableState<String>
-private lateinit var listCharacters: MutableList<CharacterModel>
+private lateinit var listCharacters: List<CharacterModel>
 
 
 @Composable
 fun CustomNavigationDrawer(
     topBarTitle: MutableState<String>,
     topBarIcon: Painter? = null,
-    characters: MutableList<CharacterModel>,
+    characters: List<CharacterModel>,
     onCharacterSelected: (CharacterModel) -> Unit,
     onNewCharacterClicked: () -> Unit,
     onUpdateCharacter: (CharacterModel) -> Unit,

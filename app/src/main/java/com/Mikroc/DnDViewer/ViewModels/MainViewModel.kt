@@ -3,9 +3,9 @@ package com.Mikroc.DnDViewer.ViewModels
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.Mikroc.DnDViewer.BBDD.Repository.Character.CharacterRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Items.ItemsRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Spell.SpellRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Character.CharacterRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Items.ItemsRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Spell.SpellRepository
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Models.ItemsModel
 import com.Mikroc.DnDViewer.Models.SpellModel
@@ -80,6 +80,21 @@ class MainViewModel @Inject constructor(
             if (_selectedCharacter.value.code == _selectedCharacter.value.code) {
                 _selectedCharacter.value = CharacterModel()
             }
+        }
+    }
+
+    fun saveOrUpdateCharacter(character: CharacterModel, isNew: Boolean, context: Context) {
+        viewModelScope.launch {
+            var item = character
+            if (isNew) {
+                item.code = insertCharacter(item).toInt()
+            } else {
+                updateCharacters(character = item)
+                item = getCharacterByName(item.name)
+            }
+            getCharacterSelected(item)
+            insertSpells(item.code, item.maxSpell)
+            checkUselessFolder(item.name, context)
         }
     }
 

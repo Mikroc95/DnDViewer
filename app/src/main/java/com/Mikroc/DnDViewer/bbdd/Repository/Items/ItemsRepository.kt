@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Items
+package com.Mikroc.DnDViewer.bbdd.Repository.Items
 
 import com.Mikroc.DnDViewer.Models.ItemsModel
 import kotlinx.coroutines.flow.Flow

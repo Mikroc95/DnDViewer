@@ -21,11 +21,14 @@ import com.Mikroc.DnDViewer.Models.SpellModel
 import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Screens.characterModel
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
+fun RowSpell(
+    spell: SpellModel,
+    count: Int,
+    characterCode:Int,
+    onUpdateSpell: (SpellModel) -> Unit
+) {
     val context = LocalContext.current
     val valueName = remember {
         mutableStateOf(spell.name)
@@ -61,12 +64,12 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
                 value = valueName.value,
                 onValueChange = {
                     valueName.value = it
-                    viewModel.updateSpell(
+                   onUpdateSpell(
                         SpellModel(
                             id = spell.id,
                             name = valueName.value,
                             level = valueLevel.value,
-                            character = characterModel.code
+                            character = characterCode
                         )
                     )
                 },
@@ -93,12 +96,12 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
                 value = valueLevel.value,
                 onValueChange = {
                     valueLevel.value = it
-                    viewModel.updateSpell(
+                    onUpdateSpell(
                         SpellModel(
                             id = spell.id,
                             name = valueName.value,
                             level = valueLevel.value,
-                            character = characterModel.code
+                            character = characterCode
                         )
                     )
                 },

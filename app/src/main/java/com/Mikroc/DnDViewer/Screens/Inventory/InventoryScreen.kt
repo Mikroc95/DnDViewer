@@ -17,11 +17,14 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -32,13 +35,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeCharacterRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeItemsRepository
-import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeSpellRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
+import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Components.ExpandableBox
 import com.Mikroc.DnDViewer.Dialogs.DialogNewItem
-import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Models.ItemsModel
 import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowConsumible
 import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowItem
@@ -49,11 +51,16 @@ import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
+fun InventoryScreen(viewModel: MainViewModel) {
     val context = LocalContext.current
+    val characterModel by viewModel.selectedCharacter.collectAsState()
+    var localObservationsText by remember { mutableStateOf("") }
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
@@ -71,6 +78,30 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
     val listSpells by viewModel.spellsFlowList.collectAsState()
     val configuration = LocalConfiguration.current
     val expandableHeight = configuration.screenHeightDp.dp
+
+    LaunchedEffect(characterModel) {
+        if (characterModel.observations != localObservationsText) {
+            localObservationsText = characterModel.observations
+        }
+    }
+
+    val currentUpdateCharacterJob = remember { mutableStateOf<Job?>(null) }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(localObservationsText, characterModel) {
+        currentUpdateCharacterJob.value?.cancel()
+        if (characterModel.observations != localObservationsText) {
+            currentUpdateCharacterJob.value = scope.launch {
+                delay(1000L)
+                val character = viewModel.selectedCharacter.value
+                character.let { update ->
+                    if (update.observations != localObservationsText) { // Doble check
+                        val updatedCharacter = update.copy(observations = localObservationsText)
+                        viewModel.updateCharacters(updatedCharacter)
+                    }
+                }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -175,23 +206,18 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                         RowSpell(
                             spell = it,
                             count = viewModel.spellsFlowList.value.indexOf(it) + 1,
-                            viewModel = viewModel
+                            characterCode = characterModel.code,
+                            onUpdateSpell = {viewModel.updateSpell(it)}
                         )
                     }
                 }
             }
         }
-        //OBSERVATIONS
-        val observations = remember {
-            mutableStateOf(characterModel.observations)
-        }
         ExpandableBox(title = context.getString(R.string.iventory_observations)) {
             CustomTextField(
-                value = observations.value,
+                value = localObservationsText,
                 onValueChange = {
-                    observations.value = it
-                    characterModel.observations = observations.value
-                    viewModel.updateCharacters(character = characterModel)
+                    localObservationsText = it
                 },
                 modifier = Modifier
                     .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
@@ -199,6 +225,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                 singleLine = false
             )
         }
+
         //DIALOG NEW ITEM
         if (dialogNewItem.intValue == 1 || dialogNewItem.intValue == 2) {
             DialogNewItem(
@@ -301,7 +328,6 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
 @Composable
 private fun InventoryScreenPreview() {
     InventoryScreen(
-        characterModel = CharacterModel(),
         viewModel = MainViewModel(
             itemRepository = FakeItemsRepository(),
             characterRepository = FakeCharacterRepository(),

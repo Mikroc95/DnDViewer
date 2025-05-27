@@ -1,10 +1,10 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Database
+package com.Mikroc.DnDViewer.bbdd.Repository.Database
 
 import android.content.Context
 import androidx.room.Room
-import com.Mikroc.DnDViewer.BBDD.Repository.Character.CharacterDao
-import com.Mikroc.DnDViewer.BBDD.Repository.Items.ItemsDao
-import com.Mikroc.DnDViewer.BBDD.Repository.Spell.SpellDao
+import com.Mikroc.DnDViewer.bbdd.Repository.Character.CharacterDao
+import com.Mikroc.DnDViewer.bbdd.Repository.Items.ItemsDao
+import com.Mikroc.DnDViewer.bbdd.Repository.Spell.SpellDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

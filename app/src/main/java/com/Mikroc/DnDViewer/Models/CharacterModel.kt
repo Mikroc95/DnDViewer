@@ -2,7 +2,7 @@ package com.Mikroc.DnDViewer.Models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.Mikroc.DnDViewer.BBDD.MyBBDD
+import com.Mikroc.DnDViewer.bbdd.MyBBDD
 import java.io.Serializable
 
 @Entity(tableName = MyBBDD.Personatge.TABLE_NAME)

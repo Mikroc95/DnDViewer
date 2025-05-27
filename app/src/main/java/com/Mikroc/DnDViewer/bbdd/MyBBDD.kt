@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD
+package com.Mikroc.DnDViewer.bbdd
 
 import android.provider.BaseColumns
 

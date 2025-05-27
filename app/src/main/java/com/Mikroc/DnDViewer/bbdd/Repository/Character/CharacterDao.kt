@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.BBDD.Repository.Character
+package com.Mikroc.DnDViewer.bbdd.Repository.Character
 
 import androidx.room.Dao
 import androidx.room.Delete
