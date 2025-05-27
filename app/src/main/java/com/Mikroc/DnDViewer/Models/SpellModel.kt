@@ -1,8 +1,14 @@
 package com.Mikroc.DnDViewer.Models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.Mikroc.DnDViewer.BBDD.MyBBDD
+
+@Entity(tableName = MyBBDD.Spells.TABLE_NAME)
 data class SpellModel(
-    var id:Int=-1,
-    var name:String="",
-    var level:String="",
-    var character:String=""
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
+    var name: String = "",
+    var level: String = "",
+    var character: Int = -1
 )

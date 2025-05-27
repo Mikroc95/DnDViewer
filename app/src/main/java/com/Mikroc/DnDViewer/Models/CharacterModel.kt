@@ -1,9 +1,14 @@
 package com.Mikroc.DnDViewer.Models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.Mikroc.DnDViewer.BBDD.MyBBDD
 import java.io.Serializable
 
+@Entity(tableName = MyBBDD.Personatge.TABLE_NAME)
 data class CharacterModel(
-    var code: String = "",
+    @PrimaryKey(autoGenerate = true)
+    var code: Int = 0,
     var name: String = "",
     var imageCharacter: ByteArray = byteArrayOf(),
     var homebrewRoute: String = "",

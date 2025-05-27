@@ -1,8 +1,8 @@
 package com.Mikroc.DnDViewer
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.*
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,16 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProvider
 import com.Mikroc.DnDViewer.Components.CustomNavigationDrawer
 import com.Mikroc.DnDViewer.Dialogs.DialogNewCharacter
 import com.Mikroc.DnDViewer.Models.CharacterModel
@@ -37,34 +36,38 @@ import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : FragmentActivity() {
-    private lateinit var viewModel: MainViewModel
-    private lateinit var listCharacters: MutableList<CharacterModel>
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        viewModel.getBBDD(this)
         setContent {
-            listCharacters = rememberSaveable {
-                viewModel.getCharacters()
-            }
+            val listCharacters by viewModel.charactersFlow.collectAsState()
+            val selected by viewModel.selectedCharacter.collectAsState()
             Main(
-                context = this,
-                listCharacters = listCharacters,
+                characterSelected = selected,
+                listCharacters = listCharacters.toMutableList(),
                 viewModel = viewModel
             )
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
     @Composable
     private fun Main(
-        context: Context,
+        characterSelected: CharacterModel = CharacterModel(),
         listCharacters: MutableList<CharacterModel>,
         viewModel: MainViewModel,
     ) {
+        val context = LocalContext.current
         var updateCharacter = CharacterModel()
         val topBarTitle = remember { mutableStateOf(context.getString(R.string.app_name)) }
         val dialogNewCharacter = remember {
@@ -77,15 +80,16 @@ class MainActivity : FragmentActivity() {
             mutableStateOf(false)
         }
 
-        if (viewModel.characterSelected.value.name.isNotEmpty()) {
-            topBarTitle.value = viewModel.characterSelected.value.name
+        if (characterSelected.name.isNotEmpty()) {
+            topBarTitle.value = characterSelected.name
         }
         CustomNavigationDrawer(
             topBarTitle = topBarTitle,
             topBarIcon = painterResource(id = R.drawable.hamburger),
             characters = listCharacters,
             onCharacterSelected = {
-                viewModel.characterSelected.value = viewModel.getCharacter(it.code)
+                viewModel.getCharacterSelected(it)
+                topBarTitle.value = it.name
                 tabSelected.value = 0
             },
             onNewCharacterClicked = {
@@ -100,42 +104,31 @@ class MainActivity : FragmentActivity() {
             }
         ) {
             MainScreen(
-                characterSelected = viewModel.characterSelected.value,
+                characterSelected = characterSelected,
                 viewModel = viewModel
             )
             if (dialogNewCharacter.intValue > 0) {
                 DialogNewCharacter(
                     characterModel = updateCharacter,
                     onDismissRequest = {
-                        var item = it
-                        if (dialogNewCharacter.intValue == 1) {
-                            viewModel.insertCharacter(item)
-                            item = viewModel.getCharacterByName(it.name)
-                            listCharacters.add(item)
-                        } else {
-                            viewModel.updateCharacters(character = item)
-                            updateCharacter = CharacterModel()
+                        GlobalScope.launch {
+                            var item = it
+                            if (dialogNewCharacter.intValue == 1) {
+                                item.code = viewModel.insertCharacter(item).toInt()
+                                listCharacters.add(item)
+                            } else {
+                                viewModel.updateCharacters(character = item)
+                                item = viewModel.getCharacterByName(it.name)
+                                updateCharacter = CharacterModel()
+                            }
+                            viewModel.getCharacterSelected(item)
+                            viewModel.insertSpells(item.code, item.maxSpell)
+                            viewModel.checkUselessFolder(it.name, context = context)
+
+
+                            dialogNewCharacter.intValue = 0
+                            tabSelected.value = 0
                         }
-                        viewModel.insertSpells(item.code, item.maxSpell)
-                        viewModel.characterSelected.value = CharacterModel(
-                            code = item.code,
-                            name = item.name,
-                            imageCharacter = item.imageCharacter,
-                            homebrewRoute = item.homebrewRoute,
-                            vida = item.vida,
-                            vidaMax = item.vidaMax,
-                            mana = item.mana,
-                            manaMax = item.manaMax,
-                            metaMagia = item.metaMagia,
-                            metaMagiaMax = item.metaMagiaMax,
-                            maxSpell = item.maxSpell,
-                            observations = item.observations
-                        )
-                        listCharacters.remove(listCharacters.first { it.code == item.code })
-                        listCharacters.add(item)
-                        dialogNewCharacter.intValue = 0
-                        tabSelected.value = 0
-                        viewModel.checkUselessFolder(context = context)
                     },
                     onClose = {
                         updateCharacter = CharacterModel()
@@ -176,12 +169,7 @@ class MainActivity : FragmentActivity() {
                         ) {
                             Button(
                                 onClick = {
-                                    listCharacters.remove(listCharacters.first { it.code == viewModel.characterSelected.value.code })
-                                    viewModel.deleteCharacter(
-                                        character = viewModel.characterSelected.value,
-                                        context = context
-                                    )
-                                    viewModel.characterSelected.value = CharacterModel()
+                                    viewModel.deleteCharacter(context = context)
                                     topBarTitle.value = context.getString(R.string.app_name)
                                     dialogDeleteCharacter.value = false
                                 },
@@ -196,7 +184,6 @@ class MainActivity : FragmentActivity() {
                                     fontSize = TextUnit(16f, TextUnitType.Sp)
                                 )
                             }
-
                             Button(
                                 onClick = { dialogDeleteCharacter.value = false },
                                 modifier = Modifier.weight(0.3f),

@@ -17,6 +17,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeCharacterRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeItemsRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Components.ExpandableBox
 import com.Mikroc.DnDViewer.Dialogs.DialogNewItem
@@ -61,11 +66,9 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
     val dialogEditItem = remember {
         mutableStateOf(ItemsModel())
     }
-    val list = viewModel.getObjectes(characterModel.code)
-    val listItems = remember {
-        mutableStateOf(list.filter { !it.isConsumible })
-    }
-    val listConsumables = remember { mutableStateOf(list.filter { it.isConsumible }) }
+    val listItems by viewModel.itemsFlowList.collectAsState()
+    val listConsumables by viewModel.consumableFlowList.collectAsState()
+    val listSpells by viewModel.spellsFlowList.collectAsState()
     val configuration = LocalConfiguration.current
     val expandableHeight = configuration.screenHeightDp.dp
     Column(
@@ -88,7 +91,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                     .height(expandableHeight)
                     .verticalScroll(rememberScrollState())
             ) {
-                listItems.value.forEach { item ->
+                listItems.forEach { item ->
                     RowItem(
                         item = item,
                         saveObjectes = { viewModel.updateObjectes(it) },
@@ -105,7 +108,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                                     it.isEquiped = false
                                     viewModel.updateObjectes(it)
                                 } else {
-                                    if (listItems.value.filter { it.isEquiped }.size < 3) {
+                                    if (listItems.filter { it.isEquiped }.size < 3) {
                                         it.isEquiped = true
                                         viewModel.updateObjectes(it)
                                     } else {
@@ -140,7 +143,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                     .verticalScroll(rememberScrollState())
             ) {
                 Column {
-                    listConsumables.value.forEach { item ->
+                    listConsumables.forEach { item ->
                         RowConsumible(
                             item = item,
                             saveObjectes = { viewModel.updateObjectes(it) },
@@ -151,9 +154,7 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                                 dialogEditItem.value = it
                             },
                             onConsumeItem = {
-                                viewModel.deleteObjecte(it.id)
-                                listConsumables.value = viewModel.getObjectes(characterModel.code)
-                                    .filter { it.isConsumible }
+                                viewModel.deleteObjecte(it)
                             }
                         )
                     }
@@ -170,11 +171,10 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                         .padding(16.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
-                    val listSpells = viewModel.getSpells(characterModel.code)
                     listSpells.forEach {
                         RowSpell(
                             spell = it,
-                            count = listSpells.indexOf(it) + 1,
+                            count = viewModel.spellsFlowList.value.indexOf(it) + 1,
                             viewModel = viewModel
                         )
                     }
@@ -205,13 +205,6 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                 characterCode = characterModel.code,
                 onDismissRequest = { item ->
                     viewModel.insertObjectes(item)
-                    if (dialogNewItem.intValue == 1) {
-                        listItems.value = viewModel.getObjectes(characterModel.code)
-                            .filter { !it.isConsumible }
-                    } else {
-                        listConsumables.value = viewModel.getObjectes(characterModel.code)
-                            .filter { it.isConsumible }
-                    }
                     dialogNewItem.intValue = 0
                     dialogEditItem.value = ItemsModel()
                 },
@@ -224,13 +217,6 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                 characterCode = characterModel.code,
                 onDismissRequest = { item ->
                     viewModel.updateObjectes(item)
-                    if (item.isConsumible) {
-                        listConsumables.value = viewModel.getObjectes(characterModel.code)
-                            .filter { it.isConsumible }
-                    } else {
-                        listItems.value = viewModel.getObjectes(characterModel.code)
-                            .filter { !it.isConsumible }
-                    }
                     dialogEditItem.value = ItemsModel()
                     dialogNewItem.intValue = 0
                 },
@@ -276,16 +262,8 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
                         Button(
                             onClick = {
                                 viewModel.deleteObjecte(
-                                    id = dialogDeleteItem.value.id,
+                                    itemsModel = dialogDeleteItem.value,
                                 )
-                                if (dialogDeleteItem.value.isConsumible) {
-                                    listConsumables.value =
-                                        viewModel.getObjectes(characterModel.code)
-                                            .filter { it.isConsumible }
-                                } else {
-                                    listItems.value = viewModel.getObjectes(characterModel.code)
-                                        .filter { !it.isConsumible }
-                                }
                                 dialogDeleteItem.value = ItemsModel()
                             },
                             modifier = Modifier
@@ -324,6 +302,10 @@ fun InventoryScreen(characterModel: CharacterModel, viewModel: MainViewModel) {
 private fun InventoryScreenPreview() {
     InventoryScreen(
         characterModel = CharacterModel(),
-        viewModel = MainViewModel()
+        viewModel = MainViewModel(
+            itemRepository = FakeItemsRepository(),
+            characterRepository = FakeCharacterRepository(),
+            spellRepository = FakeSpellRepository()
+        )
     )
 }

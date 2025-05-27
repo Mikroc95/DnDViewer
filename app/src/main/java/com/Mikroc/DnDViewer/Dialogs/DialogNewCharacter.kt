@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeCharacterRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeItemsRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.Components.CustomTextField
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Theme.backgroundColor
@@ -44,9 +47,13 @@ import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
 import com.Mikroc.DnDViewer.Theme.yellowMetamagic
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
 
 
+@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
@@ -458,7 +465,7 @@ fun DialogNewCharacter(
                                             newHomebrewFile.createNewFile()
 
                                             oldHomebrewFile.inputStream()
-                                                .use { input -> // Usa inputStream() directamente desde el File
+                                                .use { input ->
                                                     newHomebrewFile.outputStream().use { output ->
                                                         input.copyTo(output)
                                                     }
@@ -484,34 +491,43 @@ fun DialogNewCharacter(
                                     }
 
                                 }
-                                val oldItemBD = viewModel.getCharacter(characterModel.code)
-                                if (oldItemBD.vidaMax == newCharacter.value.vidaMax) {
-                                    newCharacter.value.vida = oldItemBD.vida
-                                } else {
-                                    val actualToAdd = newCharacter.value.vidaMax - oldItemBD.vidaMax
-                                    if (actualToAdd > 0) {
-                                        newCharacter.value.vida = oldItemBD.vida + actualToAdd
-
-                                    } else {
+                                GlobalScope.launch {
+                                    val oldItemBD = viewModel.getCharacter(characterModel.code)
+                                    if (oldItemBD.vidaMax == newCharacter.value.vidaMax) {
                                         newCharacter.value.vida = oldItemBD.vida
-                                    }
-                                }
-                                if (oldItemBD.manaMax == newCharacter.value.manaMax) {
-                                    newCharacter.value.mana = oldItemBD.mana
-                                }
-                                if (oldItemBD.metaMagiaMax == newCharacter.value.metaMagiaMax) {
-                                    newCharacter.value.metaMagia = oldItemBD.metaMagia
-                                }
+                                    } else {
+                                        val actualToAdd =
+                                            newCharacter.value.vidaMax - oldItemBD.vidaMax
+                                        if (actualToAdd > 0) {
+                                            newCharacter.value.vida = oldItemBD.vida + actualToAdd
 
-                                if (newCharacter.value.homebrewRoute.isEmpty() && characterModel.homebrewRoute.isNotEmpty()) {
-                                    newCharacter.value.homebrewRoute = characterModel.homebrewRoute
+                                        } else {
+                                            if (oldItemBD.vida > newCharacter.value.vidaMax) {
+                                                newCharacter.value.vida = newCharacter.value.vidaMax
+                                            } else {
+                                                newCharacter.value.vida = oldItemBD.vida
+                                            }
+                                        }
+                                    }
+                                    if (oldItemBD.manaMax == newCharacter.value.manaMax) {
+                                        newCharacter.value.mana = oldItemBD.mana
+                                    }
+                                    if (oldItemBD.metaMagiaMax == newCharacter.value.metaMagiaMax) {
+                                        newCharacter.value.metaMagia = oldItemBD.metaMagia
+                                    }
+
+                                    if (newCharacter.value.homebrewRoute.isEmpty() && characterModel.homebrewRoute.isNotEmpty()) {
+                                        newCharacter.value.homebrewRoute =
+                                            characterModel.homebrewRoute
+                                    }
+                                    if (newCharacter.value.imageCharacter.isEmpty() && characterModel.imageCharacter.isNotEmpty()) {
+                                        newCharacter.value.imageCharacter =
+                                            characterModel.imageCharacter
+                                    }
+                                    newCharacter.value.observations = oldItemBD.observations
+                                    onDismissRequest(newCharacter.value)
+
                                 }
-                                if (newCharacter.value.imageCharacter.isEmpty() && characterModel.imageCharacter.isNotEmpty()) {
-                                    newCharacter.value.imageCharacter =
-                                        characterModel.imageCharacter
-                                }
-                                newCharacter.value.observations = oldItemBD.observations
-                                onDismissRequest(newCharacter.value)
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -556,7 +572,11 @@ private fun DialogNewCharacterPreview() {
     DialogNewCharacter(
         onDismissRequest = {},
         onClose = { },
-        viewModel = MainViewModel()
+        viewModel = MainViewModel(
+            itemRepository = FakeItemsRepository(),
+            characterRepository = FakeCharacterRepository(),
+            spellRepository = FakeSpellRepository()
+        )
     )
 }
 

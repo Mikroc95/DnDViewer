@@ -61,7 +61,7 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
                 value = valueName.value,
                 onValueChange = {
                     valueName.value = it
-                    viewModel.updateSpells(
+                    viewModel.updateSpell(
                         SpellModel(
                             id = spell.id,
                             name = valueName.value,
@@ -93,7 +93,7 @@ fun RowSpell(spell: SpellModel, count: Int, viewModel: MainViewModel) {
                 value = valueLevel.value,
                 onValueChange = {
                     valueLevel.value = it
-                    viewModel.updateSpells(
+                    viewModel.updateSpell(
                         SpellModel(
                             id = spell.id,
                             name = valueName.value,

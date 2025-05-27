@@ -1,0 +1,11 @@
+package com.Mikroc.DnDViewer.BBDD.Repository.Items
+
+import com.Mikroc.DnDViewer.Models.ItemsModel
+import kotlinx.coroutines.flow.Flow
+
+interface ItemsRepository {
+    suspend fun getItemsByCharacterCode(characterCode: Int): Flow<MutableList<ItemsModel>>
+    fun insertItem(item: ItemsModel)
+    fun updateItem(item: ItemsModel)
+    fun deleteItem(item: ItemsModel)
+}

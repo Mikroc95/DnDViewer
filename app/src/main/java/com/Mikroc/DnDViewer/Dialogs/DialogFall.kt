@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeCharacterRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeItemsRepository
+import com.Mikroc.DnDViewer.BBDD.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Screens.characterModel
 import com.Mikroc.DnDViewer.Theme.backgroundColor
@@ -206,13 +209,21 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
                 IconButton(
                     onClick = {
                         listMatches.add(element = 2)
-                        if(isDead(listMatches)){
+                        if (isDead(listMatches)) {
                             fallen.value = false
-                            Toast.makeText(context,"ha mort ${characterModel.name}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "ha mort ${characterModel.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        if(isAlive(list = listMatches)){
+                        if (isAlive(list = listMatches)) {
                             fallen.value = false
-                            Toast.makeText(context,"s'ha aixecat ${characterModel.name}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "s'ha aixecat ${characterModel.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             hp.value = 1
                             characterModel.vida = hp.value
                             viewModel.updateCharacters(character = characterModel)
@@ -229,13 +240,21 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
                     onClick = {
 
                         listMatches.add(element = 1)
-                        if(isDead(listMatches)){
+                        if (isDead(listMatches)) {
                             fallen.value = false
-                            Toast.makeText(context,"ha mort ${characterModel.name}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "ha mort ${characterModel.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        if(isAlive(list = listMatches)){
+                        if (isAlive(list = listMatches)) {
                             fallen.value = false
-                            Toast.makeText(context,"s'ha aixecat ${characterModel.name}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "s'ha aixecat ${characterModel.name}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             characterModel.vida = 1
                         }
                     },
@@ -252,20 +271,26 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
     }
 }
 
-private fun isDead(list:MutableList<Int>):Boolean{
+private fun isDead(list: MutableList<Int>): Boolean {
     val dead = list.filter { it == 1 }.toList()
     return dead.size >= 3
 }
 
-private fun isAlive(list:MutableList<Int>):Boolean{
+private fun isAlive(list: MutableList<Int>): Boolean {
     val alive = list.filter { it == 2 }.toList()
     return alive.size >= 3
 }
 
 @Preview
 @Composable
-fun DialogFallPreview(){
+fun DialogFallPreview() {
     val remember = remember { mutableStateOf(true) }
-    val hp = remember{ mutableStateOf(0) }
-    DialogFall(remember,hp, MainViewModel())
+    val hp = remember { mutableStateOf(0) }
+    DialogFall(
+        remember, hp, viewModel = MainViewModel(
+            itemRepository = FakeItemsRepository(),
+            characterRepository = FakeCharacterRepository(),
+            spellRepository = FakeSpellRepository()
+        )
+    )
 }

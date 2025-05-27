@@ -1,18 +1,25 @@
+
 [versions]
-agp = "8.10.0"
-kotlin = "2.0.0"
-coreKtx = "1.10.0"
+agp = "8.2.2"                     # Actualizado
+kotlin = "2.1.0"                 # CAMBIADO CLAVE
+kotlinSerializationPlugin = "2.1.0" # Añadido
+composeCompiler = "2.1.0"         # Añadido (para Kotlin 1.9.22)
+coreKtx = "1.13.1"                # Actualizado (ejemplo, verifica última estable)
 junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.2"
-composeBom = "2023.08.00"
-navigationRuntimeKtx = "2.8.7"
-navigationFragmentKtx = "2.8.7"
-navigationCompose = "2.8.7"
-uiViewbinding = "1.7.8"
-material3Android = "1.3.1"
+junitVersion = "1.1.5"            # Actualizado (ejemplo, verifica última estable)
+espressoCore = "3.5.1"            # Actualizado (ejemplo, verifica última estable)
+lifecycleRuntimeKtx = "2.7.0"     # Actualizado (ejemplo, verifica última estable)
+activityCompose = "1.9.0"         # Actualizado (ejemplo, verifica última estable)
+composeBom = "2024.04.00"         # Actualizado a uno más reciente (verifica última estable)
+navigationRuntimeKtx = "2.7.7"    # Actualizado (ejemplo, verifica última estable)
+navigationFragmentKtx = "2.7.7"   # Actualizado (ejemplo, verifica última estable)
+navigationCompose = "2.7.7"       # Actualizado (ejemplo, verifica última estable)
+uiViewbinding = "1.5.4"           # Actualizado (Compose UI ViewBinding, verifica si aún es necesario)
+material3Android = "1.2.1"        # Actualizado (ejemplo, verifica última estable)
+room = "2.5.2"                    # Definido para Room
+kotlinxSerializationJson = "1.6.3" # Añadido (para Kotlin 1.9.22)
+hilt = "2.51.1"
+# ... (otras versiones que puedas tener y quieras actualizar)
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,15 +35,31 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" } # Esta es la dependencia de Compose Material 3
+ androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" } # Esta parece redundante si usas el BOM y androidx-material3
+
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
-androidx-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "uiViewbinding" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+androidx-ui-viewbinding = { group = "androidx.compose.ui", name = "ui-viewbinding", version.ref = "uiViewbinding" } # Verifica si realmente la necesitas con Compose puro
+
+# Room
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" } # Para KAPT
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+# Kotlinx Serialization
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# Hilt
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+# ... (tus otras bibliotecas)
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" } # Usará kotlin = "1.9.22"
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" } # Añadido
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

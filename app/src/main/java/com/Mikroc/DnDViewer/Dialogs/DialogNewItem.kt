@@ -40,7 +40,7 @@ import com.Mikroc.DnDViewer.R
 
 @Composable
 fun DialogNewItem(
-    characterCode: String,
+    characterCode: Int,
     onDismissRequest: (ItemsModel) -> Unit,
     onClose: () -> Unit,
     isConsumable: Boolean = false,
@@ -232,7 +232,7 @@ private fun checkInteger(value: String, isConsumable: Boolean): String {
 @Preview
 fun DialogNewItemPreview() {
     DialogNewItem(
-        characterCode = "Mock",
+        characterCode = 0,
         onDismissRequest = {},
         onClose = { },
     )
