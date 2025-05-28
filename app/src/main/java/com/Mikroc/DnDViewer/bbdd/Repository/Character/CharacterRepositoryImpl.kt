@@ -16,18 +16,15 @@ class CharacterRepositoryImpl @Inject constructor(
     }
 
     override fun getCharacterByIdFlow(id: Int): Flow<CharacterModel?> {
-        // Mapea el flujo de listas para encontrar y emitir el personaje específico o null
         return characterDao.getCharactersFlow().map { characters ->
-            characters.find { it.code == id } // Asegúrate que 'code' es el campo correcto
+            characters.find { it.code == id }
         }
     }
 
-    // Implementación suspendida si aún la necesitas
     override suspend fun getCharacterById(id: Int): CharacterModel? {
-        // Esta versión toma la primera emisión de la lista y busca en ella.
-        // Es menos reactiva que getCharacterByIdFlow.
+
         val charactersList = characterDao.getCharactersFlow().first()
-        return charactersList.find { it.code == id } // Asegúrate que 'code' es el campo correcto
+        return charactersList.find { it.code == id }
     }
 
     override suspend fun insertCharacter(character: CharacterModel): Long {

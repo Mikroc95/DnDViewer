@@ -18,8 +18,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +40,8 @@ fun InputCounter(
     borderColor: Color,
     labelColor: Color = textColor(),
     inputPadding: PaddingValues = PaddingValues(6.dp),
-    valueTextField: MutableState<String>,
+    valueTextField: String,
+    onTextFieldValueChange: (String) -> Unit,
     onKeyBoardDone: () -> Unit,
     onLessClicked: () -> Unit,
     onPlusClicked: () -> Unit,
@@ -91,9 +90,9 @@ fun InputCounter(
                     .padding(horizontal = 8.dp)
             ) {
                 CustomTextField(
-                    value = valueTextField.value,
+                    value = valueTextField,
                     onValueChange = {
-                        valueTextField.value = it
+                        onTextFieldValueChange(it)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,7 +107,6 @@ fun InputCounter(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             onKeyBoardDone()
-                            valueTextField.value = ""
                         }
                     ),
                     colors = TextFieldDefaults.colors(
@@ -153,7 +151,8 @@ private fun InputCounterPreview() {
         InputCounter(
             totalResult = "10",
             borderColor = Color.Red,
-            valueTextField = mutableStateOf(""),
+            valueTextField ="",
+            onTextFieldValueChange = {},
             onKeyBoardDone = { },
             onPlusClicked = { },
             onLessClicked = { }

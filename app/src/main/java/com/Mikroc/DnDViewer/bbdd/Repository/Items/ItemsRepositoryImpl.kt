@@ -28,6 +28,4 @@ class ItemsRepositoryImpl @Inject constructor(
     override fun deleteItem(item: ItemsModel) {
         itemDao.deleteItem(item = item)
     }
-
-
 }

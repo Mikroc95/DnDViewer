@@ -126,7 +126,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 itemsIndexed(
                     items = listItems,
                     key = { _, item -> item.id!! }
-                ) { index, item ->
+                ) { _, item ->
                     RowItem(
                         item = item,
                         saveObjectes = { viewModel.updateItems(it) },
@@ -180,7 +180,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 itemsIndexed(
                     items = listConsumables,
                     key = { _, item -> item.id!! }
-                ) { index, item ->
+                ) { _, item ->
                     RowConsumible(
                         item = item,
                         saveObjectes = { viewModel.updateItems(it) },

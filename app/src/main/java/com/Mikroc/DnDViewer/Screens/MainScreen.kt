@@ -45,7 +45,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
     } else {
         Column(modifier = Modifier.background(topBarColor())) {
             if (characterSelected.vidaMax > 0 || characterSelected.manaMax > 0 || characterSelected.metaMagiaMax > 0) {
-                CustomHpManaBar(characterModel = characterSelected, viewModel = viewModel)
+                CustomHpManaBar(viewModel = viewModel)
             }
             when (isCharacterEmpty(character = characterSelected)) {
                 0 -> {

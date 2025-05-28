@@ -126,7 +126,7 @@ fun RowItem(
                 InputCounter(
                     totalResult = counterText,
                     borderColor = discordOrangeAccent,
-                    valueTextField = valueTextField,
+                    valueTextField = valueTextField.value,
                     onKeyBoardDone = {
                         try {
                             if (valueTextField.value.isNotEmpty()) {
@@ -142,6 +142,7 @@ fun RowItem(
                                 }
                                 item.actualCharges = charges.intValue.toString()
                                 saveObjectes(item)
+                                valueTextField.value = ""
                             }
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -163,6 +164,9 @@ fun RowItem(
                             item.actualCharges = charges.intValue.toString()
                             saveObjectes(item)
                         }
+                    },
+                    onTextFieldValueChange = {
+                        valueTextField.value = it
                     }
                 )
             }
@@ -239,7 +243,7 @@ fun RowConsumible(
             }
             InputCounter(
                 totalResult = totalConsumibles.intValue.toString(),
-                valueTextField = valueTextField,
+                valueTextField = valueTextField.value,
                 borderColor = discordOrangeAccent,
                 onKeyBoardDone = {
                     try {
@@ -253,6 +257,7 @@ fun RowConsumible(
                             } else {
                                 onConsumeItem(item)
                             }
+                            valueTextField.value = ""
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -277,6 +282,9 @@ fun RowConsumible(
                     } else {
                         onConsumeItem(item)
                     }
+                },
+                onTextFieldValueChange = {
+                    valueTextField.value = it
                 }
             )
 

@@ -38,7 +38,6 @@ import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import kotlinx.coroutines.DelicateCoroutinesApi
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -57,7 +56,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class, DelicateCoroutinesApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun Main(
         characterSelected: CharacterModel = CharacterModel(),

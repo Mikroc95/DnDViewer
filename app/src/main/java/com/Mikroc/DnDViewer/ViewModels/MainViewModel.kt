@@ -36,7 +36,7 @@ class MainViewModel @Inject constructor(
     private var _charactersFlow = MutableStateFlow<List<CharacterModel>>(emptyList())
     var charactersFlow: StateFlow<List<CharacterModel>> = _charactersFlow.asStateFlow()
 
-    private var _selectedCharacter = MutableStateFlow<CharacterModel>(CharacterModel())
+    private var _selectedCharacter = MutableStateFlow(CharacterModel())
     var selectedCharacter: StateFlow<CharacterModel> = _selectedCharacter.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -136,7 +136,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun insertCharacter(character: CharacterModel): Long {
+    private suspend fun insertCharacter(character: CharacterModel): Long {
         return characterRepository.insertCharacter(character)
     }
 
@@ -173,7 +173,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun deleteItems(characterCode: Int) {
+   private fun deleteItems(characterCode: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             itemsFlowList.value.filter { it.character == characterCode }.forEach {
                 itemRepository.deleteItem(it)
@@ -191,7 +191,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun insertSpells(characterCode: Int, numberSpells: Int) {
+     private fun insertSpells(characterCode: Int, numberSpells: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val currentSpellList = spellRepository.getSpellsDirectly(characterCode)
@@ -225,7 +225,7 @@ class MainViewModel @Inject constructor(
     }
 
 
-    fun deleteSpells(characterCode: Int) {
+    private fun deleteSpells(characterCode: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val spellsToDelete = spellsFlowList.value.filter { it.character == characterCode }
@@ -234,6 +234,48 @@ class MainViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+    }
+
+    fun updateCharacterHP(newHP: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentCharacter = _selectedCharacter.value
+            if (currentCharacter.code == 0) return@launch
+
+            val clampedHP = newHP.coerceIn(0, currentCharacter.vidaMax)
+            if (currentCharacter.vida != clampedHP) {
+                val updatedCharacter = currentCharacter.copy(vida = clampedHP)
+                _selectedCharacter.value = updatedCharacter
+                characterRepository.updateCharacter(updatedCharacter)
+            }
+        }
+    }
+
+    fun updateCharacterMana(newMana: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentCharacter = _selectedCharacter.value
+            if (currentCharacter.code == 0) return@launch
+
+            val clampedMana = newMana.coerceIn(0, currentCharacter.manaMax)
+            if (currentCharacter.mana != clampedMana) {
+                val updatedCharacter = currentCharacter.copy(mana = clampedMana)
+                _selectedCharacter.value = updatedCharacter
+                characterRepository.updateCharacter(updatedCharacter)
+            }
+        }
+    }
+
+    fun updateCharacterMetaMagic(newMetaMagic: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentCharacter = _selectedCharacter.value
+            if (currentCharacter.code == 0) return@launch
+
+            val clampedMetaMagic = newMetaMagic.coerceIn(0, currentCharacter.metaMagiaMax)
+            if (currentCharacter.metaMagia != clampedMetaMagic) {
+                val updatedCharacter = currentCharacter.copy(metaMagia = clampedMetaMagic)
+                _selectedCharacter.value = updatedCharacter
+                characterRepository.updateCharacter(updatedCharacter)
             }
         }
     }
@@ -248,15 +290,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun characterHasDied() {
-        _selectedCharacter.value.let { char ->
-            val updatedCharacter = char.copy(vida = 0)
-            _selectedCharacter.value = updatedCharacter
-            viewModelScope.launch {
-                characterRepository.updateCharacter(updatedCharacter)
-            }
-        }
-    }
 
     fun deleteHomeBrew(characterName: String, homebrewRoute: String, context: Context) {
         try {
@@ -273,7 +306,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun checkUselessFolder(newItem: String, context: Context) {
+    private fun checkUselessFolder(newItem: String, context: Context) {
         try {
             val list = mutableListOf(newItem)
             list.addAll(_charactersFlow.value.map { it.name }.toSet())

@@ -30,8 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
 
 }
 
-class FakeCharacterRepository :
-    CharacterRepository { /* Implementación vacía o con datos de prueba */
+class FakeCharacterRepository : CharacterRepository {
 
     override fun getAllCharactersFlow(): Flow<List<CharacterModel>> {
         TODO("Not yet implemented")
@@ -88,7 +87,7 @@ class FakeItemsRepository : ItemsRepository {
 class FakeSpellRepository : SpellRepository {
     override fun getSpells(characterCode: Int): Flow<MutableList<SpellModel>> {
         TODO("Not yet implemented")
-    } /* ... */
+    }
 
     override suspend fun getSpellsDirectly(id: Int): List<SpellModel> {
         TODO("Not yet implemented")

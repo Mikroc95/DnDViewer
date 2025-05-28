@@ -22,7 +22,7 @@ class SpellRepositoryImpl @Inject constructor(
     }
 
     override suspend fun updateSpell(spell: SpellModel) {
-        spellDao.UpdateSpell(spell = spell)
+        spellDao.updateSpell(spell = spell)
     }
 
     override suspend fun deleteSpell(spell: SpellModel) {

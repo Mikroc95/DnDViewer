@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class bindSpellRepository {
+abstract class BindSpellRepository {
 
     @Binds
     @Singleton

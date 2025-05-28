@@ -10,7 +10,7 @@ import javax.inject.Singleton
 @Suppress("unused")
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class bindItemsRepository {
+abstract class BindItemsRepository {
 
     @Binds
     @Singleton

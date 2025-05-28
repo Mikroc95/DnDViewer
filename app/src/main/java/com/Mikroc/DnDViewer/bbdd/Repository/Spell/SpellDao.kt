@@ -23,7 +23,7 @@ interface SpellDao {
     fun insertSpell(spell: SpellModel)
 
     @Update(onConflict = OnConflictStrategy.Companion.REPLACE)
-    fun UpdateSpell(spell: SpellModel)
+    fun updateSpell(spell: SpellModel)
 
     @Delete
     fun deleteSpell(spell: SpellModel)
