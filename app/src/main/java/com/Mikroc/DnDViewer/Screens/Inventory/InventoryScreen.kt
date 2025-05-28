@@ -121,7 +121,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(configuration.screenWidthDp.dp)
+                    .height(configuration.screenHeightDp.dp)
             ) {
                 itemsIndexed(
                     items = listItems,
@@ -175,7 +175,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(configuration.screenWidthDp.dp)
+                    .height(configuration.screenHeightDp.dp)
             ) {
                 itemsIndexed(
                     items = listConsumables,
@@ -204,7 +204,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(configuration.screenWidthDp.dp)
+                        .height(configuration.screenHeightDp.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     itemsIndexed(
