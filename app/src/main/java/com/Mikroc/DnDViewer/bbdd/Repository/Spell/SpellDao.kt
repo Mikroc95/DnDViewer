@@ -12,8 +12,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SpellDao {
-    @Query("SELECT * FROM ${MyBBDD.Spells.TABLE_NAME}")
-    fun getSpells(): Flow<MutableList<SpellModel>>
+    @Query("SELECT * FROM ${MyBBDD.Spells.TABLE_NAME} WHERE character = :characterCode")
+    fun getSpells(characterCode: Int): Flow<List<SpellModel>>
+
+    @Query("SELECT * FROM ${MyBBDD.Spells.TABLE_NAME} WHERE character = :id")
+    fun getSpellsDirectly(id: Int): List<SpellModel>
+
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     fun insertSpell(spell: SpellModel)

@@ -9,10 +9,13 @@ import javax.inject.Singleton
 class ItemsRepositoryImpl @Inject constructor(
     private val itemDao: ItemsDao
 ) : ItemsRepository {
-    override suspend fun getItemsByCharacterCode(characterCode: Int): Flow<MutableList<ItemsModel>> {
-        return itemDao.getItems()
+    override suspend fun getItems(characterCode: Int): Flow<MutableList<ItemsModel>> {
+        return itemDao.getItems(characterCode = characterCode)
     }
 
+    override suspend fun getConsumables(characterCode: Int): Flow<MutableList<ItemsModel>> {
+        return itemDao.getConsumables(characterCode = characterCode)
+    }
 
     override fun insertItem(item: ItemsModel) {
         itemDao.insertItem(item = item)

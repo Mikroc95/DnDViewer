@@ -44,7 +44,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()//"1.5.14"
     }
     packaging {
         resources {
@@ -65,7 +65,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
     implementation("org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}")
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib:${libs.versions.kotlin.get()}") {

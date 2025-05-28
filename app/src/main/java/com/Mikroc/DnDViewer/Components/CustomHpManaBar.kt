@@ -240,7 +240,7 @@ fun CustomHpManaBar(characterModel: CharacterModel, viewModel: MainViewModel) {
         }
     }
     if (isCharacterFalled.value) {
-        DialogFall(fallen = isCharacterFalled, hp = currentHP, viewModel = viewModel)
+        DialogFall(fallen = isCharacterFalled, viewModel = viewModel)
     }
 }
 

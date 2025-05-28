@@ -1,7 +1,7 @@
 
 [versions]
 agp = "8.2.2"                     # Actualizado
-kotlin = "2.1.0"                 # CAMBIADO CLAVE
+kotlin = "2.0.0"                 # CAMBIADO CLAVE
 kotlinSerializationPlugin = "2.1.0" # Añadido
 composeCompiler = "2.1.0"         # Añadido (para Kotlin 1.9.22)
 coreKtx = "1.13.1"                # Actualizado (ejemplo, verifica última estable)
@@ -16,9 +16,10 @@ navigationFragmentKtx = "2.7.7"   # Actualizado (ejemplo, verifica última estab
 navigationCompose = "2.7.7"       # Actualizado (ejemplo, verifica última estable)
 uiViewbinding = "1.5.4"           # Actualizado (Compose UI ViewBinding, verifica si aún es necesario)
 material3Android = "1.2.1"        # Actualizado (ejemplo, verifica última estable)
-room = "2.5.2"                    # Definido para Room
+room = "2.6.1"                    # Definido para Room
 kotlinxSerializationJson = "1.6.3" # Añadido (para Kotlin 1.9.22)
 hilt = "2.51.1"
+coroutines = "1.7.3"
 # ... (otras versiones que puedas tener y quieras actualizar)
 
 [libraries]
@@ -55,6 +56,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 # ... (tus otras bibliotecas)
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -62,4 +65,4 @@ jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "k
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" } # Añadido
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "composeCompiler" }

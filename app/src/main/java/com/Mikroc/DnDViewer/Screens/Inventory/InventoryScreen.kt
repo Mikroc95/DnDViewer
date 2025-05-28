@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BasicAlertDialog
@@ -59,6 +61,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun InventoryScreen(viewModel: MainViewModel) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val currentUpdateCharacterJob = remember { mutableStateOf<Job?>(null) }
+    val scope = rememberCoroutineScope()
     val characterModel by viewModel.selectedCharacter.collectAsState()
     var localObservationsText by remember { mutableStateOf("") }
     val dialogNewItem = remember {
@@ -76,8 +81,6 @@ fun InventoryScreen(viewModel: MainViewModel) {
     val listItems by viewModel.itemsFlowList.collectAsState()
     val listConsumables by viewModel.consumableFlowList.collectAsState()
     val listSpells by viewModel.spellsFlowList.collectAsState()
-    val configuration = LocalConfiguration.current
-    val expandableHeight = configuration.screenHeightDp.dp
 
     LaunchedEffect(characterModel) {
         if (characterModel.observations != localObservationsText) {
@@ -85,8 +88,6 @@ fun InventoryScreen(viewModel: MainViewModel) {
         }
     }
 
-    val currentUpdateCharacterJob = remember { mutableStateOf<Job?>(null) }
-    val scope = rememberCoroutineScope()
     LaunchedEffect(localObservationsText, characterModel) {
         currentUpdateCharacterJob.value?.cancel()
         if (characterModel.observations != localObservationsText) {
@@ -117,15 +118,18 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 dialogNewItem.intValue = 1
             }
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .height(expandableHeight)
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .height(configuration.screenWidthDp.dp)
             ) {
-                listItems.forEach { item ->
+                itemsIndexed(
+                    items = listItems,
+                    key = { _, item -> item.id!! }
+                ) { index, item ->
                     RowItem(
                         item = item,
-                        saveObjectes = { viewModel.updateObjectes(it) },
+                        saveObjectes = { viewModel.updateItems(it) },
 
                         onDeleteClicked = {
                             dialogDeleteItem.value = item
@@ -137,11 +141,11 @@ fun InventoryScreen(viewModel: MainViewModel) {
                             try {
                                 if (it.isEquiped) {
                                     it.isEquiped = false
-                                    viewModel.updateObjectes(it)
+                                    viewModel.updateItems(it)
                                 } else {
                                     if (listItems.filter { it.isEquiped }.size < 3) {
                                         it.isEquiped = true
-                                        viewModel.updateObjectes(it)
+                                        viewModel.updateItems(it)
                                     } else {
                                         Toast.makeText(
                                             context,
@@ -168,27 +172,28 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 dialogNewItem.intValue = 2
             }
         ) {
-            Column(
+            LazyColumn(
                 modifier = Modifier
-                    .height(expandableHeight)
-                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+                    .height(configuration.screenWidthDp.dp)
             ) {
-                Column {
-                    listConsumables.forEach { item ->
-                        RowConsumible(
-                            item = item,
-                            saveObjectes = { viewModel.updateObjectes(it) },
-                            onDeleteClicked = {
-                                dialogDeleteItem.value = item
-                            },
-                            onEditClicked = {
-                                dialogEditItem.value = it
-                            },
-                            onConsumeItem = {
-                                viewModel.deleteObjecte(it)
-                            }
-                        )
-                    }
+                itemsIndexed(
+                    items = listConsumables,
+                    key = { _, item -> item.id!! }
+                ) { index, item ->
+                    RowConsumible(
+                        item = item,
+                        saveObjectes = { viewModel.updateItems(it) },
+                        onDeleteClicked = {
+                            dialogDeleteItem.value = item
+                        },
+                        onEditClicked = {
+                            dialogEditItem.value = it
+                        },
+                        onConsumeItem = {
+                            viewModel.deleteItem(it)
+                        }
+                    )
                 }
             }
         }
@@ -196,18 +201,20 @@ fun InventoryScreen(viewModel: MainViewModel) {
         //ENCANTERIS
         if (characterModel.maxSpell > 0) {
             ExpandableBox(title = context.getString(R.string.inventory_spells)) {
-                Column(
+                LazyColumn(
                     modifier = Modifier
-                        .height(expandableHeight)
-                        .padding(16.dp)
-                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                        .height(configuration.screenWidthDp.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    listSpells.forEach {
+                    itemsIndexed(
+                        items = listSpells,
+                        key = { _, spell -> spell.id!! }
+                    ) { index, spell ->
                         RowSpell(
-                            spell = it,
-                            count = viewModel.spellsFlowList.value.indexOf(it) + 1,
-                            characterCode = characterModel.code,
-                            onUpdateSpell = {viewModel.updateSpell(it)}
+                            spell = spell,
+                            count = index + 1,
+                            onUpdateSpell = viewModel::updateSpell
                         )
                     }
                 }
@@ -231,7 +238,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             DialogNewItem(
                 characterCode = characterModel.code,
                 onDismissRequest = { item ->
-                    viewModel.insertObjectes(item)
+                    viewModel.insertItems(item)
                     dialogNewItem.intValue = 0
                     dialogEditItem.value = ItemsModel()
                 },
@@ -243,7 +250,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
             DialogNewItem(
                 characterCode = characterModel.code,
                 onDismissRequest = { item ->
-                    viewModel.updateObjectes(item)
+                    viewModel.updateItems(item)
                     dialogEditItem.value = ItemsModel()
                     dialogNewItem.intValue = 0
                 },
@@ -288,7 +295,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                     ) {
                         Button(
                             onClick = {
-                                viewModel.deleteObjecte(
+                                viewModel.deleteItem(
                                     itemsModel = dialogDeleteItem.value,
                                 )
                                 dialogDeleteItem.value = ItemsModel()
@@ -321,6 +328,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
 
             }
         }
+
     }
 }
 

@@ -1,5 +1,6 @@
 package com.Mikroc.DnDViewer.Dialogs
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,6 +19,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -30,13 +32,12 @@ import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
 import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
 import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
 import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Screens.characterModel
 import com.Mikroc.DnDViewer.Theme.backgroundColor
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 
 @Composable
-fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: MainViewModel) {
+fun DialogFall(fallen: MutableState<Boolean>, viewModel: MainViewModel) {
     //0 = nothing
     //1 = fail
     //2 = good
@@ -83,120 +84,23 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
                     .padding(horizontal = 16.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.Start
             ) {
+
                 if (listMatches.isNotEmpty()) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[0] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
+                    listMatches.forEach {
+                        val source = if (it == 1) R.drawable.skull else R.drawable.health
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.padding(8.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(source),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .padding(start = 16.dp, end = 8.dp)
+                            )
                         }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
                     }
 
-                }
-                if (listMatches.size > 1) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[1] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
-                        }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
-                    }
-                }
-                if (listMatches.size > 2) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[2] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
-                        }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
-                    }
-                }
-                if (listMatches.size > 3) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[3] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
-                        }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
-                    }
-                }
-                if (listMatches.size > 4) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[4] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
-                        }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
-                    }
-                }
-                if (listMatches.size > 5) {
-                    Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
-                    ) {
-
-                        val source = if (listMatches[5] == 1) {
-                            R.drawable.skull
-                        } else {
-                            R.drawable.health
-                        }
-                        Image(
-                            painter = painterResource(source),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 8.dp)
-                        )
-                    }
                 }
             }
 
@@ -208,26 +112,14 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
             ) {
                 IconButton(
                     onClick = {
-                        listMatches.add(element = 2)
-                        if (isDead(listMatches)) {
-                            fallen.value = false
-                            Toast.makeText(
-                                context,
-                                "ha mort ${characterModel.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        if (isAlive(list = listMatches)) {
-                            fallen.value = false
-                            Toast.makeText(
-                                context,
-                                "s'ha aixecat ${characterModel.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            hp.value = 1
-                            characterModel.vida = hp.value
-                            viewModel.updateCharacters(character = characterModel)
-                        }
+                        handleThrow(
+                            result = 2,
+                            listMatches = listMatches,
+                            fallen = fallen,
+                            viewModel = viewModel,
+                            context = context
+                        )
+
                     },
                 ) {
                     Image(
@@ -238,25 +130,14 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
                 }
                 IconButton(
                     onClick = {
+                        handleThrow(
+                            result = 1,
+                            listMatches = listMatches,
+                            fallen = fallen,
+                            viewModel = viewModel,
+                            context = context
+                        )
 
-                        listMatches.add(element = 1)
-                        if (isDead(listMatches)) {
-                            fallen.value = false
-                            Toast.makeText(
-                                context,
-                                "ha mort ${characterModel.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        if (isAlive(list = listMatches)) {
-                            fallen.value = false
-                            Toast.makeText(
-                                context,
-                                "s'ha aixecat ${characterModel.name}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            characterModel.vida = 1
-                        }
                     },
                 ) {
                     Image(
@@ -268,6 +149,34 @@ fun DialogFall(fallen: MutableState<Boolean>, hp: MutableState<Int>, viewModel: 
             }
 
         }
+    }
+}
+
+private fun handleThrow(
+    result: Int,
+    listMatches: SnapshotStateList<Int>,
+    fallen: MutableState<Boolean>,
+    viewModel: MainViewModel,
+    context: Context
+) {
+    listMatches.add(element = result)
+    if (isDead(listMatches)) {
+        fallen.value = false
+        Toast.makeText(
+            context,
+            "ha mort ${viewModel.selectedCharacter.value.name}",
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.characterHasDied()
+    }
+    if (isAlive(list = listMatches)) {
+        fallen.value = false
+        Toast.makeText(
+            context,
+            "s'ha aixecat ${viewModel.selectedCharacter.value.name}",
+            Toast.LENGTH_SHORT
+        ).show()
+        viewModel.characterStabilized()
     }
 }
 
@@ -285,9 +194,8 @@ private fun isAlive(list: MutableList<Int>): Boolean {
 @Composable
 fun DialogFallPreview() {
     val remember = remember { mutableStateOf(true) }
-    val hp = remember { mutableStateOf(0) }
     DialogFall(
-        remember, hp, viewModel = MainViewModel(
+        remember, viewModel = MainViewModel(
             itemRepository = FakeItemsRepository(),
             characterRepository = FakeCharacterRepository(),
             spellRepository = FakeSpellRepository()

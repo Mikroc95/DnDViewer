@@ -9,19 +9,23 @@ import javax.inject.Singleton
 class SpellRepositoryImpl @Inject constructor(
     private val spellDao: SpellDao
 ) : SpellRepository {
-    override fun getSpells(characterCode: Int): Flow<MutableList<SpellModel>> {
-        return spellDao.getSpells()
+    override fun getSpells(characterCode: Int): Flow<List<SpellModel>> {
+        return spellDao.getSpells(characterCode = characterCode)
     }
 
-    override fun insertSpell(spell: SpellModel) {
+    override suspend fun getSpellsDirectly(id: Int): List<SpellModel> {
+        return spellDao.getSpellsDirectly(id = id)
+    }
+
+    override suspend fun insertSpell(spell: SpellModel) {
         spellDao.insertSpell(spell = spell)
     }
 
-    override fun updateSpell(spell: SpellModel) {
+    override suspend fun updateSpell(spell: SpellModel) {
         spellDao.UpdateSpell(spell = spell)
     }
 
-    override fun deleteSpell(spell: SpellModel) {
+    override suspend fun deleteSpell(spell: SpellModel) {
         spellDao.deleteSpell(spell = spell)
     }
 }

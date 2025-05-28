@@ -15,13 +15,13 @@ interface CharacterDao {
     fun getCharactersFlow(): Flow<List<CharacterModel>>
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    fun insertCharacter(character: CharacterModel): Long
+    suspend fun insertCharacter(character: CharacterModel): Long
 
     @Update
-    fun updateCharacter(character: CharacterModel)
+    suspend fun updateCharacter(character: CharacterModel): Int
 
     @Delete
-    fun deleteCharacter(character: CharacterModel)
+    suspend fun deleteCharacter(character: CharacterModel): Int
 
 
 }

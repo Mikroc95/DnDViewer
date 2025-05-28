@@ -23,6 +23,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -47,13 +48,10 @@ import com.Mikroc.DnDViewer.Theme.blueMana
 import com.Mikroc.DnDViewer.Theme.discordRed
 import com.Mikroc.DnDViewer.Theme.yellowMetamagic
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.io.File
 
 
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun DialogNewCharacter(
     characterModel: CharacterModel = CharacterModel(),
@@ -61,6 +59,7 @@ fun DialogNewCharacter(
     onClose: () -> Unit,
     viewModel: MainViewModel
 ) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val character = if (characterModel.name.isEmpty()) {
         CharacterModel()
@@ -491,7 +490,8 @@ fun DialogNewCharacter(
                                     }
 
                                 }
-                                GlobalScope.launch {
+
+                                scope.launch {
                                     val oldItemBD = viewModel.getCharacter(characterModel.code)
                                     if (oldItemBD.vidaMax == newCharacter.value.vidaMax) {
                                         newCharacter.value.vida = oldItemBD.vida

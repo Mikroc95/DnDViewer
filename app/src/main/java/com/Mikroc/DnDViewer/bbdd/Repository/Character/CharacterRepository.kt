@@ -8,6 +8,6 @@ interface CharacterRepository {
     fun getCharacterByIdFlow(id: Int): Flow<CharacterModel?>
     suspend fun getCharacterById(id: Int): CharacterModel?
     suspend fun insertCharacter(character: CharacterModel): Long
-    suspend fun updateCharacter(character: CharacterModel)
-    suspend fun deleteCharacter(character: CharacterModel)
+    suspend fun updateCharacter(character: CharacterModel): Int
+    suspend fun deleteCharacter(character: CharacterModel): Int
 }

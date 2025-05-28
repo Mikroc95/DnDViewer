@@ -50,11 +50,11 @@ class FakeCharacterRepository :
     }
 
 
-    override suspend fun updateCharacter(character: CharacterModel) {
+    override suspend fun updateCharacter(character: CharacterModel): Int {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteCharacter(character: CharacterModel) {
+    override suspend fun deleteCharacter(character: CharacterModel): Int {
         TODO("Not yet implemented")
     }
 
@@ -62,7 +62,11 @@ class FakeCharacterRepository :
 }
 
 class FakeItemsRepository : ItemsRepository {
-    override suspend fun getItemsByCharacterCode(characterCode: Int): Flow<MutableList<ItemsModel>> {
+    override suspend fun getItems(characterCode: Int): Flow<MutableList<ItemsModel>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getConsumables(characterCode: Int): Flow<MutableList<ItemsModel>> {
         TODO("Not yet implemented")
     }
 
@@ -86,16 +90,19 @@ class FakeSpellRepository : SpellRepository {
         TODO("Not yet implemented")
     } /* ... */
 
-
-    override fun insertSpell(spell: SpellModel) {
+    override suspend fun getSpellsDirectly(id: Int): List<SpellModel> {
         TODO("Not yet implemented")
     }
 
-    override fun updateSpell(spell: SpellModel) {
+    override suspend fun insertSpell(spell: SpellModel) {
         TODO("Not yet implemented")
     }
 
-    override fun deleteSpell(spell: SpellModel) {
+    override suspend fun updateSpell(spell: SpellModel) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteSpell(spell: SpellModel) {
         TODO("Not yet implemented")
     }
 

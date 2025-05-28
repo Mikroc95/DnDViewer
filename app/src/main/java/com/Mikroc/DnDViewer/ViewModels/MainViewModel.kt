@@ -11,9 +11,14 @@ import com.Mikroc.DnDViewer.Models.ItemsModel
 import com.Mikroc.DnDViewer.Models.SpellModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -25,21 +30,54 @@ class MainViewModel @Inject constructor(
     private val spellRepository: SpellRepository
 ) : ViewModel() {
 
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
+
     private var _charactersFlow = MutableStateFlow<List<CharacterModel>>(emptyList())
     var charactersFlow: StateFlow<List<CharacterModel>> = _charactersFlow.asStateFlow()
 
     private var _selectedCharacter = MutableStateFlow<CharacterModel>(CharacterModel())
     var selectedCharacter: StateFlow<CharacterModel> = _selectedCharacter.asStateFlow()
 
-    private var _itemsFlowList = MutableStateFlow<List<ItemsModel>>(emptyList())
-    var itemsFlowList: StateFlow<List<ItemsModel>> = _itemsFlowList.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var itemsFlowList: StateFlow<List<ItemsModel>> = selectedCharacter.flatMapLatest { character ->
+        if (character.code.toString().isNotEmpty()) {
+            itemRepository.getItems(character.code)
+        } else {
+            flowOf(emptyList())
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
-    private var _consumableFlowList = MutableStateFlow<List<ItemsModel>>(emptyList())
-    var consumableFlowList: StateFlow<List<ItemsModel>> = _consumableFlowList.asStateFlow()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    var consumableFlowList: StateFlow<List<ItemsModel>> =
+        selectedCharacter.flatMapLatest { character ->
+            if (character.code.toString().isNotEmpty()) {
+                itemRepository.getConsumables(character.code)
+            } else {
+                flowOf(emptyList())
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
-    private var _spellsFlowList = MutableStateFlow<MutableList<SpellModel>>(mutableListOf())
-    var spellsFlowList: StateFlow<MutableList<SpellModel>> = _spellsFlowList.asStateFlow()
-
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val spellsFlowList: StateFlow<List<SpellModel>> = selectedCharacter.flatMapLatest { character ->
+        if (character.code.toString().isNotEmpty()) {
+            spellRepository.getSpells(character.code)
+        } else {
+            flowOf(emptyList())
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -48,12 +86,13 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+    fun setSelectedTabIndex(index: Int) {
+        _selectedTabIndex.value = index
+    }
 
     fun getCharacterSelected(character: CharacterModel) {
         viewModelScope.launch {
             _selectedCharacter.value = character
-            getObjectes(character.code)
-            getSpells(character.code)
         }
     }
 
@@ -66,11 +105,10 @@ class MainViewModel @Inject constructor(
         return _charactersFlow.value.firstOrNull { it.name == characterName } ?: CharacterModel()
     }
 
-
     fun deleteCharacter(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             characterRepository.deleteCharacter(_selectedCharacter.value)
-            deleteObjectes(_selectedCharacter.value.code)
+            deleteItems(_selectedCharacter.value.code)
             deleteSpells(_selectedCharacter.value.code)
             deleteHomeBrew(
                 characterName = _selectedCharacter.value.name,
@@ -87,13 +125,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             var item = character
             if (isNew) {
-                item.code = insertCharacter(item).toInt()
+                val newId = insertCharacter(item)
+                item = item.copy(code = newId.toInt())
             } else {
                 updateCharacters(character = item)
-                item = getCharacterByName(item.name)
             }
-            getCharacterSelected(item)
             insertSpells(item.code, item.maxSpell)
+            getCharacterSelected(item)
             checkUselessFolder(item.name, context)
         }
     }
@@ -115,96 +153,64 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getObjectes(characterCode: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            itemRepository.getItemsByCharacterCode(characterCode).collect { items ->
-                _itemsFlowList.value =
-                    items.filter { it.character == characterCode && !it.isConsumible }
-                _consumableFlowList.value =
-                    items.filter { it.character == characterCode && it.isConsumible }
-            }
-        }
-    }
-
-    fun insertObjectes(item: ItemsModel) {
+    fun insertItems(item: ItemsModel) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 itemRepository.insertItem(item)
-                getObjectes(item.character)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun updateObjectes(item: ItemsModel) {
+    fun updateItems(item: ItemsModel) {
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 itemRepository.updateItem(item)
-                getObjectes(item.character)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun deleteObjectes(characterCode: Int) {
+    fun deleteItems(characterCode: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _itemsFlowList.value.filter { it.character == characterCode }.forEach {
+            itemsFlowList.value.filter { it.character == characterCode }.forEach {
                 itemRepository.deleteItem(it)
             }
-            _consumableFlowList.value.filter { it.character == characterCode }.forEach {
+            consumableFlowList.value.filter { it.character == characterCode }.forEach {
                 itemRepository.deleteItem(it)
             }
-            getObjectes(_selectedCharacter.value.code)
         }
     }
 
-    fun deleteObjecte(itemsModel: ItemsModel) {
+    fun deleteItem(itemsModel: ItemsModel) {
         viewModelScope.launch(Dispatchers.IO) {
             itemRepository.deleteItem(itemsModel)
-            getObjectes(itemsModel.character)
         }
     }
 
-    fun getSpells(characterCode: Int) {
+
+    fun insertSpells(characterCode: Int, numberSpells: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            spellRepository.getSpells(characterCode).collect { spells ->
-                _spellsFlowList.value =
-                    spells.filter { it.character == characterCode }.toMutableList()
-            }
-        }
-    }
-
-    fun insertSpells(characterCode: Int, numerSpells: Int) {
-        try {
-            var counter = _spellsFlowList.value.size
-            if (counter < numerSpells) {
-                while (counter < numerSpells) {
-                    setSpells(item = SpellModel(character = characterCode))
-                    counter++
+            try {
+                val currentSpellList = spellRepository.getSpellsDirectly(characterCode)
+                val currentSize = currentSpellList.size
+                if (currentSize < numberSpells) {
+                    val numToAdd = numberSpells - currentSize
+                    repeat(numToAdd) {
+                        spellRepository.insertSpell(SpellModel(character = characterCode))
+                    }
+                } else if (currentSize > numberSpells) {
+                    val numToDelete = currentSize - numberSpells
+                    val spellsToDelete = currentSpellList.takeLast(numToDelete)
+                    spellsToDelete.forEach { spell ->
+                        spellRepository.deleteSpell(spell)
+                    }
                 }
-            } else {
-                while (counter > numerSpells) {
-                    deleteSpell(_spellsFlowList.value.last())
-                    counter--
-                    _spellsFlowList.value.remove(_spellsFlowList.value.last())
-                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            getSpells(characterCode)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun setSpells(item: SpellModel) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                spellRepository.insertSpell(item)
-                getSpells(item.character)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 
@@ -212,30 +218,43 @@ class MainViewModel @Inject constructor(
         try {
             viewModelScope.launch(Dispatchers.IO) {
                 spellRepository.updateSpell(item)
-                getSpells(item.character)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    fun deleteSpell(spell: SpellModel) {
-        try {
-            viewModelScope.launch(Dispatchers.IO) {
-                spellRepository.deleteSpell(spell)
-                getSpells(spell.character)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 
     fun deleteSpells(characterCode: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            _spellsFlowList.value.filter { it.character == characterCode }.forEach {
-                spellRepository.deleteSpell(it)
+            try {
+                val spellsToDelete = spellsFlowList.value.filter { it.character == characterCode }
+                spellsToDelete.forEach { spell ->
+                    spellRepository.deleteSpell(spell)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            getSpells(characterCode = characterCode)
+        }
+    }
+
+    fun characterStabilized() {
+        _selectedCharacter.value.let { char ->
+            val updatedCharacter = char.copy(vida = 1)
+            _selectedCharacter.value = updatedCharacter
+            viewModelScope.launch {
+                characterRepository.updateCharacter(updatedCharacter)
+            }
+        }
+    }
+
+    fun characterHasDied() {
+        _selectedCharacter.value.let { char ->
+            val updatedCharacter = char.copy(vida = 0)
+            _selectedCharacter.value = updatedCharacter
+            viewModelScope.launch {
+                characterRepository.updateCharacter(updatedCharacter)
+            }
         }
     }
 
@@ -252,7 +271,6 @@ class MainViewModel @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     fun checkUselessFolder(newItem: String, context: Context) {

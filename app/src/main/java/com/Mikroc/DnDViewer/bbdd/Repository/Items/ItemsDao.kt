@@ -13,8 +13,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ItemsDao {
 
-    @Query("SELECT * FROM ${MyBBDD.Objectes.TABLE_NAME}")
-    fun getItems(): Flow<MutableList<ItemsModel>>
+    @Query("SELECT * FROM ${MyBBDD.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumible = 0")
+    fun getItems(characterCode: Int): Flow<MutableList<ItemsModel>>
+
+    @Query("SELECT * FROM ${MyBBDD.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumible = 1")
+    fun getConsumables(characterCode: Int): Flow<MutableList<ItemsModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertItem(item: ItemsModel)

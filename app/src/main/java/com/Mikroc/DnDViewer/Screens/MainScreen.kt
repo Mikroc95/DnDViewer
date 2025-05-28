@@ -13,9 +13,9 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableIntState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.State
+import androidx.compose.runtime.asIntState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -37,10 +37,9 @@ import com.Mikroc.DnDViewer.Screens.HomeBrew.HomeBrewViewer
 import java.io.File
 
 
-
 @Composable
 fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
-    val tabSelected = remember { mutableIntStateOf(0) }
+    val tabSelected = viewModel.selectedTabIndex.collectAsState()
     if (characterSelected.name.isEmpty()) {
         EmptySelection()
     } else {
@@ -53,7 +52,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
                     TabRowFull(
                         characterSelected = characterSelected,
                         viewModel = viewModel,
-                        tabSelected = tabSelected
+                        tabSelected = tabSelected.asIntState()
                     )
                 }
 
@@ -61,7 +60,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
                     TabRowCharacter(
                         characterSelected = characterSelected,
                         viewModel = viewModel,
-                        tabSelected = tabSelected
+                        tabSelected = tabSelected.asIntState()
                     )
                 }
 
@@ -69,7 +68,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
                     TabRowHomeBrew(
                         characterSelected = characterSelected,
                         viewModel = viewModel,
-                        tabSelected = tabSelected
+                        tabSelected = tabSelected.asIntState()
                     )
                 }
 
@@ -104,20 +103,24 @@ fun isCharacterEmpty(character: CharacterModel): Int {
 }
 
 @Composable
-private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
+private fun TabRowFull(
+    characterSelected: CharacterModel,
+    viewModel: MainViewModel,
+    tabSelected: State<Int>
+) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.intValue,
+        selectedTabIndex = tabSelected.value,
         containerColor = topBarColor(),
 
         indicator = {
 
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
+                Modifier.tabIndicatorOffset(it[tabSelected.value]),
                 color = discordBlue
             )
         }
@@ -125,10 +128,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 0,
-            onClick = { tabSelected.intValue = 0 }
+            selected = tabSelected.value == 0,
+            onClick = { viewModel.setSelectedTabIndex(0) }
         ) {
-            val color = if (tabSelected.intValue == 0) {
+            val color = if (tabSelected.value == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -138,10 +141,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 1,
-            onClick = { tabSelected.intValue = 1 }
+            selected = tabSelected.value == 1,
+            onClick = { viewModel.setSelectedTabIndex(1) }
         ) {
-            val color = if (tabSelected.intValue == 1) {
+            val color = if (tabSelected.value == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -151,10 +154,10 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 2,
-            onClick = { tabSelected.intValue = 2 }
+            selected = tabSelected.value == 2,
+            onClick = { viewModel.setSelectedTabIndex(2) }
         ) {
-            val color = if (tabSelected.intValue == 2) {
+            val color = if (tabSelected.value == 2) {
                 textColorAccent()
             } else {
                 textColor()
@@ -169,7 +172,7 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
             .fillMaxSize(),
 
         ) {
-        when (tabSelected.intValue) {
+        when (tabSelected.value) {
             0 -> {
                 CharacterScreen(characterModel = characterSelected)
             }
@@ -186,19 +189,23 @@ private fun TabRowFull(characterSelected: CharacterModel, viewModel: MainViewMod
 }
 
 @Composable
-private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
+private fun TabRowCharacter(
+    characterSelected: CharacterModel,
+    viewModel: MainViewModel,
+    tabSelected: State<Int>
+) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.intValue,
+        selectedTabIndex = tabSelected.value,
         containerColor = topBarColor(),
         indicator = {
 
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
+                Modifier.tabIndicatorOffset(it[tabSelected.value]),
                 color = discordBlue
             )
         }
@@ -206,10 +213,10 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 0,
-            onClick = { tabSelected.intValue = 0 }
+            selected = tabSelected.value == 0,
+            onClick = { viewModel.setSelectedTabIndex(0) }
         ) {
-            val color = if (tabSelected.intValue == 0) {
+            val color = if (tabSelected.value == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -219,10 +226,10 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 1,
-            onClick = { tabSelected.intValue = 1 }
+            selected = tabSelected.value == 1,
+            onClick = { viewModel.setSelectedTabIndex(1) }
         ) {
-            val color = if (tabSelected.intValue == 1) {
+            val color = if (tabSelected.value == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -236,7 +243,7 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
             .background(backgroundColor())
             .fillMaxSize()
     ) {
-        when (tabSelected.intValue) {
+        when (tabSelected.value) {
             0 -> {
                 CharacterScreen(characterModel = characterSelected)
             }
@@ -249,28 +256,32 @@ private fun TabRowCharacter(characterSelected: CharacterModel, viewModel: MainVi
 }
 
 @Composable
-private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainViewModel, tabSelected:MutableIntState) {
+private fun TabRowHomeBrew(
+    characterSelected: CharacterModel,
+    viewModel: MainViewModel,
+    tabSelected: State<Int>
+) {
     val context = LocalContext.current
     TabRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.intValue,
+        selectedTabIndex = tabSelected.value,
         containerColor = topBarColor(),
         indicator = {
             TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.intValue]),
+                Modifier.tabIndicatorOffset(it[tabSelected.value]),
                 color = discordBlue
             )
         }
     ) {
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 0,
-            onClick = { tabSelected.intValue = 0 }
+            selected = tabSelected.value == 0,
+            onClick = { viewModel.setSelectedTabIndex(0) }
         ) {
-            val color = if (tabSelected.intValue == 0) {
+            val color = if (tabSelected.value == 0) {
                 textColorAccent()
             } else {
                 textColor()
@@ -280,10 +291,10 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
 
         Tab(
             modifier = Modifier.padding(8.dp),
-            selected = tabSelected.intValue == 1,
-            onClick = { tabSelected.intValue = 1 }
+            selected = tabSelected.value == 1,
+            onClick = { viewModel.setSelectedTabIndex(1) }
         ) {
-            val color = if (tabSelected.intValue == 1) {
+            val color = if (tabSelected.value == 1) {
                 textColorAccent()
             } else {
                 textColor()
@@ -298,7 +309,7 @@ private fun TabRowHomeBrew(characterSelected: CharacterModel, viewModel: MainVie
             .fillMaxSize(),
 
         ) {
-        when (tabSelected.intValue) {
+        when (tabSelected.value) {
             0 -> {
                 HomeBrewViewer(File(characterSelected.homebrewRoute))
             }

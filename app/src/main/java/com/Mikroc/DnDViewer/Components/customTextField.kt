@@ -19,14 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.Mikroc.DnDViewer.Theme.discordDarkBlack
 import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.invertedTextColor
 import com.Mikroc.DnDViewer.Theme.textColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,16 +33,13 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    inputPadding: PaddingValues = PaddingValues(6.dp), //padding
+    inputPadding: PaddingValues = PaddingValues(6.dp),
     visualTransformation: VisualTransformation = VisualTransformation.None,
     enabled: Boolean = true,
     singleLine: Boolean = true,
     shape: Shape = TextFieldDefaults.shape,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
-        keyboardType = KeyboardType.Text,
-        imeAction = ImeAction.Default
-    ),
-    keyboardActions: KeyboardActions = KeyboardActions(),
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
     colors: TextFieldColors = TextFieldDefaults.colors(
         cursorColor = textColor(),
         focusedContainerColor = discordDarkBlack,
@@ -52,17 +47,12 @@ fun CustomTextField(
         focusedIndicatorColor = Color.Transparent
 
     ),
-    textStyle: TextStyle = if (enabled) LocalTextStyle.current.copy(color = textColor())
-    else LocalTextStyle.current.copy(color = invertedTextColor()),
+    textStyle: TextStyle = LocalTextStyle.current.copy(color = textColor()),
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     placeHolder: @Composable (() -> Unit)? = null,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
 ) {
-    val interactionSource = remember {
-        MutableInteractionSource()
-    }
-
-
     BasicTextField(
         value = value,
         onValueChange = onValueChange,

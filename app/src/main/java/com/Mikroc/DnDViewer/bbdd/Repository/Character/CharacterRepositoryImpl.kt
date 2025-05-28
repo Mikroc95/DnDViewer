@@ -34,12 +34,12 @@ class CharacterRepositoryImpl @Inject constructor(
         return characterDao.insertCharacter(character = character)
     }
 
-    override suspend fun updateCharacter(character: CharacterModel) {
-        characterDao.updateCharacter(character = character)
+    override suspend fun updateCharacter(character: CharacterModel): Int {
+        return characterDao.updateCharacter(character = character)
     }
 
-    override suspend fun deleteCharacter(character: CharacterModel) {
-        characterDao.deleteCharacter(character = character)
+    override suspend fun deleteCharacter(character: CharacterModel): Int {
+        return characterDao.deleteCharacter(character = character)
     }
 }
 

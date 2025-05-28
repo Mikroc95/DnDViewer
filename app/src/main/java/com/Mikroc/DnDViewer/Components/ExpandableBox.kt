@@ -1,13 +1,16 @@
 package com.Mikroc.DnDViewer.Components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -85,15 +88,22 @@ fun ExpandableBox(
                     })
             }
         }
-        if (isRowExpanded.value) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(discordLigthBlack)
-            ) {
+        val contentModifier = if (isRowExpanded.value) {
+            Modifier.background(discordLigthBlack).fillMaxWidth()
+        } else {
+            Modifier.background(discordLigthBlack).height(0.dp).fillMaxWidth()
+        }
+        Box(
+            modifier = Modifier
+                .background(discordLigthBlack)
+                .animateContentSize()
+                .then(contentModifier)
+        ) {
+            if (isRowExpanded.value) {
                 content()
             }
         }
+
     }
 
 }

@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,21 +25,31 @@ import com.Mikroc.DnDViewer.Models.SpellModel
 import com.Mikroc.DnDViewer.Theme.discordBlue
 import com.Mikroc.DnDViewer.Theme.textColor
 import com.Mikroc.DnDViewer.R
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun RowSpell(
     spell: SpellModel,
     count: Int,
-    characterCode:Int,
-    onUpdateSpell: (SpellModel) -> Unit
+    onUpdateSpell: (SpellModel) -> Unit,
 ) {
     val context = LocalContext.current
-    val valueName = remember {
-        mutableStateOf(spell.name)
+    val scope = rememberCoroutineScope()
+    var localName by remember(spell.id) { mutableStateOf(spell.name) }
+    var localLevel by remember(spell.id) { mutableStateOf(spell.level) }
+    LaunchedEffect(spell.name) {
+        if (localName != spell.name) {
+            localName = spell.name
+        }
     }
-    val valueLevel = remember {
-        mutableStateOf(spell.level)
+    LaunchedEffect(spell.level) {
+        if (localLevel != spell.level) {
+            localLevel = spell.level
+        }
     }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -53,6 +67,8 @@ fun RowSpell(
                 color = textColor(),
             )
         }
+        val currentNameJob = remember { mutableStateOf<Job?>(null) }
+        val currentLevelJob = remember { mutableStateOf<Job?>(null) }
         Row(
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
@@ -61,17 +77,14 @@ fun RowSpell(
                 .padding(end = 8.dp)
         ) {
             CustomTextField(
-                value = valueName.value,
+                value = localName,
                 onValueChange = {
-                    valueName.value = it
-                   onUpdateSpell(
-                        SpellModel(
-                            id = spell.id,
-                            name = valueName.value,
-                            level = valueLevel.value,
-                            character = characterCode
-                        )
-                    )
+                    localName = it
+                    currentNameJob.value?.cancel()
+                    currentNameJob.value = scope.launch {
+                        delay(1000L)
+                        onUpdateSpell(spell.copy(name = localName, level = localLevel))
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -79,11 +92,9 @@ fun RowSpell(
                     .border(2.dp, discordBlue),
                 placeHolder = {
                     Text(
-                        text = context.getString(R.string.row_spell_name),
-                        color = textColor()
+                        text = context.getString(R.string.row_spell_name), color = textColor()
                     )
-                }
-            )
+                })
         }
         Row(
             horizontalArrangement = Arrangement.Start,
@@ -93,17 +104,14 @@ fun RowSpell(
                 .padding(start = 8.dp)
         ) {
             CustomTextField(
-                value = valueLevel.value,
+                value = localLevel,
                 onValueChange = {
-                    valueLevel.value = it
-                    onUpdateSpell(
-                        SpellModel(
-                            id = spell.id,
-                            name = valueName.value,
-                            level = valueLevel.value,
-                            character = characterCode
-                        )
-                    )
+                    localLevel = it
+                    currentLevelJob.value?.cancel()
+                    currentLevelJob.value = scope.launch {
+                        delay(1000L)
+                        onUpdateSpell(spell.copy(name = localName, level = localLevel))
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,11 +119,9 @@ fun RowSpell(
                     .border(2.dp, discordBlue),
                 placeHolder = {
                     Text(
-                        text = context.getString(R.string.row_spell_level),
-                        color = textColor()
+                        text = context.getString(R.string.row_spell_level), color = textColor()
                     )
-                }
-            )
+                })
         }
     }
 }
