@@ -85,13 +85,19 @@ fun ExpandableBox(
                     colorFilter = ColorFilter.tint(textColor()),
                     modifier = Modifier.clickable {
                         isRowExpanded.value = !isRowExpanded.value
-                    })
+                    }
+                )
             }
         }
         val contentModifier = if (isRowExpanded.value) {
-            Modifier.background(discordLigthBlack).fillMaxWidth()
+            Modifier
+                .background(discordLigthBlack)
+                .fillMaxWidth()
         } else {
-            Modifier.background(discordLigthBlack).height(0.dp).fillMaxWidth()
+            Modifier
+                .background(discordLigthBlack)
+                .height(0.dp)
+                .fillMaxWidth()
         }
         Box(
             modifier = Modifier
@@ -103,15 +109,13 @@ fun ExpandableBox(
                 content()
             }
         }
-
     }
-
 }
 
 @Preview
 @Composable
-private fun ExpandableBoxPreview(){
-    ExpandableBox(title = "Mocked", onIconClicked = {} ) {
+private fun ExpandableBoxPreview() {
+    ExpandableBox(title = "Mocked", onIconClicked = {}) {
 
     }
 }

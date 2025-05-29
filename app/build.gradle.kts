@@ -84,6 +84,7 @@ dependencies {
 
 
      implementation("io.github.veselyjan92:pdfviewer-pdfium:1.0.5")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
      implementation(libs.androidx.lifecycle.runtime.ktx)
      implementation(libs.androidx.activity.compose)

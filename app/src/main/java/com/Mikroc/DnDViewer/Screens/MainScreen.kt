@@ -1,5 +1,6 @@
 package com.Mikroc.DnDViewer.Screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,14 +14,13 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.asIntState
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.Mikroc.DnDViewer.Components.CustomHpManaBar
 import com.Mikroc.DnDViewer.Models.CharacterModel
 import com.Mikroc.DnDViewer.Screens.Character.CharacterScreen
@@ -33,51 +33,138 @@ import com.Mikroc.DnDViewer.Theme.topBarColor
 import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import com.Mikroc.DnDViewer.R
 import com.Mikroc.DnDViewer.Screens.HomeBrew.HomeBrewViewer
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import java.io.File
 
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
-    val tabSelected = viewModel.selectedTabIndex.collectAsState()
+    val tabSelected by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
     if (characterSelected.name.isEmpty()) {
         EmptySelection()
     } else {
-        Column(modifier = Modifier.background(topBarColor())) {
-            if (characterSelected.vidaMax > 0 || characterSelected.manaMax > 0 || characterSelected.metaMagiaMax > 0) {
+        Column(
+            modifier = Modifier
+                .background(topBarColor())
+                .fillMaxSize()
+        ) {
+            if (characterSelected.vidaMax > 0 ||
+                characterSelected.manaMax > 0 ||
+                characterSelected.metaMagiaMax > 0
+            ) {
                 CustomHpManaBar(viewModel = viewModel)
             }
-            when (isCharacterEmpty(character = characterSelected)) {
-                0 -> {
-                    TabRowFull(
-                        characterSelected = characterSelected,
-                        viewModel = viewModel,
-                        tabSelected = tabSelected.asIntState()
+            val characterStatus = isCharacterEmpty(character = characterSelected)
+            val tabsInfo = remember(characterStatus, context) {
+                when (characterStatus) {
+                    0 -> listOf(
+                        context.getString(R.string.tab_personatge),
+                        context.getString(R.string.tab_homebrew),
+                        context.getString(R.string.tab_inventari)
                     )
-                }
 
-                1 -> {
-                    TabRowCharacter(
-                        characterSelected = characterSelected,
-                        viewModel = viewModel,
-                        tabSelected = tabSelected.asIntState()
+                    1 -> listOf(
+                        context.getString(R.string.tab_personatge),
+                        context.getString(R.string.tab_inventari)
                     )
-                }
 
-                2 -> {
-                    TabRowHomeBrew(
-                        characterSelected = characterSelected,
-                        viewModel = viewModel,
-                        tabSelected = tabSelected.asIntState()
+                    2 -> listOf(
+                        context.getString(R.string.tab_homebrew),
+                        context.getString(R.string.tab_inventari)
                     )
-                }
 
-                3 -> {
-                    InventoryScreen(viewModel = viewModel)
+                    else -> emptyList<String>()
+                }
+            }
+            LaunchedEffect(tabsInfo.size) {
+                if ((tabSelected >= tabsInfo.size && tabsInfo.isNotEmpty()) ||
+                    (tabsInfo.isEmpty() && tabSelected != 0)
+                ) {
+                    viewModel.setSelectedTabIndex(0)
+                }
+            }
+            if (tabsInfo.isNotEmpty() && characterStatus != 3) {
+                TabRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(0.dp)),
+                    selectedTabIndex = tabSelected.coerceIn(
+                        0,
+                        (tabsInfo.size - 1).coerceAtLeast(0)
+                    ),
+                    containerColor = topBarColor(),
+                    indicator = { tabPositions ->
+                        if (tabSelected < tabPositions.size) {
+                            TabRowDefaults.SecondaryIndicator(
+                                Modifier.tabIndicatorOffset(tabPositions[tabSelected]),
+                                color = discordBlue
+                            )
+                        }
+                    }
+                ) {
+                    tabsInfo.forEachIndexed { index, title ->
+                        Tab(
+                            modifier = Modifier.padding(8.dp),
+                            selected = tabSelected == index,
+                            onClick = { viewModel.setSelectedTabIndex(index) }
+                        ) {
+                            val color = if (tabSelected == index) {
+                                textColorAccent()
+                            } else {
+                                textColor()
+                            }
+                            Text(text = title, color = color)
+                        }
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .background(backgroundColor())
+            ) {
+                val maxTabIndex = tabsInfo.size - 1
+                val safeTabIndex =
+                    tabSelected.coerceIn(0, maxTabIndex.coerceAtLeast(0))
+
+                when (characterStatus) {
+                    0 -> {
+                        // Personatge + Homebrew + Inventari
+                        when (safeTabIndex) {
+                            0 -> CharacterScreen(characterModel = characterSelected)
+                            1 -> HomeBrewViewer(File(characterSelected.homebrewRoute))
+                            2 -> InventoryScreen(viewModel = viewModel)
+                        }
+                    }
+
+                    1 -> {
+                        // Personatge + Inventari
+                        when (safeTabIndex) {
+                            0 -> CharacterScreen(characterModel = characterSelected)
+                            1 -> InventoryScreen(viewModel = viewModel)
+                        }
+                    }
+
+                    2 -> {
+                        // Homebrew + Inventari
+                        when (safeTabIndex) {
+                            0 -> HomeBrewViewer(File(characterSelected.homebrewRoute))
+                            1 -> InventoryScreen(viewModel = viewModel)
+                        }
+                    }
+
+                    3 -> {
+                        //Inventari
+                        InventoryScreen(viewModel = viewModel)
+                    }
                 }
             }
         }
-
     }
 }
 
@@ -98,225 +185,6 @@ fun isCharacterEmpty(character: CharacterModel): Int {
             2
         } else {
             3
-        }
-    }
-}
-
-@Composable
-private fun TabRowFull(
-    characterSelected: CharacterModel,
-    viewModel: MainViewModel,
-    tabSelected: State<Int>
-) {
-    val context = LocalContext.current
-    TabRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
-        containerColor = topBarColor(),
-
-        indicator = {
-
-            TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
-                color = discordBlue
-            )
-        }
-    ) {
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { viewModel.setSelectedTabIndex(0) }
-        ) {
-            val color = if (tabSelected.value == 0) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_personatge), color = color)
-        }
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { viewModel.setSelectedTabIndex(1) }
-        ) {
-            val color = if (tabSelected.value == 1) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_homebrew), color = color)
-        }
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 2,
-            onClick = { viewModel.setSelectedTabIndex(2) }
-        ) {
-            val color = if (tabSelected.value == 2) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_inventari), color = color)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .background(backgroundColor())
-            .fillMaxSize(),
-
-        ) {
-        when (tabSelected.value) {
-            0 -> {
-                CharacterScreen(characterModel = characterSelected)
-            }
-
-            1 -> {
-                HomeBrewViewer(File(characterSelected.homebrewRoute))
-            }
-
-            2 -> {
-                InventoryScreen(viewModel = viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-private fun TabRowCharacter(
-    characterSelected: CharacterModel,
-    viewModel: MainViewModel,
-    tabSelected: State<Int>
-) {
-    val context = LocalContext.current
-    TabRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
-        containerColor = topBarColor(),
-        indicator = {
-
-            TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
-                color = discordBlue
-            )
-        }
-    ) {
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { viewModel.setSelectedTabIndex(0) }
-        ) {
-            val color = if (tabSelected.value == 0) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_personatge), color = color)
-        }
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { viewModel.setSelectedTabIndex(1) }
-        ) {
-            val color = if (tabSelected.value == 1) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_inventari), color = color)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .background(backgroundColor())
-            .fillMaxSize()
-    ) {
-        when (tabSelected.value) {
-            0 -> {
-                CharacterScreen(characterModel = characterSelected)
-            }
-
-            1 -> {
-                InventoryScreen(viewModel = viewModel)
-            }
-        }
-    }
-}
-
-@Composable
-private fun TabRowHomeBrew(
-    characterSelected: CharacterModel,
-    viewModel: MainViewModel,
-    tabSelected: State<Int>
-) {
-    val context = LocalContext.current
-    TabRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clip(RoundedCornerShape(0.dp)),
-        selectedTabIndex = tabSelected.value,
-        containerColor = topBarColor(),
-        indicator = {
-            TabRowDefaults.SecondaryIndicator(
-                Modifier.tabIndicatorOffset(it[tabSelected.value]),
-                color = discordBlue
-            )
-        }
-    ) {
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 0,
-            onClick = { viewModel.setSelectedTabIndex(0) }
-        ) {
-            val color = if (tabSelected.value == 0) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_homebrew), color = color)
-        }
-
-        Tab(
-            modifier = Modifier.padding(8.dp),
-            selected = tabSelected.value == 1,
-            onClick = { viewModel.setSelectedTabIndex(1) }
-        ) {
-            val color = if (tabSelected.value == 1) {
-                textColorAccent()
-            } else {
-                textColor()
-            }
-            Text(text = context.getString(R.string.tab_inventari), color = color)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .background(backgroundColor())
-            .fillMaxSize(),
-
-        ) {
-        when (tabSelected.value) {
-            0 -> {
-                HomeBrewViewer(File(characterSelected.homebrewRoute))
-            }
-
-            1 -> {
-                InventoryScreen(viewModel = viewModel)
-            }
         }
     }
 }
