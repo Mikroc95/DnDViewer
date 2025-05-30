@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer
+package com.mikroc.dndviewer
 
 import org.junit.Test
 

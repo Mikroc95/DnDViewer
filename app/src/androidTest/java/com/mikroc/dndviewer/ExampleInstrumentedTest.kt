@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer
+package com.mikroc.dndviewer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
