@@ -24,7 +24,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mikroc.dndviewer.models.CharacterModel
 import com.mikroc.dndviewer.R
-import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.backgroundColor
+
 
 @Composable
 fun CharacterScreen(characterModel: CharacterModel, modifier: Modifier = Modifier) {
@@ -34,7 +35,7 @@ fun CharacterScreen(characterModel: CharacterModel, modifier: Modifier = Modifie
         modifier = modifier
             .fillMaxSize()
             .clipToBounds()
-            .background(discordLightBlack)
+            .background(backgroundColor())
             .pointerInput(Unit) {
                 this.detectTransformGestures { _, pan, zoom, _ ->
                     // Update the scale based on zoom gestures.
