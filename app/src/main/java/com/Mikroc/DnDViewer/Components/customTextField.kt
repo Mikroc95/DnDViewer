@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Components
+package com.mikroc.dndviewer.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,13 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
-
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.Theme.discordDarkBlack
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.textColor
+import com.mikroc.dndviewer.theme.discordDarkBlack
+import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.textColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +42,7 @@ fun CustomTextField(
     colors: TextFieldColors = TextFieldDefaults.colors(
         cursorColor = textColor(),
         focusedContainerColor = discordDarkBlack,
-        unfocusedContainerColor = discordLigthBlack,
+        unfocusedContainerColor = discordLightBlack,
         focusedIndicatorColor = Color.Transparent
 
     ),

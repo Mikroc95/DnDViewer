@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Items
+package com.mikroc.dndviewer.bbdd.repository.items
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,17 +6,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.Mikroc.DnDViewer.bbdd.MyBBDD
-import com.Mikroc.DnDViewer.Models.ItemsModel
+import com.mikroc.dndviewer.bbdd.MyBbDd
+import com.mikroc.dndviewer.models.ItemsModel
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemsDao {
 
-    @Query("SELECT * FROM ${MyBBDD.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumible = 0")
+    @Query("SELECT * FROM ${MyBbDd.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumable = 0")
     fun getItems(characterCode: Int): Flow<MutableList<ItemsModel>>
 
-    @Query("SELECT * FROM ${MyBBDD.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumible = 1")
+    @Query("SELECT * FROM ${MyBbDd.Objectes.TABLE_NAME} WHERE character = :characterCode AND isConsumable = 1")
     fun getConsumables(characterCode: Int): Flow<MutableList<ItemsModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

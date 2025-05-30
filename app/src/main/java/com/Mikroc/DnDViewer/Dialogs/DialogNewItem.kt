@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Dialogs
+package com.mikroc.dndviewer.dialogs
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -29,13 +29,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.Mikroc.DnDViewer.Components.CustomTextField
-import com.Mikroc.DnDViewer.Models.ItemsModel
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.discordDarkBlack
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.R
+import com.mikroc.dndviewer.components.CustomTextField
+import com.mikroc.dndviewer.models.ItemsModel
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.discordDarkBlack
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.R
 
 
 @Composable
@@ -174,8 +174,8 @@ fun DialogNewItem(
                                                 description = description.value,
                                                 charges = charge,
                                                 actualCharges = charge,
-                                                isEquiped = false,
-                                                isConsumible = isConsumable,
+                                                isEquipped = false,
+                                                isConsumable = isConsumable,
                                                 character = characterCode
                                             )
                                         )
@@ -188,9 +188,9 @@ fun DialogNewItem(
                                                 description = description.value,
                                                 charges = charge,
                                                 id = editing.id,
-                                                isEquiped = editing.isEquiped,
+                                                isEquipped = editing.isEquipped,
                                                 actualCharges = actualCharges,
-                                                isConsumible = editing.isConsumible,
+                                                isConsumable = editing.isConsumable,
                                                 character = characterCode
                                             )
                                         )

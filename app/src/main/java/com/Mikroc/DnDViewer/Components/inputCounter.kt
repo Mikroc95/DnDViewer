@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Components
+package com.mikroc.dndviewer.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -30,9 +30,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.R
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.textColor
 
 @Composable
 fun InputCounter(

@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Utils
+package com.mikroc.dndviewer.utils
 
 
 fun String.stringToInt(): Int {

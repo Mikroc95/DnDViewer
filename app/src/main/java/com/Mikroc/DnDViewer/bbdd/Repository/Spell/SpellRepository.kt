@@ -1,6 +1,6 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Spell
+package com.mikroc.dndviewer.bbdd.repository.spell
 
-import com.Mikroc.DnDViewer.Models.SpellModel
+import com.mikroc.dndviewer.models.SpellModel
 import kotlinx.coroutines.flow.Flow
 
 interface SpellRepository {

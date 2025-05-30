@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer
+package com.mikroc.dndviewer
 
 import android.os.Bundle
 import androidx.activity.compose.*
@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,17 +28,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
-import com.Mikroc.DnDViewer.Components.CustomNavigationDrawer
-import com.Mikroc.DnDViewer.Dialogs.DialogNewCharacter
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Screens.MainScreen
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.mikroc.dndviewer.components.CustomNavigationDrawer
+import com.mikroc.dndviewer.dialogs.DialogNewCharacter
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.screens.MainScreen
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.viewmodels.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
@@ -122,7 +122,7 @@ class MainActivity : FragmentActivity() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                            .background(discordLigthBlack),
+                            .background(discordLightBlack),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {

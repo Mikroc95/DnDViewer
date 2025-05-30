@@ -1,6 +1,6 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Items
+package com.mikroc.dndviewer.bbdd.repository.items
 
-import com.Mikroc.DnDViewer.Models.ItemsModel
+import com.mikroc.dndviewer.models.ItemsModel
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

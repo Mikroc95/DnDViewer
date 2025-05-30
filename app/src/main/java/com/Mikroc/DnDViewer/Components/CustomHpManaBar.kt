@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Components
+package com.mikroc.dndviewer.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.Mikroc.DnDViewer.Dialogs.DialogFall
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Theme.blueMana
-import com.Mikroc.DnDViewer.Theme.discordRed
-import com.Mikroc.DnDViewer.Theme.yellowMetamagic
-import com.Mikroc.DnDViewer.Utils.stringToInt
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.dialogs.DialogFall
+import com.mikroc.dndviewer.theme.blueMana
+import com.mikroc.dndviewer.theme.discordRed
+import com.mikroc.dndviewer.theme.yellowMetaMagic
+import com.mikroc.dndviewer.utils.stringToInt
+import com.mikroc.dndviewer.viewmodels.MainViewModel
 
 
 @Composable
@@ -155,27 +155,27 @@ fun CustomHpManaBar(viewModel: MainViewModel) {
             )
         }
 
-        if (selected.metaMagiaMax > 0) {
+        if (selected.metaMagicMax > 0) {
             InputCounterWrapper(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
                     .weight(1f),
-                currentValue = selected.metaMagia,
-                maxValue = selected.metaMagiaMax,
+                currentValue = selected.metaMagic,
+                maxValue = selected.metaMagicMax,
                 label = LocalContext.current.getString(R.string.counter_metamagic),
                 inputValue = valueMetaMagic,
                 onInputValueChange = { valueMetaMagic = it },
-                borderColor = yellowMetamagic,
-                labelColor = yellowMetamagic,
+                borderColor = yellowMetaMagic,
+                labelColor = yellowMetaMagic,
                 onKeyboardSubmit = { _ ->
                     if (valueMetaMagic.isNotEmpty()) {
                         val value = valueMetaMagic.stringToInt()
-                        val metaMagic = if (selected.metaMagia + value > 0) {
-                            if (selected.metaMagia + value <= selected.metaMagiaMax) {
-                                selected.metaMagia + value
+                        val metaMagic = if (selected.metaMagic + value > 0) {
+                            if (selected.metaMagic + value <= selected.metaMagicMax) {
+                                selected.metaMagic + value
                             } else {
-                                selected.metaMagiaMax
+                                selected.metaMagicMax
                             }
                         } else {
                             0
@@ -186,18 +186,18 @@ fun CustomHpManaBar(viewModel: MainViewModel) {
 
                 },
                 onDecrement = {
-                    val metaMagic = if (selected.metaMagia - 1 >= 0) {
-                        selected.metaMagia - 1
+                    val metaMagic = if (selected.metaMagic - 1 >= 0) {
+                        selected.metaMagic - 1
                     } else {
-                        selected.metaMagia
+                        selected.metaMagic
                     }
                     viewModel.updateCharacterMetaMagic(newMetaMagic = metaMagic)
                 },
                 onIncrement = {
-                    val metaMagic = if (selected.metaMagia + 1 <= selected.metaMagiaMax) {
-                        selected.metaMagia + 1
+                    val metaMagic = if (selected.metaMagic + 1 <= selected.metaMagicMax) {
+                        selected.metaMagic + 1
                     } else {
-                        selected.metaMagia
+                        selected.metaMagic
                     }
                     viewModel.updateCharacterMetaMagic(newMetaMagic = metaMagic)
                 }

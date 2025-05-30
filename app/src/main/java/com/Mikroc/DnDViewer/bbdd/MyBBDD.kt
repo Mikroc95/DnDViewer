@@ -1,8 +1,8 @@
-package com.Mikroc.DnDViewer.bbdd
+package com.mikroc.dndviewer.bbdd
 
 import android.provider.BaseColumns
 
-object MyBBDD {
+object MyBbDd {
     object Personatge : BaseColumns {
         const val TABLE_NAME = "personatge"
     }

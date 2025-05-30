@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Screens.Character
+package com.mikroc.dndviewer.screens.character
 
 
 import androidx.compose.foundation.background
@@ -22,9 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.theme.discordLightBlack
 
 @Composable
 fun CharacterScreen(characterModel: CharacterModel, modifier: Modifier = Modifier) {
@@ -34,7 +34,7 @@ fun CharacterScreen(characterModel: CharacterModel, modifier: Modifier = Modifie
         modifier = modifier
             .fillMaxSize()
             .clipToBounds()
-            .background(discordLigthBlack)
+            .background(discordLightBlack)
             .pointerInput(Unit) {
                 this.detectTransformGestures { _, pan, zoom, _ ->
                     // Update the scale based on zoom gestures.

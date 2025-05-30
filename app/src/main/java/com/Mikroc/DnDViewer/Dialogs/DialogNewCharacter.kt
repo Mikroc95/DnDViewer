@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Dialogs
+package com.mikroc.dndviewer.dialogs
 
 import android.content.ContentResolver
 import android.content.Context
@@ -33,21 +33,21 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
-import com.Mikroc.DnDViewer.Components.CustomTextField
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.Theme.textColorAccent
-import com.Mikroc.DnDViewer.Utils.GetCustomContents
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Theme.blueMana
-import com.Mikroc.DnDViewer.Theme.discordRed
-import com.Mikroc.DnDViewer.Theme.yellowMetamagic
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import com.mikroc.dndviewer.bbdd.repository.database.FakeCharacterRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeItemsRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeSpellRepository
+import com.mikroc.dndviewer.components.CustomTextField
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.theme.textColorAccent
+import com.mikroc.dndviewer.utils.GetCustomContents
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.theme.blueMana
+import com.mikroc.dndviewer.theme.discordRed
+import com.mikroc.dndviewer.theme.yellowMetaMagic
+import com.mikroc.dndviewer.viewmodels.MainViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -78,8 +78,8 @@ fun DialogNewCharacter(
                 vidaMax = character.vidaMax,
                 mana = character.mana,
                 manaMax = character.manaMax,
-                metaMagia = character.metaMagia,
-                metaMagiaMax = character.metaMagiaMax,
+                metaMagic = character.metaMagic,
+                metaMagicMax = character.metaMagicMax,
                 observations = character.observations,
                 maxSpell = character.maxSpell
             )
@@ -106,10 +106,10 @@ fun DialogNewCharacter(
             }
         )
     }
-    val metamagia = remember {
+    val metaMagic = remember {
         mutableStateOf(
-            if (character.metaMagiaMax > 0) {
-                character.metaMagiaMax.toString()
+            if (character.metaMagicMax > 0) {
+                character.metaMagicMax.toString()
             } else {
                 ""
             }
@@ -306,24 +306,24 @@ fun DialogNewCharacter(
                 horizontalArrangement = Arrangement.Center
             ) {
                 val borderColor =
-                    if (characterModel.name.isEmpty()) discordBlue else yellowMetamagic
+                    if (characterModel.name.isEmpty()) discordBlue else yellowMetaMagic
                 CustomTextField(
-                    value = metamagia.value,
+                    value = metaMagic.value,
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(3.dp))
                         .border(2.dp, borderColor),
                     onValueChange = {
-                        metamagia.value = it
+                        metaMagic.value = it
                         try {
-                            newCharacter.value.metaMagia = metamagia.value.toInt()
-                            newCharacter.value.metaMagiaMax = metamagia.value.toInt()
+                            newCharacter.value.metaMagic = metaMagic.value.toInt()
+                            newCharacter.value.metaMagicMax = metaMagic.value.toInt()
 
                         } catch (e: Exception) {
                             e.printStackTrace()
-                            newCharacter.value.metaMagia = 0
-                            newCharacter.value.metaMagiaMax = 0
+                            newCharacter.value.metaMagic = 0
+                            newCharacter.value.metaMagicMax = 0
                         }
 
                     },
@@ -512,8 +512,8 @@ fun DialogNewCharacter(
                                     if (oldItemBD.manaMax == newCharacter.value.manaMax) {
                                         newCharacter.value.mana = oldItemBD.mana
                                     }
-                                    if (oldItemBD.metaMagiaMax == newCharacter.value.metaMagiaMax) {
-                                        newCharacter.value.metaMagia = oldItemBD.metaMagia
+                                    if (oldItemBD.metaMagicMax == newCharacter.value.metaMagicMax) {
+                                        newCharacter.value.metaMagic = oldItemBD.metaMagic
                                     }
 
                                     if (newCharacter.value.homebrewRoute.isEmpty() && characterModel.homebrewRoute.isNotEmpty()) {

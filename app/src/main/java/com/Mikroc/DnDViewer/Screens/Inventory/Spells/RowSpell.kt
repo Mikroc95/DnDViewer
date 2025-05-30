@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Screens.Inventory.Spells
+package com.mikroc.dndviewer.screens.inventory.spells
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.Components.CustomTextField
-import com.Mikroc.DnDViewer.Models.SpellModel
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.R
+import com.mikroc.dndviewer.components.CustomTextField
+import com.mikroc.dndviewer.models.SpellModel
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

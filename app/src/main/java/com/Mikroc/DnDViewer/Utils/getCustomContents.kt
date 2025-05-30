@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Utils
+package com.mikroc.dndviewer.utils
 
 import android.app.Activity
 import android.content.Context

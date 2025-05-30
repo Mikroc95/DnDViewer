@@ -1,10 +1,10 @@
-package com.Mikroc.DnDViewer.Models
+package com.mikroc.dndviewer.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.Mikroc.DnDViewer.bbdd.MyBBDD
+import com.mikroc.dndviewer.bbdd.MyBbDd
 
-@Entity(tableName = MyBBDD.Objectes.TABLE_NAME)
+@Entity(tableName = MyBbDd.Objectes.TABLE_NAME)
 data class ItemsModel(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,
@@ -12,7 +12,7 @@ data class ItemsModel(
     var description: String = "",
     var charges: String = "",
     var actualCharges: String = "",
-    var isEquiped: Boolean = false,
-    var isConsumible: Boolean = false,
+    var isEquipped: Boolean = false,
+    var isConsumable: Boolean = false,
     var character: Int = -1
 )

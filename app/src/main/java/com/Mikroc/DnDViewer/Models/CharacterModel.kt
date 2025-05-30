@@ -1,11 +1,11 @@
-package com.Mikroc.DnDViewer.Models
+package com.mikroc.dndviewer.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.Mikroc.DnDViewer.bbdd.MyBBDD
+import com.mikroc.dndviewer.bbdd.MyBbDd
 import java.io.Serializable
 
-@Entity(tableName = MyBBDD.Personatge.TABLE_NAME)
+@Entity(tableName = MyBbDd.Personatge.TABLE_NAME)
 data class CharacterModel(
     @PrimaryKey(autoGenerate = true)
     var code: Int = 0,
@@ -16,8 +16,8 @@ data class CharacterModel(
     var vidaMax: Int = 0,
     var mana: Int = 0,
     var manaMax: Int = 0,
-    var metaMagia: Int = 0,
-    var metaMagiaMax: Int = 0,
+    var metaMagic: Int = 0,
+    var metaMagicMax: Int = 0,
     var observations: String = "",
     var maxSpell: Int = 0
 ) : Serializable {
@@ -34,8 +34,8 @@ data class CharacterModel(
         if (vidaMax != other.vidaMax) return false
         if (mana != other.mana) return false
         if (manaMax != other.manaMax) return false
-        if (metaMagia != other.metaMagia) return false
-        if (metaMagiaMax != other.metaMagiaMax) return false
+        if (metaMagic != other.metaMagic) return false
+        if (metaMagicMax != other.metaMagicMax) return false
         if (observations != other.observations) return false
         if (maxSpell != other.maxSpell) return false
 
@@ -50,8 +50,8 @@ data class CharacterModel(
         result = 31 * result + vidaMax
         result = 31 * result + mana
         result = 31 * result + manaMax
-        result = 31 * result + metaMagia
-        result = 31 * result + metaMagiaMax
+        result = 31 * result + metaMagic
+        result = 31 * result + metaMagicMax
         result = 31 * result + observations.hashCode()
         result = 31 * result + maxSpell
         return result

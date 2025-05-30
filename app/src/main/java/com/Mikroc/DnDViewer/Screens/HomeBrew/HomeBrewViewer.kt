@@ -1,10 +1,10 @@
-package com.Mikroc.DnDViewer.Screens.HomeBrew
+package com.mikroc.dndviewer.screens.homebrew
 
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.Mikroc.DnDViewer.Screens.EmptySelection
+import com.mikroc.dndviewer.screens.EmptySelection
 import io.github.veselyjan92.pdfviewer.PDFViewer
 import io.github.veselyjan92.pdfviewer.rememberPDFViewerPdfiumState
 import java.io.File

@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Items
+package com.mikroc.dndviewer.bbdd.repository.items
 
 
 import dagger.Binds

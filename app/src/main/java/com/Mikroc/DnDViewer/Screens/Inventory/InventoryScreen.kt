@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Screens.Inventory
+package com.mikroc.dndviewer.screens.inventory
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -37,25 +37,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
-import com.Mikroc.DnDViewer.Components.CustomTextField
-import com.Mikroc.DnDViewer.Components.ExpandableBox
-import com.Mikroc.DnDViewer.Dialogs.DialogNewItem
-import com.Mikroc.DnDViewer.Models.ItemsModel
-import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowConsumible
-import com.Mikroc.DnDViewer.Screens.Inventory.Items.RowItem
-import com.Mikroc.DnDViewer.Screens.Inventory.Spells.RowSpell
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import com.mikroc.dndviewer.bbdd.repository.database.FakeCharacterRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeItemsRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeSpellRepository
+import com.mikroc.dndviewer.components.CustomTextField
+import com.mikroc.dndviewer.components.ExpandableBox
+import com.mikroc.dndviewer.dialogs.DialogNewItem
+import com.mikroc.dndviewer.models.ItemsModel
+import com.mikroc.dndviewer.screens.inventory.items.RowConsumable
+import com.mikroc.dndviewer.screens.inventory.items.RowItem
+import com.mikroc.dndviewer.screens.inventory.spells.RowSpell
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.viewmodels.MainViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +70,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
     val dialogNewItem = remember {
         //0 = dialogClosed
         //1 = newItemNormal
-        //2 = newConsumibleItem
+        //2 = newConsumableItem
         mutableIntStateOf(0)
     }
     val dialogDeleteItem = remember {
@@ -95,7 +96,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 delay(1000L)
                 val character = viewModel.selectedCharacter.value
                 character.let { update ->
-                    if (update.observations != localObservationsText) { // Doble check
+                    if (update.observations != localObservationsText) {
                         val updatedCharacter = update.copy(observations = localObservationsText)
                         viewModel.updateCharacters(updatedCharacter)
                     }
@@ -129,7 +130,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                 ) { _, item ->
                     RowItem(
                         item = item,
-                        saveObjectes = { viewModel.updateItems(it) },
+                        saveItems = { viewModel.updateItems(it) },
 
                         onDeleteClicked = {
                             dialogDeleteItem.value = item
@@ -139,12 +140,12 @@ fun InventoryScreen(viewModel: MainViewModel) {
                         },
                         onEquipItem = { it ->
                             try {
-                                if (it.isEquiped) {
-                                    it.isEquiped = false
+                                if (it.isEquipped) {
+                                    it.isEquipped = false
                                     viewModel.updateItems(it)
                                 } else {
-                                    if (listItems.filter { it.isEquiped }.size < 3) {
-                                        it.isEquiped = true
+                                    if (listItems.filter { it.isEquipped }.size < 3) {
+                                        it.isEquipped = true
                                         viewModel.updateItems(it)
                                     } else {
                                         Toast.makeText(
@@ -154,7 +155,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                                         ).show()
                                     }
                                 }
-                                return@RowItem it.isEquiped
+                                return@RowItem it.isEquipped
                             } catch (e: Exception) {
                                 e.printStackTrace()
                             }
@@ -181,9 +182,9 @@ fun InventoryScreen(viewModel: MainViewModel) {
                     items = listConsumables,
                     key = { _, item -> item.id!! }
                 ) { _, item ->
-                    RowConsumible(
+                    RowConsumable(
                         item = item,
-                        saveObjectes = { viewModel.updateItems(it) },
+                        saveItems = { viewModel.updateItems(it) },
                         onDeleteClicked = {
                             dialogDeleteItem.value = item
                         },
@@ -258,7 +259,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                     dialogEditItem.value = ItemsModel()
                     dialogNewItem.intValue = 0
                 },
-                isConsumable = dialogEditItem.value.isConsumible,
+                isConsumable = dialogEditItem.value.isConsumable,
                 editing = dialogEditItem.value,
             )
         }
@@ -268,7 +269,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .background(discordLigthBlack),
+                        .background(discordLightBlack),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -331,6 +332,7 @@ fun InventoryScreen(viewModel: MainViewModel) {
 
     }
 }
+
 
 @Preview
 @Composable

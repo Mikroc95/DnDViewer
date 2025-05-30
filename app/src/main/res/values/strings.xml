@@ -51,5 +51,7 @@
 
     <string name="Dialog_fall_title">Estàs inconscient a terra</string>
     <string name="Dialog_fall_description">Tira 1d20 si surt per sota de 10 és una pífia, si treus 3 pífies el teu personatge mor, si treus 3 encerts el teu personatge s\'aixeca amb 1 HP</string>
+    <string name="Dialog_fall_stand_up">s\'ha aixecat </string>
+    <string name="Dialog_fall_dead">ha mort </string>
 
 </resources>

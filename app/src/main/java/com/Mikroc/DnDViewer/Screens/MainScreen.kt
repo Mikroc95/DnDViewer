@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Screens
+package com.mikroc.dndviewer.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -21,20 +21,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.Mikroc.DnDViewer.Components.CustomHpManaBar
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Screens.Character.CharacterScreen
-import com.Mikroc.DnDViewer.Screens.Inventory.InventoryScreen
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.Theme.textColorAccent
-import com.Mikroc.DnDViewer.Theme.topBarColor
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Screens.HomeBrew.HomeBrewViewer
+import com.mikroc.dndviewer.screens.homebrew.HomeBrewViewer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.components.CustomHpManaBar
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.screens.character.CharacterScreen
+import com.mikroc.dndviewer.screens.inventory.InventoryScreen
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.theme.textColorAccent
+import com.mikroc.dndviewer.theme.topBarColor
+import com.mikroc.dndviewer.viewmodels.MainViewModel
 import java.io.File
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -53,7 +53,7 @@ fun MainScreen(characterSelected: CharacterModel, viewModel: MainViewModel) {
         ) {
             if (characterSelected.vidaMax > 0 ||
                 characterSelected.manaMax > 0 ||
-                characterSelected.metaMagiaMax > 0
+                characterSelected.metaMagicMax > 0
             ) {
                 CustomHpManaBar(viewModel = viewModel)
             }

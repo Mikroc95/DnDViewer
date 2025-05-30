@@ -1,16 +1,16 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Database
+package com.mikroc.dndviewer.bbdd.repository.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.Mikroc.DnDViewer.bbdd.Repository.Character.CharacterDao
-import com.Mikroc.DnDViewer.bbdd.Repository.Character.CharacterRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Items.ItemsDao
-import com.Mikroc.DnDViewer.bbdd.Repository.Items.ItemsRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Spell.SpellDao
-import com.Mikroc.DnDViewer.bbdd.Repository.Spell.SpellRepository
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Models.ItemsModel
-import com.Mikroc.DnDViewer.Models.SpellModel
+import com.mikroc.dndviewer.bbdd.repository.character.CharacterDao
+import com.mikroc.dndviewer.bbdd.repository.character.CharacterRepository
+import com.mikroc.dndviewer.bbdd.repository.items.ItemsDao
+import com.mikroc.dndviewer.bbdd.repository.items.ItemsRepository
+import com.mikroc.dndviewer.bbdd.repository.spell.SpellDao
+import com.mikroc.dndviewer.bbdd.repository.spell.SpellRepository
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.models.ItemsModel
+import com.mikroc.dndviewer.models.SpellModel
 import kotlinx.coroutines.flow.Flow
 
 @Database(

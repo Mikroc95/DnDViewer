@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Components
+package com.mikroc.dndviewer.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -40,14 +40,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.Models.CharacterModel
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.Theme.topBarColor
-import com.Mikroc.DnDViewer.Theme.topBarTextColor
-import com.Mikroc.DnDViewer.Theme.transparent
-import com.Mikroc.DnDViewer.R
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.models.CharacterModel
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.theme.topBarColor
+import com.mikroc.dndviewer.theme.topBarTextColor
+import com.mikroc.dndviewer.theme.transparent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

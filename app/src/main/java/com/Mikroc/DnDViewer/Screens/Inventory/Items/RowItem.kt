@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Screens.Inventory.Items
+package com.mikroc.dndviewer.screens.inventory.items
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -30,31 +30,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.Mikroc.DnDViewer.Components.InputCounter
-import com.Mikroc.DnDViewer.Models.ItemsModel
-import com.Mikroc.DnDViewer.Theme.blueMana
-import com.Mikroc.DnDViewer.Theme.discordBlue
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.discordOrangeAccent
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Utils.stringToInt
+import com.mikroc.dndviewer.components.InputCounter
+import com.mikroc.dndviewer.models.ItemsModel
+import com.mikroc.dndviewer.theme.blueMana
+import com.mikroc.dndviewer.theme.discordBlue
+import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.discordOrangeAccent
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.utils.stringToInt
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RowItem(
     item: ItemsModel,
-    saveObjectes: (ItemsModel) -> Unit,
+    saveItems: (ItemsModel) -> Unit,
     onEquipItem: (ItemsModel) -> Boolean,
     onDeleteClicked: () -> Unit,
     onEditClicked: (ItemsModel) -> Unit,
 ) {
     val context = LocalContext.current
-    val isEquiped = remember {
+    val isEquipped = remember {
         mutableStateOf(false)
     }
-    isEquiped.value = item.isEquiped
-    val rowModifier = if (isEquiped.value) {
+    isEquipped.value = item.isEquipped
+    val rowModifier = if (isEquipped.value) {
         Modifier
             .background(discordBlue)
             .clip(RoundedCornerShape(3.dp))
@@ -62,7 +62,7 @@ fun RowItem(
 
     } else {
         Modifier
-            .background(discordLigthBlack)
+            .background(discordLightBlack)
             .clip(RoundedCornerShape(3.dp))
 
     }
@@ -79,7 +79,7 @@ fun RowItem(
             .combinedClickable(
                 onClick = { },
                 onLongClick = {
-                    isEquiped.value = onEquipItem(item)
+                    isEquipped.value = onEquipItem(item)
                 }
             )
 
@@ -141,7 +141,7 @@ fun RowItem(
                                     0
                                 }
                                 item.actualCharges = charges.intValue.toString()
-                                saveObjectes(item)
+                                saveItems(item)
                                 valueTextField.value = ""
                             }
                         } catch (e: Exception) {
@@ -154,7 +154,7 @@ fun RowItem(
                         if (charge - 1 >= 0) {
                             charges.intValue = charge - 1
                             item.actualCharges = charges.intValue.toString()
-                            saveObjectes(item)
+                            saveItems(item)
                         }
                     },
                     onPlusClicked = {
@@ -162,7 +162,7 @@ fun RowItem(
                         if (charge + 1 <= item.charges.toInt()) {
                             charges.intValue = charge + 1
                             item.actualCharges = charges.intValue.toString()
-                            saveObjectes(item)
+                            saveItems(item)
                         }
                     },
                     onTextFieldValueChange = {
@@ -185,22 +185,22 @@ fun RowItem(
 }
 
 @Composable
-fun RowConsumible(
+fun RowConsumable(
     item: ItemsModel,
     onDeleteClicked: () -> Unit,
     onEditClicked: (ItemsModel) -> Unit,
-    saveObjectes: (ItemsModel) -> Unit,
+    saveItems: (ItemsModel) -> Unit,
     onConsumeItem: (ItemsModel) -> Unit
 ) {
-    val totalConsumibles = remember {
+    val totalConsumables = remember {
         mutableIntStateOf(0)
     }
-    totalConsumibles.intValue = item.charges.stringToInt()
+    totalConsumables.intValue = item.charges.stringToInt()
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top,
         modifier = Modifier
-            .background(discordLigthBlack)
+            .background(discordLightBlack)
             .clip(RoundedCornerShape(3.dp))
             .fillMaxWidth()
             .padding(8.dp)
@@ -242,18 +242,18 @@ fun RowConsumible(
                 mutableStateOf("")
             }
             InputCounter(
-                totalResult = totalConsumibles.intValue.toString(),
+                totalResult = totalConsumables.intValue.toString(),
                 valueTextField = valueTextField.value,
                 borderColor = discordOrangeAccent,
                 onKeyBoardDone = {
                     try {
                         if (valueTextField.value.isNotEmpty()) {
                             val value = valueTextField.value.toInt()
-                            if (totalConsumibles.intValue + value > 0) {
-                                totalConsumibles.intValue += value
-                                item.charges = totalConsumibles.intValue.toString()
+                            if (totalConsumables.intValue + value > 0) {
+                                totalConsumables.intValue += value
+                                item.charges = totalConsumables.intValue.toString()
                                 item.actualCharges = item.charges
-                                saveObjectes(item)
+                                saveItems(item)
                             } else {
                                 onConsumeItem(item)
                             }
@@ -265,20 +265,20 @@ fun RowConsumible(
                     }
                 },
                 onPlusClicked = {
-                    val total = totalConsumibles.intValue
-                    totalConsumibles.intValue = total + 1
-                    item.charges = totalConsumibles.intValue.toString()
+                    val total = totalConsumables.intValue
+                    totalConsumables.intValue = total + 1
+                    item.charges = totalConsumables.intValue.toString()
                     item.actualCharges = item.charges
-                    saveObjectes(item)
+                    saveItems(item)
                 },
                 onLessClicked = {
-                    val total = totalConsumibles.intValue
+                    val total = totalConsumables.intValue
                     if (total - 1 > 0) {
 
-                        totalConsumibles.intValue = total - 1
-                        item.charges = totalConsumibles.intValue.toString()
+                        totalConsumables.intValue = total - 1
+                        item.charges = totalConsumables.intValue.toString()
                         item.actualCharges = item.charges
-                        saveObjectes(item)
+                        saveItems(item)
                     } else {
                         onConsumeItem(item)
                     }
@@ -309,11 +309,11 @@ private fun RowItemPreview() {
     RowItem(
         item = ItemsModel(
             name = "MOCK",
-            description = "mockmockmock",
+            description = "Description Mocked",
             charges = "5",
             actualCharges = "5"
         ),
-        saveObjectes = {},
+        saveItems = {},
         onEquipItem = { false },
         onDeleteClicked = { },
         onEditClicked = {},
@@ -323,9 +323,9 @@ private fun RowItemPreview() {
 @Preview
 @Composable
 private fun RowConsumablePreview() {
-    RowConsumible(
-        item = ItemsModel(name = "MOCK", description = "mockmockmock", charges = "5"),
-        saveObjectes = {},
+    RowConsumable(
+        item = ItemsModel(name = "MOCK", description = "Description Mocked", charges = "5"),
+        saveItems = {},
         onDeleteClicked = { },
         onEditClicked = {},
         onConsumeItem = {}

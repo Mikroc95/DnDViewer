@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.Mikroc.DnDViewer",
+  "applicationId": "com.mikroc.dndviewer",
   "variantName": "release",
   "elements": [
     {

@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Character
+package com.mikroc.dndviewer.bbdd.repository.character
 
 import dagger.Binds
 import dagger.Module

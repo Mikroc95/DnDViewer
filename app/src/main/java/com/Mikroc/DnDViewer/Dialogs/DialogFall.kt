@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Dialogs
+package com.mikroc.dndviewer.dialogs
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -25,13 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeCharacterRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeItemsRepository
-import com.Mikroc.DnDViewer.bbdd.Repository.Database.FakeSpellRepository
-import com.Mikroc.DnDViewer.R
-import com.Mikroc.DnDViewer.Theme.backgroundColor
-import com.Mikroc.DnDViewer.Theme.textColor
-import com.Mikroc.DnDViewer.ViewModels.MainViewModel
+import com.mikroc.dndviewer.theme.backgroundColor
+import com.mikroc.dndviewer.theme.textColor
+import com.mikroc.dndviewer.viewmodels.MainViewModel
+import com.mikroc.dndviewer.R
+import com.mikroc.dndviewer.bbdd.repository.database.FakeCharacterRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeItemsRepository
+import com.mikroc.dndviewer.bbdd.repository.database.FakeSpellRepository
 
 @Composable
 fun DialogFall(viewModel: MainViewModel,
@@ -115,7 +115,7 @@ fun DialogFall(viewModel: MainViewModel,
                         listMatches = listMatches,
                         onOutcome = {isAlive->
                             if(isAlive){
-                                    Toast.makeText(context, "s'ha aixecat $characterName", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, "${context.getString(R.string.Dialog_fall_stand_up)}$characterName", Toast.LENGTH_SHORT).show()
                                     viewModel.characterStabilized()
                                     onCharacterResolved()
                             }
@@ -137,7 +137,7 @@ fun DialogFall(viewModel: MainViewModel,
                         listMatches = listMatches,
                         onOutcome = {isAlive ->
                             if(!isAlive){
-                                Toast.makeText(context, "ha mort $characterName", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "${context.getString(R.string.Dialog_fall_dead)}$characterName", Toast.LENGTH_SHORT).show()
                                 onCharacterResolved()
                             }
                         }

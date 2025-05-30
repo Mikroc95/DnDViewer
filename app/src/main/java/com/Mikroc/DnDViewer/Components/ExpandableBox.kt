@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.Components
+package com.mikroc.dndviewer.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
@@ -28,10 +28,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.Mikroc.DnDViewer.Theme.discordDarkBlack
-import com.Mikroc.DnDViewer.Theme.discordLigthBlack
-import com.Mikroc.DnDViewer.Theme.discordLigthGray
-import com.Mikroc.DnDViewer.Theme.textColor
+import com.mikroc.dndviewer.theme.discordDarkBlack
+import com.mikroc.dndviewer.theme.discordLightBlack
+import com.mikroc.dndviewer.theme.discordLightGray
+import com.mikroc.dndviewer.theme.textColor
 
 @Composable
 fun ExpandableBox(
@@ -46,7 +46,7 @@ fun ExpandableBox(
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(3.dp))
-            .border(6.dp, discordLigthGray)
+            .border(6.dp, discordLightGray)
     ) {
         Row(
             modifier = Modifier
@@ -91,17 +91,17 @@ fun ExpandableBox(
         }
         val contentModifier = if (isRowExpanded.value) {
             Modifier
-                .background(discordLigthBlack)
+                .background(discordLightBlack)
                 .fillMaxWidth()
         } else {
             Modifier
-                .background(discordLigthBlack)
+                .background(discordLightBlack)
                 .height(0.dp)
                 .fillMaxWidth()
         }
         Box(
             modifier = Modifier
-                .background(discordLigthBlack)
+                .background(discordLightBlack)
                 .animateContentSize()
                 .then(contentModifier)
         ) {

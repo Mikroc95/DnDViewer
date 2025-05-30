@@ -1,4 +1,4 @@
-package com.Mikroc.DnDViewer.bbdd.Repository.Spell
+package com.mikroc.dndviewer.bbdd.repository.spell
 
 import dagger.Binds
 import dagger.Module
